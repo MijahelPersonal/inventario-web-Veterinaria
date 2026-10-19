@@ -182,7 +182,7 @@ export function mountPointOfSale() {
     // Al volver desde un error de validación se recupera el carrito sin reenviar el formulario.
     window.addEventListener('pageshow', () => {
         busy = false;
-        button.textContent = 'Finalizar venta';
+        button.textContent = 'Finalizar venta y cobrar';
         render();
     });
     render();

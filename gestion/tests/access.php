@@ -37,6 +37,11 @@ try {
     $auth->login($email, $password);
     $auth->logout();
     $check($auth->current() === null, 'Logout falló');
+    $audit = $db->prepare(
+        "SELECT COUNT(*) FROM audit_events WHERE user_id=? AND action IN ('login','logout')",
+    );
+    $audit->execute([$id]);
+    $check((int) $audit->fetchColumn() === 0, 'Se registraron entradas o salidas de sesión');
     for ($i = 0; $i < 5; $i++) {
         try {
             $auth->login($email, 'incorrecta');

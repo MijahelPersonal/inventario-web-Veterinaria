@@ -8,7 +8,7 @@
 {# Cada campo procede de una definición interna; el navegador no define columnas SQL. #}
 {% for name,field in definition.fields %}
 {% set value=attribute(record,name) ?? field.default ?? '' %}
-<div class="col-md-6"><label class="form-label" for="{{ name }}">{{ field.label }}{{ field.required|default(false) ? ' *' : '' }}</label>
+{% if name in ['category_id','brand_id','specialty_id'] %}<input type="hidden" name="{{ name }}" value="{{ value }}">{% else %}<div class="col-md-6"><label class="form-label" for="{{ name }}">{{ field.label }}{{ field.required|default(false) ? ' *' : '' }}</label>
 {% if field.type=='select' %}
 <select class="form-select" id="{{ name }}" name="{{ name }}" {{ field.required|default(false) ? 'required' : '' }}>
 <option value="">Seleccionar</option>
@@ -18,7 +18,7 @@
 {% elseif field.type=='checkbox' %}<div><input class="form-check-input" id="{{ name }}" type="checkbox" name="{{ name }}" value="1" {{ value ? 'checked' : '' }}></div>
 {% else %}
 <input class="form-control" id="{{ name }}" name="{{ name }}" value="{{ value }}" type="{{ field.type in ['money','quantity','duration'] ? 'number' : field.type }}" {% if field.type in ['money','quantity','duration'] %}min="{{ field.type=='duration' ? '5' : '0' }}" step="{{ field.type=='money' ? '0.01' : (field.type=='quantity' ? '0.001' : '1') }}"{% endif %} {% if field.max is defined %}maxlength="{{ field.max }}"{% endif %} {{ field.required|default(false) ? 'required' : '' }}>
-{% endif %}</div>
+{% endif %}</div>{% endif %}
 {% endfor %}
 <div class="col-12"><label class="form-check"><input class="form-check-input" name="active" type="checkbox" value="1" {{ record.active ? 'checked' : '' }}> Registro activo</label><small class="text-body-secondary">Desactivar conserva el historial.</small></div>
 </div><div class="mt-4"><button class="btn btn-primary">Guardar</button> <a class="btn btn-outline-secondary" href="/catalogos/{{ slug }}">Cancelar</a></div></div></form>

@@ -1,5 +1,5 @@
 {% extends 'layouts/main.html.twig' %}
-{% block title %}Inicio{% endblock %}
+{% block title %}Dashboard{% endblock %}
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">RESUMEN DEL DÍA</span><h1>Bienvenido, {{ current_user.name }}</h1><p class="text-body-secondary mb-0">{{ 'now'|date('d/m/Y') }} · {{ app_name }}</p></div>{% if can('sales.write') %}<a class="btn btn-primary" href="/tienda">Nueva venta</a>{% endif %}</div>
 <div class="row g-3 mb-4">

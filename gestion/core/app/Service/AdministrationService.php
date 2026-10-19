@@ -12,35 +12,13 @@ final class AdministrationService
     public function __construct(private PDO $db) {}
     public function settings(array $input, int $user): void
     {
-        $limits = [
-            'clinic_name' => 120,
-            'contact_phone' => 40,
-            'contact_email' => 190,
-            'address' => 255,
-            'currency' => 3,
-            'primary_color' => 7,
-        ];
-        $data = [];
-        foreach ($limits as $key => $limit) {
-            $value = trim((string) ($input[$key] ?? ''));
-            if (mb_strlen($value) > $limit) {
-                throw new DomainException('Dato demasiado largo: ' . $key);
-            }
-            $data[$key] = $value;
+        $color = (string) ($input['primary_color'] ?? '');
+        $theme = (string) ($input['theme'] ?? 'light');
+        $palette = require dirname(__DIR__, 3) . '/config/appearance.php';
+        if (!isset($palette[$color]) || !in_array($theme, ['light', 'dark'], true)) {
+            throw new DomainException('Selecciona un color y un tema disponibles.');
         }
-        if (
-            $data['clinic_name'] === '' ||
-            !in_array($data['currency'], ['PEN', 'USD', 'EUR'], true) ||
-            !preg_match('/^#[0-9a-fA-F]{6}$/D', $data['primary_color'])
-        ) {
-            throw new DomainException('Nombre, moneda o color inválidos.');
-        }
-        if (
-            $data['contact_email'] !== '' &&
-            !filter_var($data['contact_email'], FILTER_VALIDATE_EMAIL)
-        ) {
-            throw new DomainException('Correo de contacto inválido.');
-        }
+        $data = ['primary_color' => $color, 'theme' => $theme];
         $this->db->beginTransaction();
         try {
             $model = new Administration($this->db);

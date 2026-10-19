@@ -7,7 +7,7 @@ use Core\Controller;
 use Core\Session;
 use DomainException;
 
-// Expone preferencias, usuarios y auditoría únicamente al personal autorizado.
+// Expone preferencias y usuarios únicamente al personal autorizado.
 final class AdministrationController extends Controller
 {
     public function settings(array $parameters = []): void
@@ -49,11 +49,5 @@ final class AdministrationController extends Controller
         );
         Session::flash('Usuario guardado.');
         $this->redirect('/usuarios');
-    }
-    public function audit(array $parameters = []): void
-    {
-        $this->context->view->render('administration/audit.html.twig', [
-            'events' => (new Administration($this->context->db()))->audit(),
-        ]);
     }
 }

@@ -69,10 +69,7 @@ final class InventoryService
                 }
                 $supplier = empty($input['supplier_id']) ? null : (int) $input['supplier_id'];
                 $vendor = $supplier ? (new Catalog($this->db))->find('suppliers', $supplier) : null;
-                if (
-                    ($kind === 'compra' && !$supplier) ||
-                    ($supplier && (!$vendor || !$vendor['active']))
-                ) {
+                if ($supplier && (!$vendor || !$vendor['active'])) {
                     throw new DomainException('Selecciona un proveedor activo para la compra.');
                 }
                 $reference = trim((string) ($input['reference'] ?? '')) ?: null;

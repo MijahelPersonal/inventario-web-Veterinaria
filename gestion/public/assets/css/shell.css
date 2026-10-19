@@ -470,3 +470,147 @@
         transform: translateX(0);
     }
 }
+
+/* Acentos semánticos, pie compartido y transiciones respetuosas del movimiento reducido. */
+.brand-heart {
+    color: #fbbf24;
+    font-size: 34px;
+    line-height: 1;
+}
+.sidebar-brand small {
+    font-size: 9px;
+    letter-spacing: 0.5px;
+}
+.app-sidebar,
+.header,
+.app-layout {
+    transition:
+        transform 0.24s ease,
+        margin-left 0.24s ease;
+}
+.nav-item {
+    transition:
+        background-color 0.18s ease,
+        transform 0.18s ease;
+}
+.nav-item:hover {
+    transform: translateX(3px);
+}
+.nav-item .bi {
+    color: #60a5fa;
+}
+.nav-item[href='/tienda'] .bi,
+.nav-item[href='/ventas'] .bi {
+    color: #4ade80;
+}
+.nav-item[href='/inventario'] .bi,
+.nav-item[href='/reportes'] .bi {
+    color: #fbbf24;
+}
+.nav-item[href*='mascotas'] .bi {
+    color: #fb7185;
+}
+.nav-item[href*='veterinarios'] .bi,
+.nav-item[href='/citas'] .bi {
+    color: #c4b5fd;
+}
+.nav-item[href*='servicios'] .bi,
+.nav-item[href='/calendario'] .bi {
+    color: #2dd4bf;
+}
+.system-footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 36px;
+    padding: 20px 0 4px;
+    border-top: 1px solid var(--cui-border-color);
+    font-size: 13px;
+    color: var(--cui-secondary-color);
+}
+.system-footer .bi {
+    color: #ef4444;
+    margin-right: 5px;
+}
+.system-footer strong {
+    color: var(--brand);
+}
+.metric-card.metric-success {
+    background: #16a34a19;
+    color: #16803c;
+    border-left: 4px solid #22c55e;
+}
+.metric-card.metric-warning {
+    background: #eab30820;
+    color: #986900;
+    border-left: 4px solid #eab308;
+}
+[data-coreui-theme='dark'] .metric-success {
+    color: #86efac;
+}
+[data-coreui-theme='dark'] .metric-warning {
+    color: #fde68a;
+}
+.color-options {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+}
+.color-option {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+    gap: 8px;
+    cursor: pointer;
+    position: relative;
+    padding: 5px;
+}
+.color-option input {
+    position: absolute;
+    opacity: 0;
+}
+.color-option span {
+    display: block;
+    width: 36px;
+    height: 36px;
+    border-radius: 9px;
+    background: var(--swatch);
+    border: 3px solid var(--cui-body-bg);
+    outline: 2px solid transparent;
+}
+.color-option input:checked + span {
+    outline-color: var(--swatch);
+}
+.color-option input:focus-visible + span {
+    outline: 3px solid var(--cui-body-color);
+}
+@media (prefers-reduced-motion: reduce) {
+    .app-sidebar,
+    .header,
+    .app-layout,
+    .nav-item {
+        transition: none;
+    }
+    .nav-item:hover {
+        transform: none;
+    }
+}
+
+/* El pie ocupa el fondo disponible y sigue el flujo cuando crece el contenido. */
+.workspace {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100dvh - 65px);
+}
+.authenticated .workspace {
+    min-height: calc(100dvh - 60px);
+}
+.workspace-content {
+    flex: 1 0 auto;
+    min-width: 0;
+}
+.system-footer {
+    flex-shrink: 0;
+    margin-top: 32px;
+}

@@ -8,6 +8,8 @@ import 'bootstrap-icons/font/bootstrap-icons.css';
 import { mountCalendar } from './calendar.js';
 import { mountPointOfSale } from './pos.js';
 import { mountDashboard } from './dashboard.js';
+import { mountUpdates } from './updates.js';
+mountUpdates();
 mountCalendar();
 mountPointOfSale();
 mountDashboard();
@@ -33,14 +35,12 @@ document.getElementById('sidebar-toggle')?.addEventListener('click', (event) => 
     const collapsed = document.body.classList.toggle('sidebar-collapsed');
     event.currentTarget.setAttribute('aria-expanded', String(!collapsed));
 });
-// Conserva el tema elegido únicamente en este navegador o escritorio.
-try {
-    document.documentElement.dataset.coreuiTheme = localStorage.getItem('struch-theme') || 'light';
-} catch {}
-document.getElementById('theme-toggle')?.addEventListener('click', () => {
-    const theme = document.documentElement.dataset.coreuiTheme === 'dark' ? 'light' : 'dark';
-    document.documentElement.dataset.coreuiTheme = theme;
-    try {
-        localStorage.setItem('struch-theme', theme);
-    } catch {}
+// Previsualiza la apariencia; Guardar preferencias la conserva en el servidor.
+document.querySelectorAll('[name="theme"]').forEach((input) => {
+    input.addEventListener('change', () => {
+        document.documentElement.dataset.coreuiTheme = input.value;
+    });
+});
+document.querySelectorAll('[name="primary_color"]').forEach((input) => {
+    input.addEventListener('change', () => document.body.style.setProperty('--brand', input.value));
 });

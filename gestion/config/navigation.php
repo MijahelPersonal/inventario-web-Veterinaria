@@ -1,7 +1,7 @@
 <?php
 // Define el orden del menú y el permiso que permite ver cada acceso.
 return [
-    ['label' => '', 'links' => [['Inicio', '/', 'house-door', null]]],
+    ['label' => '', 'links' => [['Dashboard', '/', 'speedometer2', null]]],
     [
         'label' => 'GESTIÓN COMERCIAL',
         'links' => [
@@ -20,25 +20,17 @@ return [
             ['Mascotas / Pacientes', '/catalogos/mascotas', 'heart-pulse', 'catalogs.read'],
             ['Veterinarios', '/catalogos/veterinarios', 'person-vcard', 'catalogs.read'],
             ['Servicios', '/catalogos/servicios', 'clipboard2-pulse', 'catalogs.read'],
-            ['Especialidades', '/catalogos/especialidades', 'tags', 'catalogs.read'],
         ],
     ],
     [
-        'label' => 'CATÁLOGOS COMERCIALES',
-        'collapsed' => true,
-        'links' => [
-            ['Categorías', '/catalogos/categorias', 'grid', 'catalogs.read'],
-            ['Marcas', '/catalogos/marcas', 'bookmark-star', 'catalogs.read'],
-            ['Proveedores', '/catalogos/proveedores', 'truck', 'catalogs.read'],
-        ],
+        'label' => 'REPORTES',
+        'links' => [['Reportes', '/reportes', 'bar-chart', 'reports.read']],
     ],
     [
-        'label' => 'ANÁLISIS Y AJUSTES',
+        'label' => 'ADMINISTRACIÓN',
         'links' => [
-            ['Reportes', '/reportes', 'bar-chart', 'reports.read'],
             ['Usuarios', '/usuarios', 'shield-check', 'users.manage'],
             ['Configuración', '/configuracion', 'gear', 'settings.manage'],
-            ['Auditoría', '/auditoria', 'clock-history', 'audit.read'],
         ],
     ],
 ];

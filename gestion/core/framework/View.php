@@ -32,6 +32,15 @@ final class View
         );
         $this->twig->addGlobal('catalogs', \App\Service\CatalogService::definitions());
         $this->twig->addGlobal('navigation', require $root . '/config/navigation.php');
+        $this->twig->addGlobal('appearance', require $root . '/config/appearance.php');
+        $package = json_decode(
+            file_get_contents($root . '/package.json'),
+            true,
+            512,
+            JSON_THROW_ON_ERROR,
+        );
+        $this->twig->addGlobal('system_version', $package['version']);
+        $this->twig->addGlobal('system_creator', 'MijxhelDev');
     }
 
     public function render(string $template, array $data = []): void

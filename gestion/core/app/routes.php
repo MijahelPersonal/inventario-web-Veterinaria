@@ -51,7 +51,6 @@ return static function (RouteCollector $routes): void {
     $routes->addRoute('POST', '/configuracion', [$admin, 'saveSettings', 'settings.manage']);
     $routes->addRoute('GET', '/usuarios', [$admin, 'users', 'users.manage']);
     $routes->addRoute('POST', '/usuarios', [$admin, 'saveUser', 'users.manage']);
-    $routes->addRoute('GET', '/auditoria', [$admin, 'audit', 'audit.read']);
     $inventory = \App\Controller\InventoryController::class;
     $routes->addRoute('GET', '/inventario', [$inventory, 'index', 'inventory.read']);
     $routes->addRoute('POST', '/inventario/movimientos', [$inventory, 'save', 'inventory.write']);
@@ -66,7 +65,7 @@ return static function (RouteCollector $routes): void {
     $routes->addRoute('GET', '/login', [AuthController::class, 'form']);
     $routes->addRoute('POST', '/login', [AuthController::class, 'login']);
     $routes->addRoute('POST', '/logout', [AuthController::class, 'logout']);
-    $slugs = implode('|', array_keys(\App\Service\CatalogService::definitions()));
+    $slugs = 'productos|clientes|mascotas|veterinarios|servicios';
     $base = '/catalogos/{slug:' . $slugs . '}';
     $routes->addRoute('GET', $base, [
         \App\Controller\CatalogController::class,

@@ -71,8 +71,8 @@ try {
             $actor,
         ),
     );
-    $service->settings([...$settings, 'clinic_name' => 'Clínica de prueba'], $actor);
-    if ($model->settings()['clinic_name'] !== 'Clínica de prueba') {
+    $service->settings([...$settings, 'theme' => 'dark'], $actor);
+    if ($model->settings()['theme'] !== 'dark') {
         throw new RuntimeException('Configuración no guardada');
     }
     echo "OK: roles, último administrador, cuenta propia, duplicados y configuración validada.\n";

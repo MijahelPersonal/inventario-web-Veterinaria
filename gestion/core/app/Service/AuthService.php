@@ -72,12 +72,6 @@ final class AuthService
                 throw new DomainException('Usuario o contraseña incorrectos.');
             }
             $this->db->prepare('DELETE FROM login_attempts WHERE attempt_key=?')->execute([$key]);
-            (new AuditService($this->db))->record(
-                (int) $user['id'],
-                'login',
-                'users',
-                (int) $user['id'],
-            );
             $this->db->commit();
         } catch (\Throwable $error) {
             if ($this->db->inTransaction()) {
@@ -92,14 +86,6 @@ final class AuthService
     }
     public function logout(): void
     {
-        if (!empty($_SESSION['user_id'])) {
-            (new AuditService($this->db))->record(
-                (int) $_SESSION['user_id'],
-                'logout',
-                'users',
-                (int) $_SESSION['user_id'],
-            );
-        }
         $_SESSION = [];
         session_regenerate_id(true);
         $_SESSION['csrf'] = bin2hex(random_bytes(32));
