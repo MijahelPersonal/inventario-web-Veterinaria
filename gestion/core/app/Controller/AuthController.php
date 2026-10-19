@@ -15,7 +15,7 @@ final class AuthController extends Controller
         try {
             $this->context
                 ->auth()
-                ->login((string) ($_POST['email'] ?? ''), (string) ($_POST['password'] ?? ''));
+                ->login((string) ($_POST['username'] ?? ''), (string) ($_POST['password'] ?? ''));
         } catch (DomainException $error) {
             Session::flash($error->getMessage(), 'danger');
             $this->redirect('/login');

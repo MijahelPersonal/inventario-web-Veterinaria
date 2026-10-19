@@ -27,10 +27,13 @@ final class AuthService
         $user['permissions'] = new User($this->db)->permissions((int) $user['id']);
         return $user;
     }
-    public function login(string $email, string $password): void
+    public function login(string $username, string $password): void
     {
-        $email = mb_strtolower(trim($email));
-        $key = hash('sha256', $email . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'cli'));
+        $username = mb_strtolower(trim($username));
+        if (!preg_match('/^[a-z0-9._-]{3,60}$/D', $username)) {
+            throw new DomainException('Usuario o contraseña incorrectos.');
+        }
+        $key = hash('sha256', $username . '|' . ($_SERVER['REMOTE_ADDR'] ?? 'cli'));
         $this->db->beginTransaction();
         try {
             $this->db
@@ -55,7 +58,7 @@ final class AuthService
                 $this->db->commit();
                 throw new DomainException('Demasiados intentos. Espera 15 minutos.');
             }
-            $user = new User($this->db)->byEmail($email);
+            $user = new User($this->db)->byUsername($username);
             $valid = password_verify(
                 $password,
                 $user['password_hash'] ??
@@ -66,7 +69,7 @@ final class AuthService
                     ->prepare('UPDATE login_attempts SET attempts=attempts+1 WHERE attempt_key=?')
                     ->execute([$key]);
                 $this->db->commit();
-                throw new DomainException('Correo o contraseña incorrectos.');
+                throw new DomainException('Usuario o contraseña incorrectos.');
             }
             $this->db->prepare('DELETE FROM login_attempts WHERE attempt_key=?')->execute([$key]);
             new AuditService($this->db)->record(

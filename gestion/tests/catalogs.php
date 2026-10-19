@@ -5,7 +5,8 @@ require dirname(__DIR__) . '/scripts/migrate.php';
 $config = require dirname(__DIR__) . '/config/bootstrap.php';
 $db = Core\Database::connect($config['database']);
 $tag = 'prueba-' . bin2hex(random_bytes(5));
-$db->prepare('INSERT INTO users(name,email,password_hash) VALUES (?,?,?)')->execute([
+$db->prepare('INSERT INTO users(username,name,email,password_hash) VALUES (?,?,?,?)')->execute([
+    $tag,
     $tag,
     $tag . '@example.test',
     password_hash($tag, PASSWORD_DEFAULT),

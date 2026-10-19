@@ -5,15 +5,17 @@ use PDO;
 final class User
 {
     public function __construct(private PDO $db) {}
-    public function byEmail(string $email): ?array
+    public function byUsername(string $username): ?array
     {
-        $query = $this->db->prepare('SELECT * FROM users WHERE email=? AND active=1');
-        $query->execute([$email]);
+        $query = $this->db->prepare('SELECT * FROM users WHERE username=? AND active=1');
+        $query->execute([$username]);
         return $query->fetch() ?: null;
     }
     public function byId(int $id): ?array
     {
-        $query = $this->db->prepare('SELECT id,name,email FROM users WHERE id=? AND active=1');
+        $query = $this->db->prepare(
+            'SELECT id,name,username,email FROM users WHERE id=? AND active=1',
+        );
         $query->execute([$id]);
         return $query->fetch() ?: null;
     }

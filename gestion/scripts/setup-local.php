@@ -47,8 +47,9 @@ require $root . '/scripts/migrate.php';
 $config = require $root . '/config/app.php';
 $db = Core\Database::connect($config['database']);
 $initialPassword = bin2hex(random_bytes(10));
-$db->prepare('INSERT INTO users(name,email,password_hash) VALUES (?,?,?)')->execute([
+$db->prepare('INSERT INTO users(name,username,email,password_hash) VALUES (?,?,?,?)')->execute([
     'Administrador',
+    'admin',
     'admin@struchvet.local',
     password_hash($initialPassword, PASSWORD_DEFAULT),
 ]);
@@ -62,6 +63,6 @@ if (!is_dir($root . '/storage/private')) {
 }
 file_put_contents(
     $root . '/storage/private/acceso-inicial.txt',
-    "STRUCH VET — acceso local\nCorreo: admin@struchvet.local\nContraseña: $initialPassword\nNo compartir ni subir este archivo a GitHub.\n",
+    "STRUCH VET — acceso local\nUsuario: admin\nCorreo de contacto: admin@struchvet.local\nContraseña: $initialPassword\nNo compartir ni subir este archivo a GitHub.\n",
 );
 echo "Preparación terminada. Acceso inicial guardado en storage/private/acceso-inicial.txt (excluido de Git).\n";

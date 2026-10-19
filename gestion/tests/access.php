@@ -6,9 +6,9 @@ $config = require dirname(__DIR__) . '/config/bootstrap.php';
 $db = Core\Database::connect($config['database']);
 ini_set('session.save_path', dirname(__DIR__) . '/storage/cache');
 Core\Session::start();
-$email = 'access-' . bin2hex(random_bytes(5)) . '@example.test';
+$email = 'access-' . bin2hex(random_bytes(5));
 $password = bin2hex(random_bytes(12));
-$db->prepare('INSERT INTO users(name,email,password_hash) VALUES (?,?,?)')->execute([
+$db->prepare('INSERT INTO users(name,username,password_hash) VALUES (?,?,?)')->execute([
     'Prueba',
     $email,
     password_hash($password, PASSWORD_DEFAULT),

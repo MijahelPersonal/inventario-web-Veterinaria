@@ -6,18 +6,25 @@ if (PHP_SAPI !== 'cli') {
 }
 $config = require dirname(__DIR__) . '/config/bootstrap.php';
 $name = trim(readline('Nombre: '));
-$email = mb_strtolower(trim(readline('Correo: ')));
+$username = mb_strtolower(trim(readline('Usuario (letras, números, punto, guion): ')));
+$email = mb_strtolower(trim(readline('Correo de contacto (opcional): '))) ?: null;
 fwrite(STDOUT, 'Contraseña (mínimo 12 caracteres; la terminal puede mostrarla): ');
 $password = rtrim(fgets(STDIN), "\r\n");
-if ($name === '' || !filter_var($email, FILTER_VALIDATE_EMAIL) || mb_strlen($password) < 12) {
+if (
+    $name === '' ||
+    !preg_match('/^[a-z0-9._-]{3,60}$/D', $username) ||
+    ($email && !filter_var($email, FILTER_VALIDATE_EMAIL)) ||
+    mb_strlen($password) < 12
+) {
     fwrite(STDERR, "Datos inválidos.\n");
     exit(1);
 }
 $db = Core\Database::connect($config['database']);
 $db->beginTransaction();
 try {
-    $db->prepare('INSERT INTO users(name,email,password_hash) VALUES (?,?,?)')->execute([
+    $db->prepare('INSERT INTO users(name,username,email,password_hash) VALUES (?,?,?,?)')->execute([
         $name,
+        $username,
         $email,
         password_hash($password, PASSWORD_DEFAULT),
     ]);

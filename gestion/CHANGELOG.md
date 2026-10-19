@@ -1,5 +1,11 @@
 # Historial de STRUCH VET
 
+## Inicio de sesión por usuario
+
+- El acceso usa nombre de usuario único y contraseña; correo opcional de contacto.
+- La cuenta inicial utiliza `admin` y conserva su contraseña.
+- Migración conserva usuarios existentes con identificadores únicos.
+
 ## Inventario por lotes
 
 - Recepción de compras por producto con proveedor, referencia, lote, costo y vencimiento.
