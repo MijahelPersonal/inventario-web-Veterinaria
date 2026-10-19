@@ -2,7 +2,7 @@
 {% block title %}Venta en tienda{% endblock %}
 {% block content %}
 <div class="page-heading"><div><span class="eyebrow">PUNTO DE VENTA</span><h1>Venta en tienda</h1><p class="text-body-secondary mb-0">Selecciona productos y confirma la operación.</p></div></div>
-{% if confirmed %}<div class="alert alert-success">Venta #{{ confirmed }} registrada. <a href="/ventas?venta={{ confirmed }}">Continuar al cobro</a> · <a href="/ventas/{{ confirmed }}/ticket">Descargar ticket</a></div>{% endif %}
+{% if confirmed %}<div class="alert alert-success">Venta #{{ confirmed }} cobrada. <a href="/ventas?venta={{ confirmed }}">Ver comprobante</a> · <a href="/ventas/{{ confirmed }}/ticket">Descargar ticket</a></div>{% endif %}
 <div class="pos-layout" id="point-of-sale" data-user="{{ current_user.id }}" data-currency="{{ clinic.currency|default('PEN') }}" data-confirmed="{{ confirmed ?? '' }}">
 <section class="pos-catalog" aria-label="Catálogo para venta">
     <form class="pos-search" method="get"><input name="q" value="{{ search }}" class="form-control" placeholder="Buscar producto, marca, código o código de barras…" aria-label="Buscar producto"><input type="hidden" name="categoria" value="{{ category }}"><button class="btn btn-primary" aria-label="Buscar">Buscar</button></form>
@@ -28,7 +28,7 @@
         <div id="cart-empty" class="cart-empty"><span aria-hidden="true">＋</span><strong>Tu venta empieza aquí</strong><p>Agrega productos del catálogo.</p></div>
         <div id="cart-lines" class="cart-lines" aria-live="polite"></div>
         <div id="cart-inputs"></div>
-        <div class="summary-totals"><div><span>Subtotal</span><span id="cart-subtotal">S/ 0.00</span></div><div class="grand-total"><strong>TOTAL</strong><strong id="cart-total">S/ 0.00</strong></div><p id="cart-error" class="text-danger small" role="alert"></p><button class="btn btn-primary w-100" id="checkout-button" disabled>Finalizar venta</button><small>El stock se valida al confirmar. Después podrás registrar el cobro.</small><button class="btn btn-link btn-sm w-100 mt-2" id="clear-cart" type="button">Vaciar carrito</button></div>
+        <div class="summary-totals"><label for="pos-method" class="form-label">Método de pago</label><select id="pos-method" class="form-select mb-3" name="method" required><option value="efectivo">Efectivo</option><option value="transferencia">Transferencia</option><option value="tarjeta">Tarjeta</option></select>{% if not cash_session %}<label class="form-label" for="opening-amount">Fondo inicial del turno</label><input id="opening-amount" name="opening_amount" class="form-control mb-2" type="number" min="0" step="0.01" value="0.00" required><small>Indica el efectivo que tienes antes de esta venta. El turno se abre al confirmar.</small>{% endif %}<div><span>Subtotal</span><span id="cart-subtotal">S/ 0.00</span></div><div class="grand-total"><strong>TOTAL</strong><strong id="cart-total">S/ 0.00</strong></div><p id="cart-error" class="text-danger small" role="alert"></p><button class="btn btn-success w-100" id="checkout-button" disabled>Finalizar venta y cobrar</button><small>La venta, el stock y el cobro se confirman juntos.</small><button class="btn btn-link btn-sm w-100 mt-2" id="clear-cart" type="button">Vaciar carrito</button></div>
     </form>
 </aside>
 </div>

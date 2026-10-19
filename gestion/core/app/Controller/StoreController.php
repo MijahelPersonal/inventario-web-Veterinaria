@@ -30,15 +30,26 @@ final class StoreController extends Controller
             'categories' => $catalog->choices('product_categories'),
             'clients' => $catalog->choices('clients'),
             'request_key' => bin2hex(random_bytes(32)),
+            'cash_session' => (new Finance($this->context->db()))->session(
+                (int) $_SESSION['user_id'],
+            ),
         ]);
     }
     public function checkout(array $parameters = []): void
     {
-        $id = (new FinanceService($this->context->db()))->sale($_POST, (int) $_SESSION['user_id']);
-        $_SESSION['pos_confirmed'] = $id;
-        Session::flash(
-            'Venta #' . $id . ' registrada. Continúa en ventas y cobros para aplicar el pago.',
+        $user = (new \App\Service\AuthService($this->context->db()))->current();
+        if (
+            !in_array('*', $user['permissions'], true) &&
+            !in_array('payments.write', $user['permissions'], true)
+        ) {
+            throw new \DomainException('Necesitas permiso para cobrar esta venta.');
+        }
+        $id = (new FinanceService($this->context->db()))->checkout(
+            $_POST,
+            (int) $_SESSION['user_id'],
         );
+        $_SESSION['pos_confirmed'] = $id;
+        Session::flash('Venta #' . $id . ' finalizada y cobrada.');
         $this->redirect('/tienda');
     }
     public function upload(array $parameters): void

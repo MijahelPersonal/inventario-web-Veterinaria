@@ -22,17 +22,68 @@ final class FinanceService
     }
     private function transaction(callable $operation): mixed
     {
-        $this->db->beginTransaction();
+        $ownsTransaction = !$this->db->inTransaction();
+        if ($ownsTransaction) {
+            $this->db->beginTransaction();
+        }
         try {
             $result = $operation();
-            $this->db->commit();
+            if ($ownsTransaction) {
+                $this->db->commit();
+            }
             return $result;
         } catch (\Throwable $error) {
-            if ($this->db->inTransaction()) {
+            if ($ownsTransaction && $this->db->inTransaction()) {
                 $this->db->rollBack();
             }
             throw $error;
         }
+    }
+    // Confirma venta, stock y cobro en una sola transacción, incluso ante reenvíos.
+    public function checkout(array $input, int $user): int
+    {
+        $key = $this->key($input);
+        $method = (string) ($input['method'] ?? '');
+        if (!in_array($method, ['efectivo', 'transferencia', 'tarjeta'], true)) {
+            throw new DomainException('Selecciona un método de pago válido.');
+        }
+        return $this->transaction(function () use ($input, $user, $key, $method): int {
+            $this->db->prepare('SELECT id FROM users WHERE id=? FOR UPDATE')->execute([$user]);
+            $model = new Finance($this->db);
+            $paymentKey = hash('sha256', $key . ':checkout');
+            if ($previous = $model->byRequest('payments', $paymentKey)) {
+                if ((int) $previous['user_id'] !== $user) {
+                    throw new DomainException('Formulario inválido.');
+                }
+                return (int) $previous['sale_id'];
+            }
+            if (!$model->session($user, true)) {
+                if (!isset($input['opening_amount'])) {
+                    throw new DomainException('Indica el fondo inicial para comenzar el turno.');
+                }
+                $opening = InventoryService::decimal((string) $input['opening_amount'], 2);
+                if (bccomp($opening, '0', 2) < 0) {
+                    throw new DomainException('Fondo inicial inválido.');
+                }
+                $model->open($user, $opening);
+            }
+            $id = $this->sale($input, $user);
+            $sale = $model->sale($id, true);
+            $balance = bcsub($sale['total'], $model->paid($id), 2);
+            if (bccomp($balance, '0', 2) > 0) {
+                $this->payment(
+                    [
+                        'request_key' => $paymentKey,
+                        'sale_id' => $id,
+                        'amount' => $balance,
+                        'method' => $method,
+                        'notes' => 'Cobro en punto de venta',
+                    ],
+                    $user,
+                );
+            }
+            return $id;
+        });
     }
     // Anular conserva el documento y devuelve exactamente los lotes que salieron.
     public function voidSale(int $id, string $reason, int $user): void

@@ -117,9 +117,39 @@ try {
     $query = $db->prepare('SELECT SUM(quantity) FROM stock_lots WHERE product_id=?');
     $query->execute([$product]);
     $check($query->fetchColumn() === '2.000', 'No se devolvió el stock');
+    // El POS abre el turno explícito, cobra una sola vez y revierte todo si falla el stock.
+    $finance->cash('close', ['amount' => '0'], $user);
+    $failedKey = $key();
+    $reject(
+        fn() => $finance->checkout(
+            [
+                'items' => [['item' => 'product:' . $product, 'quantity' => '3']],
+                'request_key' => $failedKey,
+                'method' => 'efectivo',
+                'opening_amount' => '20',
+            ],
+            $user,
+        ),
+    );
+    $check($model->session($user) === null, 'Quedó un turno tras un checkout fallido');
+    $check($model->byRequest('sales', $failedKey) === null, 'Quedó una venta incompleta');
+    $checkoutInput = [
+        'items' => [['item' => 'product:' . $product, 'quantity' => '1']],
+        'request_key' => $key(),
+        'method' => 'tarjeta',
+        'opening_amount' => '20',
+    ];
+    $checkout = $finance->checkout($checkoutInput, $user);
+    $check($model->paid($checkout) === '10.50', 'El POS no cobró la venta completa');
+    $check($model->expected($model->session($user)) === '20.00', 'Tarjeta alteró el fondo inicial');
+    $check($finance->checkout($checkoutInput, $user) === $checkout, 'Se duplicó el checkout');
+    $check(count($model->payments($checkout)) === 1, 'Se duplicó el pago del POS');
+    $finance->cash('close', ['amount' => '20'], $user);
+    $check($finance->checkout($checkoutInput, $user) === $checkout, 'Reenvío tras cierre falló');
+    $check($model->session($user) === null, 'Reenvío reabrió el turno');
     $pdf = (new App\Service\DocumentService())->bytes('<h1>Comprobante de prueba</h1>');
     $check(str_starts_with($pdf, '%PDF-'), 'PDF inválido');
-    echo "OK: ventas, stock, rollback, cobros parciales, doble envío, sobrecobro, reversión, cierre y PDF.\n";
+    echo "OK: ventas, stock, rollback, cobros parciales, doble envío, sobrecobro, reversión, cierre, checkout atómico y PDF.\n";
 } finally {
     $db->prepare('DELETE FROM audit_events WHERE user_id=?')->execute([$user]);
     $db->prepare('DELETE FROM payments WHERE user_id=? AND reversal_of IS NOT NULL')->execute([
