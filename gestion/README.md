@@ -1,4 +1,4 @@
-# STRUCH VET — Gestión
+# STRUCH VET — Sistema de gestión veterinaria
 
 Gestión MVC con PHP, PDO, Twig, FastRoute, CoreUI y Electron. Desarrollo incremental inspirado en los flujos de VetMedik; no se copia su código ni sus recursos.
 
@@ -24,7 +24,7 @@ Si usas Apache de Laragon, configura la raíz del sitio en esta carpeta **public
 - public: única raíz accesible por HTTP.
 - database/migrations y seeds: futuros cambios de esquema y datos iniciales.
 - storage: caché, logs y archivos privados. Debe ser escribible por PHP.
-- electron: proceso principal de escritorio; sin preload hasta necesitar funciones nativas.
+- electron: lanzador de escritorio, preload limitado y actualizador con descarga e instalación controladas.
 - tests: pruebas ejecutables contra struch_vet_test, separada de los datos de operación.
 
 ## Configuración
@@ -44,3 +44,13 @@ Pruebas: `php tests/access.php`, `php tests/catalogs.php` y `php tests/templates
 Consulte `CHANGELOG.md` y el historial Git para avances por módulo. El sistema está en desarrollo y requiere validación operativa antes de producción.
 
 Electron usa STRUCH_VET_URL si está definida; por defecto abre el servidor local de desarrollo. Backend remoto: HTTPS obligatorio. El entorno PHP/MySQL de distribución se decidirá por separado.
+
+## Apariencia y versión 0.2.0
+
+El menú mantiene Dashboard, tienda, productos, inventario, clientes, ventas, agenda, calendario, mascotas, veterinarios, servicios, reportes y administración. Se retiraron los accesos a especialidades, categorías, marcas, proveedores y auditoría; los registros históricos se conservan. Ya no se registran los inicios y cierres de sesión en auditoría. Los movimientos de existencias y comprobantes conservan su responsable.
+
+Configuración permite diez colores y tema claro u oscuro. El pie compartido muestra MijxhelDev y la versión; permanece al fondo en páginas cortas y después del contenido en páginas largas.
+
+El POS confirma venta, stock y cobro juntos. Solicita método de pago y, si hace falta comenzar un turno, fondo inicial explícito. Ventas y cobros permite consultar comprobantes y cobrar saldos pendientes de productos o servicios sin duplicar el pago del POS.
+
+Para empaquetado y distribución consulta [Actualizaciones](docs/ACTUALIZACIONES.md). `npm run test:desktop` comprueba los estados del actualizador; `php tests/finance.php` incluye reenvíos del checkout y rollback completo ante stock insuficiente.

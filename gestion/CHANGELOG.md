@@ -1,5 +1,14 @@
 # Historial de STRUCH VET
 
+## 0.2.0 — Simplificación y escritorio
+
+- Dashboard, menú simplificado, corazón amarillo e iconos con color.
+- Eliminada la ruta visual superior y los accesos a auditoría y catálogos auxiliares.
+- Diez colores, tema claro u oscuro y pie de MijxhelDev al fondo de cada página.
+- Venta, cobro y stock atómicos en el POS; saldos pendientes separados.
+- Actualizador Electron con avisos, notas de versión y descarga e instalación controladas.
+- Empaquetado NSIS preparado; requiere publicar y probar las releases antes de distribuir actualizaciones reales.
+
 ## Compatibilidad del editor
 
 - Formato PHP 8.2 compatible con el analizador PHP IntelliSense instalado en VS Code.

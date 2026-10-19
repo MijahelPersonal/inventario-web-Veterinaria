@@ -1,4 +1,7 @@
-const { app, BrowserWindow, dialog } = require('electron');
+const { app, BrowserWindow, dialog, ipcMain } = require('electron');
+const path = require('node:path');
+const { autoUpdater } = require('electron-updater');
+const { DesktopUpdates } = require('./updates');
 let backend;
 try {
     backend = new URL(process.env.STRUCH_VET_URL || 'http://127.0.0.1:8080');
@@ -14,6 +17,54 @@ try {
 }
 
 app.whenReady().then(() => {
+    const updates = new DesktopUpdates(autoUpdater, app.getVersion(), app.isPackaged);
+    // Rechaza mensajes de subventanas o páginas ajenas al backend configurado.
+    const trusted = (event) => {
+        const owner = BrowserWindow.fromWebContents(event.sender);
+        if (
+            !owner ||
+            event.senderFrame !== event.sender.mainFrame ||
+            new URL(event.senderFrame.url).origin !== backend.origin
+        ) {
+            throw new Error('Solicitud de actualización no autorizada.');
+        }
+        return owner;
+    };
+    ipcMain.handle('updates:state', (event) => {
+        trusted(event);
+        return updates.state;
+    });
+    ipcMain.handle('updates:check', (event) => {
+        trusted(event);
+        return updates.check();
+    });
+    ipcMain.handle('updates:download', (event) => {
+        trusted(event);
+        return updates.download();
+    });
+    ipcMain.handle('updates:install', async (event) => {
+        const owner = trusted(event);
+        if (updates.state.status !== 'downloaded') return updates.state;
+        const result = await dialog.showMessageBox(owner, {
+            type: 'question',
+            title: 'Actualizar STRUCH VET',
+            message: 'Guarda tu trabajo antes de reiniciar e instalar la actualización.',
+            buttons: ['Ahora no', 'Reiniciar e instalar'],
+            defaultId: 0,
+            cancelId: 0,
+        });
+        if (result.response === 1) updates.install();
+        return updates.state;
+    });
+    updates.on('state', (state) => {
+        for (const window of BrowserWindow.getAllWindows()) {
+            if (
+                !window.isDestroyed() &&
+                new URL(window.webContents.getURL() || backend.href).origin === backend.origin
+            )
+                window.webContents.send('updates:state', state);
+        }
+    });
     const createWindow = () => {
         const window = new BrowserWindow({
             width: 1280,
@@ -21,7 +72,12 @@ app.whenReady().then(() => {
             minWidth: 900,
             minHeight: 600,
             title: 'STRUCH VET',
-            webPreferences: { nodeIntegration: false, contextIsolation: true, sandbox: true },
+            webPreferences: {
+                nodeIntegration: false,
+                contextIsolation: true,
+                sandbox: true,
+                preload: path.join(__dirname, 'preload.js'),
+            },
         });
         window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
         window.webContents.on('will-navigate', (event, url) => {
@@ -38,6 +94,7 @@ app.whenReady().then(() => {
         });
     };
     createWindow();
+    if (app.isPackaged) setTimeout(() => updates.check(), 15000).unref();
     app.on('activate', () => {
         if (BrowserWindow.getAllWindows().length === 0) createWindow();
     });

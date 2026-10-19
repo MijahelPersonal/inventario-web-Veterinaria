@@ -1,6 +1,6 @@
 {
   "name": "struch-vet-gestion",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "private": true,
   "description": "Gestión de escritorio de STRUCH VET",
   "main": "electron/main.js",
@@ -9,10 +9,12 @@
     "serve": "php -S 127.0.0.1:8080 -t public scripts/router.php",
     "start": "electron .",
     "format": "prettier --write \"core/**/*.php\" \"config/**/*.php\" \"scripts/**/*.{php,js}\" \"tests/**/*.php\" \"public/index.php\" \"electron/*.js\" \"assets/**/*.{js,css}\"",
-    "format:check": "prettier --check \"core/**/*.php\" \"config/**/*.php\" \"scripts/**/*.{php,js}\" \"tests/**/*.php\" \"public/index.php\" \"electron/*.js\" \"assets/**/*.{js,css}\""
+    "format:check": "prettier --check \"core/**/*.php\" \"config/**/*.php\" \"scripts/**/*.{php,js}\" \"tests/**/*.php\" \"public/index.php\" \"electron/*.js\" \"assets/**/*.{js,css}\"",
+    "desktop:build": "electron-builder --win nsis --publish never",
+    "test:desktop": "node --test tests/desktop-updates.cjs"
   },
   "keywords": [],
-  "author": "",
+  "author": "MijxhelDev",
   "license": "UNLICENSED",
   "type": "commonjs",
   "dependencies": {
@@ -24,12 +26,48 @@
     "@fullcalendar/list": "^6.1.22",
     "@fullcalendar/timegrid": "^6.1.22",
     "bootstrap-icons": "^1.13.2",
-    "chart.js": "^4.5.1"
+    "chart.js": "^4.5.1",
+    "electron-updater": "^6.8.9"
   },
   "devDependencies": {
     "@prettier/plugin-php": "^0.26.0",
     "electron": "^44.9.0",
+    "electron-builder": "^26.15.3",
     "esbuild": "^0.28.2",
     "prettier": "^3.9.10"
+  },
+  "build": {
+    "appId": "dev.mijxhel.struchvet",
+    "productName": "STRUCH VET",
+    "directories": {
+      "output": "dist"
+    },
+    "files": [
+      "electron/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "perMachine": false,
+      "allowToChangeInstallationDirectory": true
+    },
+    "publish": [
+      {
+        "provider": "github",
+        "owner": "MijahelPersonal",
+        "repo": "inventario-web-Veterinaria",
+        "releaseType": "release"
+      }
+    ]
   }
 }
