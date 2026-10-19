@@ -7,6 +7,24 @@ use PDO;
 final class Finance
 {
     public function __construct(private PDO $db) {}
+    public function pendingSales(): array
+    {
+        return $this->db
+            ->query(
+                "SELECT s.*,c.name client_name,(s.total-COALESCE((SELECT SUM(p.amount) FROM payments p WHERE p.sale_id=s.id),0)) balance FROM sales s LEFT JOIN clients c ON c.id=s.client_id WHERE s.status='confirmed' HAVING balance>0 ORDER BY s.id DESC LIMIT 1000",
+            )
+            ->fetchAll();
+    }
+    public function summary(): array
+    {
+        $net = $this->db->query('SELECT COALESCE(SUM(amount),0) FROM payments')->fetchColumn();
+        $pending = $this->db
+            ->query(
+                "SELECT COUNT(*) count,COALESCE(SUM(s.total-COALESCE((SELECT SUM(p.amount) FROM payments p WHERE p.sale_id=s.id),0)),0) balance FROM sales s WHERE s.status='confirmed' AND s.total>COALESCE((SELECT SUM(p.amount) FROM payments p WHERE p.sale_id=s.id),0)",
+            )
+            ->fetch();
+        return ['net' => $net, 'count' => $pending['count'], 'balance' => $pending['balance']];
+    }
     public function sales(): array
     {
         return $this->db

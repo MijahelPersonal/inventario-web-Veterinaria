@@ -18,8 +18,11 @@ final class FinanceController extends Controller
         $model = new Finance($this->context->db());
         $catalog = new Catalog($this->context->db());
         $sale = empty($_GET['venta']) ? null : $model->sale((int) $_GET['venta']);
+        $session = $model->session((int) $_SESSION['user_id']);
         $this->context->view->render('finance/index.html.twig', [
             'sales' => $model->sales(),
+            'summary' => $model->summary(),
+            'pending_sales' => $model->pendingSales(),
             'sale' => $sale,
             'items' => $sale ? $model->items((int) $sale['id']) : [],
             'paid' => $sale ? $model->paid((int) $sale['id']) : '0.00',
@@ -30,6 +33,21 @@ final class FinanceController extends Controller
             'services' => $catalog->choices('services'),
             'sale_key' => bin2hex(random_bytes(32)),
             'payment_key' => bin2hex(random_bytes(32)),
+            'session' => $session,
+            'expected' => $session ? $model->expected($session) : '0.00',
+            'sessions' => $model->sessions((int) $_SESSION['user_id']),
+            'entries' => $session ? $model->entries((int) $session['id']) : [],
+            'request_key' => bin2hex(random_bytes(32)),
+        ]);
+    }
+    public function paymentForm(array $parameters = []): void
+    {
+        $model = new Finance($this->context->db());
+        $this->context->view->render('finance/payment-form.html.twig', [
+            'pending_sales' => $model->pendingSales(),
+            'selected' => (int) ($_GET['venta'] ?? 0),
+            'session' => $model->session((int) $_SESSION['user_id']),
+            'request_key' => bin2hex(random_bytes(32)),
         ]);
     }
     public function void(array $parameters): void
@@ -64,19 +82,6 @@ final class FinanceController extends Controller
         Session::flash('Cobro revertido sin eliminar el original.');
         $this->redirect('/ventas');
     }
-    public function cash(array $parameters = []): void
-    {
-        $model = new Finance($this->context->db());
-        $user = (int) $_SESSION['user_id'];
-        $session = $model->session($user);
-        $this->context->view->render('finance/cash.html.twig', [
-            'session' => $session,
-            'expected' => $session ? $model->expected($session) : '0.00',
-            'sessions' => $model->sessions($user),
-            'entries' => $session ? $model->entries((int) $session['id']) : [],
-            'request_key' => bin2hex(random_bytes(32)),
-        ]);
-    }
     public function cashOperation(array $parameters): void
     {
         new FinanceService($this->context->db())->cash(
@@ -85,7 +90,7 @@ final class FinanceController extends Controller
             (int) $_SESSION['user_id'],
         );
         Session::flash('Operación de caja registrada.');
-        $this->redirect('/caja');
+        $this->redirect('/ventas#control-efectivo');
     }
     public function receipt(array $parameters): void
     {

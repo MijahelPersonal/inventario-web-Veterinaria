@@ -31,6 +31,7 @@ final class View
             ),
         );
         $this->twig->addGlobal('catalogs', \App\Service\CatalogService::definitions());
+        $this->twig->addGlobal('navigation', require $root . '/config/navigation.php');
     }
 
     public function render(string $template, array $data = []): void

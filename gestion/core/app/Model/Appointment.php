@@ -26,7 +26,7 @@ final class Appointment
     public function between(string $start, string $end, ?int $vet = null): array
     {
         $sql =
-            'SELECT a.*,p.name pet_name,c.name client_name,s.name service_name,v.name veterinarian_name FROM appointments a JOIN pets p ON p.id=a.pet_id JOIN clients c ON c.id=p.client_id JOIN services s ON s.id=a.service_id JOIN veterinarians v ON v.id=a.veterinarian_id WHERE a.start_at>=? AND a.start_at<?';
+            'SELECT a.*,p.name pet_name,p.species,p.breed,c.name client_name,s.name service_name,v.name veterinarian_name,b.id sale_id,b.status sale_status,COALESCE((SELECT SUM(pm.amount) FROM payments pm WHERE pm.sale_id=b.id),0) paid FROM appointments a JOIN pets p ON p.id=a.pet_id JOIN clients c ON c.id=p.client_id JOIN services s ON s.id=a.service_id JOIN veterinarians v ON v.id=a.veterinarian_id LEFT JOIN sales b ON b.appointment_id=a.id WHERE a.start_at>=? AND a.start_at<?';
         $values = [$start, $end];
         if ($vet) {
             $sql .= ' AND a.veterinarian_id=?';
@@ -66,12 +66,12 @@ final class Appointment
         $query->execute([$vet]);
         return (int) $query->fetchColumn() > 0;
     }
-    public function overlaps(int $vet, string $start, string $end): bool
+    public function overlaps(int $vet, string $start, string $end, int $ignore = 0): bool
     {
         $query = $this->db->prepare(
-            "SELECT id FROM appointments WHERE veterinarian_id=? AND status IN ('solicitada','confirmada','atendida') AND start_at<? AND end_at>? LIMIT 1 FOR UPDATE",
+            "SELECT id FROM appointments WHERE veterinarian_id=? AND status IN ('solicitada','confirmada','atendida') AND start_at<? AND end_at>? AND id<>? LIMIT 1 FOR UPDATE",
         );
-        $query->execute([$vet, $end, $start]);
+        $query->execute([$vet, $end, $start, $ignore]);
         return (bool) $query->fetchColumn();
     }
     public function create(array $data): int

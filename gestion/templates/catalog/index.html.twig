@@ -5,6 +5,7 @@
 <form class="d-flex gap-2 mb-3" method="get"><input class="form-control" name="q" value="{{ search }}" placeholder="Buscar por nombre, código o código de barras" aria-label="Buscar"><button class="btn btn-outline-secondary">Buscar</button></form>
 <div class="card"><div class="table-responsive"><table class="table table-hover mb-0 align-middle"><thead><tr><th>Nombre</th>{% if slug=='productos' %}<th>Código</th><th>Precio</th>{% elseif slug=='servicios' %}<th>Precio</th><th>Duración</th>{% endif %}<th>Estado</th><th></th></tr></thead><tbody>
 {% for row in rows %}
+{% if slug in ['mascotas','veterinarios'] %}<tr><td colspan="5"><a href="/fichas/{{ slug }}/{{ row.id }}">Ver ficha e historial de {{ row.name }}</a></td></tr>{% endif %}
 <tr><td>{{ row.name }}</td>{% if slug=='productos' %}<td>{{ row.code }}</td><td>{{ row.price }}</td>{% elseif slug=='servicios' %}<td>{{ row.price }}</td><td>{{ row.duration_minutes }} min</td>{% endif %}<td><span class="badge {{ row.active ? 'text-bg-success' : 'text-bg-secondary' }}">{{ row.active ? 'Activo' : 'Inactivo' }}</span></td><td>{% if can('catalogs.write') %}<a href="/catalogos/{{ slug }}/{{ row.id }}/editar">Editar</a>{% endif %}</td></tr>
 {% else %}<tr><td colspan="5" class="text-center py-5 text-body-secondary">No hay registros para esta búsqueda.</td></tr>{% endfor %}
 </tbody></table></div></div>

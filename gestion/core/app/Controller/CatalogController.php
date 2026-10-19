@@ -17,7 +17,9 @@ final class CatalogController extends Controller
         $page = max(1, min(100000, (int) ($_GET['page'] ?? 1)));
         $result = new Catalog($this->context->db())->search($definition, $search, $page);
         $this->context->view->render(
-            'catalog/index.html.twig',
+            in_array($slug, ['mascotas', 'veterinarios'], true)
+                ? 'catalog/directory.html.twig'
+                : 'catalog/index.html.twig',
             compact('slug', 'definition', 'search', 'page') + $result,
         );
     }

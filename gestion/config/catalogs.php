@@ -71,6 +71,13 @@ return [
             'sex' => $text('Sexo', 30),
             'birth_date' => ['label' => 'Fecha de nacimiento', 'type' => 'date'],
             'weight' => ['label' => 'Peso (kg)', 'type' => 'quantity'],
+            'microchip' => $text('Microchip / expediente', 80),
+            'allergies' => ['label' => 'Alergias conocidas', 'type' => 'textarea', 'max' => 5000],
+            'background' => [
+                'label' => 'Antecedentes comunicados',
+                'type' => 'textarea',
+                'max' => 5000,
+            ],
         ],
     ],
     'especialidades' => [

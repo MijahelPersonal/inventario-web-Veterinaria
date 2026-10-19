@@ -9,6 +9,12 @@ final class HomeController extends Controller
 {
     public function index(array $parameters = []): void
     {
-        $this->context->view->render('home/index.html.twig');
+        $permissions = $this->context->auth()->current()['permissions'];
+        $financial =
+            in_array('*', $permissions, true) || in_array('sales.read', $permissions, true);
+        $this->context->view->render('home/index.html.twig', [
+            'dashboard' => new \App\Model\Report($this->context->db())->dashboard($financial),
+            'financial' => $financial,
+        ]);
     }
 }

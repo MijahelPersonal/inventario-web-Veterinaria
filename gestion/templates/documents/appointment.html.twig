@@ -1,0 +1,5 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><style>body{font-family:DejaVu Sans,sans-serif;font-size:11px;line-height:1.5}h1{color:#2563eb}h2{font-size:14px;border-bottom:1px solid #ddd;padding-bottom:5px}.notes{white-space:pre-wrap}</style></head><body>
+<h1>{{ app_name }}</h1><h2>Constancia de atención #{{ record.id }}</h2><p>{{ record.start_at }} · {{ record.status }}</p>
+<p><strong>Mascota:</strong> {{ record.pet_name }} · {{ record.species }} · {{ record.breed }} · {{ record.weight }} kg<br><strong>Responsable:</strong> {{ record.client_name }} · {{ record.client_phone }}<br><strong>Veterinario:</strong> {{ record.veterinarian_name }} · Colegiatura {{ record.license_number }}<br><strong>Servicio:</strong> {{ record.service_name }}</p>
+<h2>Síntomas</h2><div class="notes">{{ record.symptoms ?? 'Sin registro' }}</div><h2>Diagnóstico</h2><div class="notes">{{ record.diagnosis ?? 'Sin registro' }}</div><h2>Indicaciones y tratamiento</h2><div class="notes">{{ record.treatment ?? 'Sin registro' }}</div><p>Documento interno generado el {{ 'now'|date('d/m/Y H:i') }}. No acredita un pago.</p>
+</body></html>

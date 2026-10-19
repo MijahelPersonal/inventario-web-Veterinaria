@@ -1,0 +1,10 @@
+<details class="card mb-4" id="nueva-cita"><summary class="card-header">Registrar cita</summary><form method="post" action="/citas" class="card-body row g-3">
+    <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="request_key" value="{{ request_key }}">
+    <div class="col-md-6"><label class="form-label" for="pet_id">Mascota y responsable</label><select class="form-select" id="pet_id" name="pet_id" required><option value="">Seleccionar</option>{% for row in pets %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }}</option>{% endif %}{% endfor %}</select></div>
+    <div class="col-md-6"><label class="form-label" for="service_id">Servicio</label><select class="form-select" id="service_id" name="service_id" required><option value="">Seleccionar</option>{% for row in services %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }}</option>{% endif %}{% endfor %}</select></div>
+    <div class="col-md-4"><label class="form-label" for="veterinarian_id">Veterinario</label><select class="form-select" id="veterinarian_id" name="veterinarian_id" required><option value="">Seleccionar</option>{% for row in veterinarians %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }}</option>{% endif %}{% endfor %}</select></div>
+    <div class="col-md-4"><label class="form-label" for="start_at">Fecha y hora</label><input class="form-control" id="start_at" type="datetime-local" name="start_at" required></div>
+    <div class="col-md-4"><label class="form-label" for="source">Origen</label><select class="form-select" id="source" name="source"><option value="manual">Registro manual</option><option value="whatsapp">Solicitud por WhatsApp</option></select></div>
+    <div class="col-12"><label class="form-label" for="notes">Notas administrativas</label><textarea class="form-control" id="notes" name="notes" maxlength="3000"></textarea></div>
+    <div class="col-12"><button class="btn btn-primary">Registrar cita</button></div>
+</form></details>

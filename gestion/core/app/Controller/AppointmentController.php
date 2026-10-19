@@ -21,20 +21,45 @@ final class AppointmentController extends Controller
         }
         $vet = (int) ($_GET['vet'] ?? 0);
         $catalog = new Catalog($this->context->db());
-        $this->context->view->render('appointments/index.html.twig', [
-            'month' => $month,
-            'vet' => $vet,
-            'states' => AppointmentService::STATES,
-            'request_key' => bin2hex(random_bytes(32)),
-            'appointments' => new Appointment($this->context->db())->between(
-                $start->format('Y-m-d'),
-                $start->modify('+1 month')->format('Y-m-d'),
-                $vet ?: null,
+        $filter = (string) ($_GET['filter'] ?? 'all');
+        if (!in_array($filter, ['all', 'pending', 'past'], true)) {
+            throw new DomainException('Filtro inválido.');
+        }
+        $calendar = $parameters['calendar'] ?? false;
+        $rows = new Appointment($this->context->db())->between(
+            $start->format('Y-m-d'),
+            $start->modify('+1 month')->format('Y-m-d'),
+            $vet ?: null,
+        );
+        $rows = array_values(
+            array_filter(
+                $rows,
+                static fn($row) => match ($filter) {
+                    'pending' => in_array($row['status'], ['solicitada', 'confirmada'], true),
+                    'past' => $row['end_at'] < date('Y-m-d H:i:s'),
+                    default => true,
+                },
             ),
-            'pets' => new Appointment($this->context->db())->pets(),
-            'veterinarians' => $catalog->choices('veterinarians'),
-            'services' => $catalog->choices('services'),
-        ]);
+        );
+        $this->context->view->render(
+            $calendar ? 'appointments/calendar.html.twig' : 'appointments/list.html.twig',
+            [
+                'month' => $month,
+                'vet' => $vet,
+                'calendar' => $calendar,
+                'filter' => $filter,
+                'states' => AppointmentService::STATES,
+                'request_key' => bin2hex(random_bytes(32)),
+                'appointments' => $rows,
+                'pets' => new Appointment($this->context->db())->pets(),
+                'veterinarians' => $catalog->choices('veterinarians'),
+                'services' => $catalog->choices('services'),
+            ],
+        );
+    }
+    public function calendar(array $parameters = []): void
+    {
+        $this->index(['calendar' => true]);
     }
     public function create(array $parameters = []): void
     {
@@ -85,6 +110,7 @@ final class AppointmentController extends Controller
         $events = array_map(
             static fn($row) => [
                 'id' => $row['id'],
+                'url' => '/citas/' . $row['id'],
                 'title' =>
                     $row['pet_name'] .
                     ' · ' .

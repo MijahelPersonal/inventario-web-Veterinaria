@@ -1,6 +1,10 @@
 :root {
     --cui-primary: #176b63;
 }
+.dashboard-chart {
+    height: 260px;
+    position: relative;
+}
 body {
     background: var(--cui-tertiary-bg);
 }

@@ -1,0 +1,13 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Ficha de {{ record.name }}{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">{{ kind=='mascotas' ? 'MASCOTAS' : 'VETERINARIOS' }}</span><h1>{{ record.name }}</h1></div><a href="/catalogos/{{ kind }}" class="btn btn-outline-primary">Volver al listado</a></div>
+<div class="card card-body mb-4">
+{% if kind=='mascotas' %}<p><strong>Responsable:</strong> {{ client.name }} · {{ client.phone }}</p><p>{{ record.species }} · {{ record.breed }} · {{ record.sex }} · {{ record.weight }} kg</p><p>Nacimiento: {{ record.birth_date ?? 'No registrado' }} · Microchip: {{ record.microchip ?? 'No registrado' }}</p><p><strong>Alergias:</strong> {{ record.allergies ?? 'No registradas' }}</p><p><strong>Antecedentes comunicados:</strong> {{ record.background ?? 'No registrados' }}</p>
+{% else %}<p>Colegiatura: {{ record.license_number ?? 'No registrada' }}</p><p>{{ record.phone }} · {{ record.email }}</p>{% endif %}
+{% if can('catalogs.write') %}<a href="/catalogos/{{ kind }}/{{ record.id }}/editar">Editar datos</a>{% endif %}
+</div>
+<div class="card"><div class="card-header">Últimas 100 citas y atenciones</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Fecha</th><th>Mascota / responsable</th><th>Servicio / veterinario</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for row in appointments %}<tr><td>{{ row.start_at }}</td><td>{{ row.pet_name }} · {{ row.client_name }}</td><td>{{ row.service_name }} · {{ row.veterinarian_name }}</td><td>{{ row.status }}</td><td>{% if can('appointments.read') %}<a href="/citas/{{ row.id }}">Ver cita</a>{% endif %}</td></tr>{% else %}<tr><td colspan="5">Sin citas registradas.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

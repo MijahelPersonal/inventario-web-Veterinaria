@@ -6,12 +6,31 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $clinical = \App\Controller\ClinicalController::class;
+    $routes->addRoute('GET', '/fichas/{kind:mascotas|veterinarios}/{id:\d+}', [
+        $clinical,
+        'profile',
+        'catalogs.read',
+    ]);
+    $routes->addRoute('GET', '/citas/{id:\d+}', [$clinical, 'appointment', 'appointments.read']);
+    $routes->addRoute('GET', '/citas/{id:\d+}/pdf', [$clinical, 'pdf', 'clinical.read']);
+    $routes->addRoute('POST', '/citas/{id:\d+}/notas', [$clinical, 'notes', 'clinical.write']);
+    $routes->addRoute('POST', '/citas/{id:\d+}/reprogramar', [
+        $clinical,
+        'reschedule',
+        'appointments.write',
+    ]);
+    $reports = \App\Controller\ReportController::class;
+    $routes->addRoute('GET', '/reportes', [$reports, 'index', 'reports.read']);
+    $routes->addRoute('GET', '/reportes/csv', [$reports, 'csv', 'reports.read']);
+    $routes->addRoute('GET', '/reportes/pdf', [$reports, 'pdf', 'reports.read']);
     $store = \App\Controller\StoreController::class;
     $routes->addRoute('GET', '/tienda', [$store, 'index', 'sales.write']);
     $routes->addRoute('POST', '/tienda', [$store, 'checkout', 'sales.write']);
     $routes->addRoute('POST', '/productos/{id:\d+}/imagen', [$store, 'upload', 'catalogs.write']);
     $routes->addRoute('GET', '/media/productos/{id:\d+}', [$store, 'image', 'catalogs.read']);
     $finance = \App\Controller\FinanceController::class;
+    $routes->addRoute('GET', '/cobros/nuevo', [$finance, 'paymentForm', 'payments.write']);
     $routes->addRoute('POST', '/ventas/{id:\d+}/anular', [$finance, 'void', 'sales.void']);
     $routes->addRoute('GET', '/ventas', [$finance, 'index', 'sales.read']);
     $routes->addRoute('POST', '/ventas', [$finance, 'sale', 'sales.write']);
@@ -22,8 +41,7 @@ return static function (RouteCollector $routes): void {
         'reverse',
         'payments.reverse',
     ]);
-    $routes->addRoute('GET', '/caja', [$finance, 'cash', 'cash.write']);
-    $routes->addRoute('POST', '/caja/{action:open|close|entry}', [
+    $routes->addRoute('POST', '/ventas/efectivo/{action:open|close|entry}', [
         $finance,
         'cashOperation',
         'cash.write',
@@ -38,6 +56,7 @@ return static function (RouteCollector $routes): void {
     $routes->addRoute('GET', '/inventario', [$inventory, 'index', 'inventory.read']);
     $routes->addRoute('POST', '/inventario/movimientos', [$inventory, 'save', 'inventory.write']);
     $agenda = \App\Controller\AppointmentController::class;
+    $routes->addRoute('GET', '/calendario', [$agenda, 'calendar', 'appointments.read']);
     $routes->addRoute('GET', '/citas', [$agenda, 'index', 'appointments.read']);
     $routes->addRoute('GET', '/citas/eventos', [$agenda, 'events', 'appointments.read']);
     $routes->addRoute('POST', '/citas', [$agenda, 'create', 'appointments.write']);

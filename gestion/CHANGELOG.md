@@ -1,5 +1,25 @@
 # Historial de STRUCH VET
 
+## Diseño de gestión veterinaria
+
+- Menú por secciones, citas y calendario separados, directorios de mascotas y veterinarios.
+- Tablas con responsable, especialidad, contacto, estados y acciones reales.
+- Cobros con tarjetas de saldo y formulario específico de registro de pago.
+- Eliminada la pantalla independiente «Mi caja»; efectivo integrado en ventas y cobros.
+
+## Fichas e historial de atención
+
+- Fichas de mascotas y veterinarios con citas relacionadas.
+- Alergias, antecedentes y microchip en mascotas; notas clínicas con permiso específico.
+- Reprogramación con comprobación de cruces, horarios y cargos.
+- Constancia PDF de atención separada del ticket de pago.
+
+## Dashboard y reportes
+
+- Inicio con indicadores reales, gráficos de especies y estados, próximas citas y alertas.
+- Ventas, cobros, efectivo y margen de productos diferenciados.
+- Reportes de citas, ventas, cobros, caja e inventario con filtros, CSV seguro y PDF.
+
 ## Venta en tienda y estilo administrativo
 
 - Menú azul oscuro, acentos azules y fondo claro según la referencia visual del usuario.

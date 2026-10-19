@@ -1,12 +1,12 @@
 {% extends 'layouts/main.html.twig' %}
 {% block title %}Inicio{% endblock %}
 {% block content %}
-<section class="card shadow-sm">
-    <div class="card-body p-4">
-        <span class="badge text-bg-info mb-3">En desarrollo</span>
-        <h1 class="h3">Bienvenido a {{ app_name }}</h1>
-        <p>Tu sesión del personal está activa.</p>
-        <p class="text-body-secondary mb-0">Los módulos se incorporan por etapas. Las operaciones importantes quedan registradas.</p>
-    </div>
-</section>
+<div class="page-heading"><div><span class="eyebrow">RESUMEN DEL DÍA</span><h1>Bienvenido, {{ current_user.name }}</h1><p class="text-body-secondary mb-0">{{ 'now'|date('d/m/Y') }} · {{ app_name }}</p></div>{% if can('sales.write') %}<a class="btn btn-primary" href="/tienda">Nueva venta</a>{% endif %}</div>
+<div class="row g-3 mb-4">
+{% for label,value in {'Mascotas activas':dashboard.pets,'Veterinarios activos':dashboard.veterinarians,'Citas del día':dashboard.today} %}<div class="col-md-4"><div class="card card-body"><span class="text-body-secondary small">{{ label }}</span><strong class="fs-2 mt-2">{{ value }}</strong></div></div>{% endfor %}
+</div>
+{% if financial %}<div class="row g-3 mb-4">{% for label,value in {'Ventas del día':dashboard.sales_today,'Cobros netos del día':dashboard.payments_today,'Cobros en efectivo':dashboard.cash_today,'Otros ingresos / egresos de caja':dashboard.cash_entries_today,'Margen bruto de productos':dashboard.product_margin} %}<div class="col-sm-6 col-xl"><div class="card card-body h-100"><span class="text-body-secondary small">{{ label }}</span><strong class="fs-4 mt-2">{{ value }} <small class="fs-6">{{ clinic.currency }}</small></strong></div></div>{% endfor %}</div><p class="text-body-secondary small">Margen de productos = venta menos costo histórico de lotes. Excluye servicios, gastos e impuestos; no es utilidad neta.</p>{% endif %}
+<div class="row g-4 mb-4"><div class="col-lg-6"><div class="card card-body"><h2 class="h5">Mascotas por especie</h2><div class="dashboard-chart"><canvas data-chart="{{ dashboard.species|json_encode }}" data-chart-type="doughnut" aria-label="Mascotas por especie"></canvas></div></div></div><div class="col-lg-6"><div class="card card-body"><h2 class="h5">Estados de las citas</h2><div class="dashboard-chart"><canvas data-chart="{{ dashboard.states|json_encode }}" data-chart-type="bar" aria-label="Estados de citas"></canvas></div></div></div></div>
+<div class="row g-4 mb-4"><div class="col-lg-6"><div class="card"><div class="card-header">Productos con stock bajo</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Producto</th><th>Disponible</th><th>Mínimo</th></tr></thead><tbody>{% for row in dashboard.low_stock %}<tr><td>{{ row.name }}</td><td>{{ row.available }}</td><td>{{ row.min_stock }}</td></tr>{% else %}<tr><td colspan="3">Sin alertas.</td></tr>{% endfor %}</tbody></table></div></div></div><div class="col-lg-6"><div class="card"><div class="card-header">Lotes que vencen en 30 días</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Producto / lote</th><th>Vence</th><th>Cantidad</th></tr></thead><tbody>{% for row in dashboard.expiring %}<tr><td>{{ row.name }} · {{ row.lot_code }}</td><td>{{ row.expires_at }}</td><td>{{ row.quantity }}</td></tr>{% else %}<tr><td colspan="3">Sin alertas.</td></tr>{% endfor %}</tbody></table></div></div></div></div>
+<div class="card"><div class="card-header">Próximas citas</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Fecha</th><th>Mascota</th><th>Servicio</th><th>Veterinario</th><th>Estado</th></tr></thead><tbody>{% for row in dashboard.upcoming %}<tr><td>{{ row.start_at }}</td><td>{{ row.pet_name }}</td><td>{{ row.service_name }}</td><td>{{ row.veterinarian_name }}</td><td>{{ row.status }}</td></tr>{% else %}<tr><td colspan="5">No hay citas próximas.</td></tr>{% endfor %}</tbody></table></div></div>
 {% endblock %}
