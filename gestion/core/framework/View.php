@@ -36,6 +36,18 @@ final class View
         echo $this->twig->render($template, $data);
     }
 
+    public function settings(array $settings): void
+    {
+        $this->twig->addGlobal('clinic', $settings);
+        $this->twig->addGlobal('app_name', $settings['clinic_name'] ?? 'STRUCH VET');
+    }
+
+    // Renderiza documentos sin imprimirlos antes de entregarlos al generador PDF.
+    public function html(string $template, array $data = []): string
+    {
+        return $this->twig->render($template, $data);
+    }
+
     // La vista oculta acciones no permitidas; el servidor vuelve a verificar cada operación.
     public function setUser(?array $user): void
     {

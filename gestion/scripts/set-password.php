@@ -35,7 +35,7 @@ try {
         password_hash($password, PASSWORD_DEFAULT),
         $id,
     ]);
-    $account = (new App\Model\User($db))->byUsername($username);
+    $account = new App\Model\User($db)->byUsername($username);
     if (!$account || !password_verify($password, $account['password_hash'])) {
         throw new RuntimeException('No se pudo verificar la contraseña guardada.');
     }

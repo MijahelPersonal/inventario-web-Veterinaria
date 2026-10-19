@@ -1,0 +1,16 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Personal y permisos{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">ADMINISTRACIÓN</span><h1>Usuarios del personal</h1></div><a class="btn btn-outline-primary" href="/usuarios">Nuevo usuario</a></div>
+<div class="row g-4"><div class="col-lg-7"><div class="card table-responsive"><table class="table mb-0"><thead><tr><th>Nombre / usuario</th><th>Roles</th><th>Estado</th><th></th></tr></thead><tbody>
+{% for row in users %}<tr><td>{{ row.name }}<small class="d-block text-body-secondary">{{ row.username }}</small></td><td>{{ row.role_names }}</td><td>{{ row.active ? 'Activo' : 'Inactivo' }}</td><td><a href="/usuarios?edit={{ row.id }}">Editar</a></td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="col-lg-5"><form class="card" action="/usuarios" method="post"><div class="card-body">
+<h2 class="h5">{{ record.id is defined ? 'Editar cuenta' : 'Nueva cuenta' }}</h2>
+<input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="id" value="{{ record.id|default('') }}">
+{% for key,label in {'name':'Nombre completo','username':'Usuario','email':'Correo de contacto (opcional)'} %}<label class="form-label mt-2" for="{{ key }}">{{ label }}</label><input class="form-control" id="{{ key }}" name="{{ key }}" value="{{ attribute(record,key)|default('') }}" maxlength="{{ key=='username' ? 60 : (key=='name' ? 120 : 190) }}" {{ key!='email' ? 'required' : '' }}>{% endfor %}
+<label class="form-label mt-2" for="password">{{ record.id is defined ? 'Nueva contraseña (vacía para conservar)' : 'Contraseña' }}</label><input class="form-control" type="password" id="password" name="password" minlength="8" maxlength="72" autocomplete="new-password" {{ record.id is not defined ? 'required' : '' }}>
+<fieldset class="mt-3"><legend class="h6">Roles</legend>{% for role in roles %}<label class="form-check"><input class="form-check-input" name="roles[]" type="checkbox" value="{{ role.id }}" {{ role.id in record.roles ? 'checked' : '' }}> {{ role.name }}</label>{% endfor %}</fieldset>
+<label class="form-check my-3"><input class="form-check-input" type="checkbox" name="active" value="1" {{ record.active ? 'checked' : '' }}> Cuenta activa</label><button class="btn btn-primary">Guardar usuario</button>
+</div></form></div></div>
+{% endblock %}

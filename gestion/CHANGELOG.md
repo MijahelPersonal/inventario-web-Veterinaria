@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Administración y configuración
+
+- Gestión de personal con roles, usuario, contraseña y desactivación.
+- Protección del último administrador activo y de la cuenta propia.
+- Preferencias de nombre, contacto, moneda y color; consulta de auditoría.
+- Documento de correspondencias con los módulos de la referencia VetMedik.
+
 ## Administración del acceso local
 
 - Restablecimiento de contraseñas por consola con hash y registro de auditoría.

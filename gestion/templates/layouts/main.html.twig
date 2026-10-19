@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="/assets/vendor/coreui.min.css">
     <link rel="stylesheet" href="/assets/css/app.css">
 </head>
-<body>
+<body style="--brand: {{ clinic.primary_color|default('#176b63') }}">
     <header class="header px-4"><a class="header-brand text-decoration-none" href="/">{{ app_name }}</a>
     <div class="d-flex gap-3 align-items-center"><button class="btn btn-sm btn-outline-secondary" type="button" id="theme-toggle">Claro / oscuro</button>
     {% if current_user %}<span>{{ current_user.name }}</span><form method="post" action="/logout"><input type="hidden" name="csrf" value="{{ csrf }}"><button class="btn btn-outline-secondary btn-sm">Salir</button></form>{% endif %}</div></header>
@@ -17,6 +17,9 @@
     <div class="nav-label">OPERACIONES</div>
     {% if can('inventory.read') %}<a class="nav-item" href="/inventario">Inventario</a>{% endif %}
     {% if can('appointments.read') %}<a class="nav-item" href="/citas">Agenda de citas</a>{% endif %}
+    {% if can('users.manage') %}<a class="nav-item" href="/usuarios">Personal y permisos</a>{% endif %}
+    {% if can('settings.manage') %}<a class="nav-item" href="/configuracion">Configuración</a>{% endif %}
+    {% if can('audit.read') %}<a class="nav-item" href="/auditoria">Auditoría</a>{% endif %}
     {% block module_navigation %}{% endblock %}
     </nav></aside>{% endif %}
     <main class="workspace">{% if flash %}<div role="alert" class="alert alert-{{ flash.type }}">{{ flash.message }}</div>{% endif %}{% block content %}{% endblock %}</main></div>

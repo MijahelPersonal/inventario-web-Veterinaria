@@ -59,6 +59,9 @@ try {
                 }
             }
             $view->setUser($user);
+            if ($user) {
+                $view->settings(new App\Model\Administration($context->db())->settings());
+            }
             if (
                 in_array(
                     $_SERVER['REQUEST_METHOD'] ?? 'GET',

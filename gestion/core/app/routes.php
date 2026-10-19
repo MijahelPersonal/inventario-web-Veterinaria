@@ -6,6 +6,12 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $admin = \App\Controller\AdministrationController::class;
+    $routes->addRoute('GET', '/configuracion', [$admin, 'settings', 'settings.manage']);
+    $routes->addRoute('POST', '/configuracion', [$admin, 'saveSettings', 'settings.manage']);
+    $routes->addRoute('GET', '/usuarios', [$admin, 'users', 'users.manage']);
+    $routes->addRoute('POST', '/usuarios', [$admin, 'saveUser', 'users.manage']);
+    $routes->addRoute('GET', '/auditoria', [$admin, 'audit', 'audit.read']);
     $inventory = \App\Controller\InventoryController::class;
     $routes->addRoute('GET', '/inventario', [$inventory, 'index', 'inventory.read']);
     $routes->addRoute('POST', '/inventario/movimientos', [$inventory, 'save', 'inventory.write']);

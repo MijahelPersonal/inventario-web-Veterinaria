@@ -1,0 +1,8 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Auditoría{% endblock %}
+{% block content %}
+<h1 class="h3 mb-4">Últimas 100 acciones</h1>
+<div class="card table-responsive"><table class="table mb-0"><thead><tr><th>Fecha</th><th>Usuario</th><th>Acción</th><th>Entidad</th><th>Registro</th></tr></thead><tbody>
+{% for row in events %}<tr><td>{{ row.created_at }}</td><td>{{ row.username ?? 'Consola' }}</td><td>{{ row.action }}</td><td>{{ row.entity }}</td><td>{{ row.entity_id }}</td></tr>{% else %}<tr><td colspan="5">Todavía no hay acciones.</td></tr>{% endfor %}
+</tbody></table></div>
+{% endblock %}
