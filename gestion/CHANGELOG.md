@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Catálogos y navegación
+
+- Clientes, mascotas, veterinarios, especialidades y servicios con relaciones explícitas.
+- Productos, categorías, marcas y proveedores con búsqueda, edición y desactivación.
+- Validación en servicios, consultas PDO y vistas Twig reutilizables.
+- Navegación administrativa y selección de tema claro/oscuro.
+
 ## Acceso y permisos
 
 - Login del personal con hash, límite de intentos y vencimiento por inactividad.

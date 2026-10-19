@@ -8,7 +8,9 @@ try {
     Core\Session::start();
     header('X-Content-Type-Options: nosniff');
     header('Referrer-Policy: same-origin');
-    header("Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'");
+    header(
+        "Content-Security-Policy: default-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; script-src 'self'; frame-ancestors 'none'; form-action 'self'; base-uri 'self'",
+    );
     header('Cache-Control: no-store');
     $view = new Core\View($root, $config);
     $view->setUser(null);
@@ -20,34 +22,60 @@ try {
     switch ($result[0]) {
         case FastRoute\Dispatcher::NOT_FOUND:
             http_response_code(404);
-            $view->render('errors/error.html.twig', ['code' => 404, 'message' => 'Página no encontrada.']);
+            $view->render('errors/error.html.twig', [
+                'code' => 404,
+                'message' => 'Página no encontrada.',
+            ]);
             break;
         case FastRoute\Dispatcher::METHOD_NOT_ALLOWED:
             http_response_code(405);
             header('Allow: ' . implode(', ', $result[1]));
-            $view->render('errors/error.html.twig', ['code' => 405, 'message' => 'Método no permitido.']);
+            $view->render('errors/error.html.twig', [
+                'code' => 405,
+                'message' => 'Método no permitido.',
+            ]);
             break;
         case FastRoute\Dispatcher::FOUND:
             [$class, $method] = $result[1];
             $user = null;
             if ($class !== App\Controller\AuthController::class || $method === 'logout') {
                 $user = $context->auth()->current();
-                if (!$user) { header('Location: /login', true, 303); exit; }
+                if (!$user) {
+                    header('Location: /login', true, 303);
+                    exit();
+                }
                 $permission = $result[1][2] ?? null;
-                if ($permission && !in_array('*', $user['permissions'], true) && !in_array($permission, $user['permissions'], true)) {
+                if (
+                    $permission &&
+                    !in_array('*', $user['permissions'], true) &&
+                    !in_array($permission, $user['permissions'], true)
+                ) {
                     http_response_code(403);
-                    $view->render('errors/error.html.twig', ['code' => 403, 'message' => 'No tienes permiso para realizar esta operación.']);
+                    $view->render('errors/error.html.twig', [
+                        'code' => 403,
+                        'message' => 'No tienes permiso para realizar esta operación.',
+                    ]);
                     break;
                 }
             }
             $view->setUser($user);
-            if (in_array($_SERVER['REQUEST_METHOD'] ?? 'GET', ['POST','PUT','PATCH','DELETE'], true)
-                && (!is_string($_POST['csrf'] ?? null) || !hash_equals($_SESSION['csrf'], $_POST['csrf']))) {
+            if (
+                in_array(
+                    $_SERVER['REQUEST_METHOD'] ?? 'GET',
+                    ['POST', 'PUT', 'PATCH', 'DELETE'],
+                    true,
+                ) &&
+                (!is_string($_POST['csrf'] ?? null) ||
+                    !hash_equals($_SESSION['csrf'], $_POST['csrf']))
+            ) {
                 http_response_code(403);
-                $view->render('errors/error.html.twig', ['code' => 403, 'message' => 'Formulario vencido. Recarga la página.']);
+                $view->render('errors/error.html.twig', [
+                    'code' => 403,
+                    'message' => 'Formulario vencido. Recarga la página.',
+                ]);
                 break;
             }
-            (new $class($context))->$method($result[2]);
+            new $class($context)->$method($result[2]);
             break;
     }
 } catch (DomainException $error) {

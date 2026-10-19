@@ -1,6 +1,97 @@
-:root { --cui-primary: #176b63; }
-body { background: #f3f6f7; }
-.header-brand { color: #176b63; font-weight: 700; letter-spacing: .06em; }
-.login-card { max-width: 460px; }
-.eyebrow { font-size: .75rem; letter-spacing: .12em; font-weight: 700; color: #176b63; }
-.btn-primary { --cui-btn-bg: #176b63; --cui-btn-border-color: #176b63; --cui-btn-hover-bg: #11534d; --cui-btn-hover-border-color: #11534d; }
+:root {
+    --cui-primary: #176b63;
+}
+body {
+    background: var(--cui-tertiary-bg);
+}
+.header-brand {
+    color: #176b63;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+.login-card {
+    max-width: 460px;
+}
+.eyebrow {
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    font-weight: 700;
+    color: #176b63;
+}
+.btn-primary {
+    --cui-btn-bg: #176b63;
+    --cui-btn-border-color: #176b63;
+    --cui-btn-hover-bg: #11534d;
+    --cui-btn-hover-border-color: #11534d;
+}
+.app-layout {
+    display: grid;
+    grid-template-columns: 225px minmax(0, 1fr);
+    min-height: calc(100vh - 65px);
+}
+.app-layout.guest {
+    display: block;
+}
+.app-sidebar {
+    padding: 1.5rem 1rem;
+    background: var(--cui-body-bg);
+    border-right: 1px solid var(--cui-border-color);
+}
+.nav-item {
+    display: block;
+    color: var(--cui-body-color);
+    padding: 0.55rem 0.8rem;
+    text-decoration: none;
+    border-radius: 0.5rem;
+}
+.nav-item:hover {
+    background: var(--cui-tertiary-bg);
+    color: #176b63;
+}
+.nav-label {
+    font-size: 0.7rem;
+    color: var(--cui-secondary-color);
+    letter-spacing: 0.12em;
+    margin: 1.5rem 0.8rem 0.5rem;
+}
+.workspace {
+    padding: 2rem;
+    max-width: 1500px;
+    width: 100%;
+    margin: 0 auto;
+}
+.page-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+.page-heading h1 {
+    font-size: 1.7rem;
+    margin: 0.3rem 0;
+}
+.table th,
+.table td {
+    padding: 0.9rem 1rem;
+}
+@media (max-width: 800px) {
+    .app-layout {
+        grid-template-columns: 1fr;
+    }
+    .app-sidebar {
+        border-right: 0;
+        border-bottom: 1px solid var(--cui-border-color);
+    }
+    .app-sidebar nav {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.25rem;
+    }
+    .nav-label {
+        display: none;
+    }
+    .workspace {
+        padding: 1rem;
+    }
+}

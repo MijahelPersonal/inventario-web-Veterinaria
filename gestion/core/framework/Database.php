@@ -14,8 +14,12 @@ final class Database
             throw new RuntimeException('La conexión a MySQL aún no está configurada.');
         }
 
-        $dsn = sprintf('mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
-            $config['host'], $config['port'], $config['name']);
+        $dsn = sprintf(
+            'mysql:host=%s;port=%d;dbname=%s;charset=utf8mb4',
+            $config['host'],
+            $config['port'],
+            $config['name'],
+        );
 
         return new PDO($dsn, $config['username'], $config['password'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,

@@ -1,0 +1,25 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}{{ record.id is defined ? 'Editar' : 'Nuevo' }} · {{ definition.title }}{% endblock %}
+{% block content %}
+<a href="/catalogos/{{ slug }}">← {{ definition.title }}</a>
+<h1 class="h3 my-3">{{ record.id is defined ? 'Editar registro' : 'Nuevo registro' }}</h1>
+<form method="post" class="card" action="/catalogos/{{ slug }}{{ record.id is defined ? '/' ~ record.id : '' }}">
+<div class="card-body p-4"><input type="hidden" name="csrf" value="{{ csrf }}"><div class="row g-3">
+{# Cada campo procede de una definición interna; el navegador no define columnas SQL. #}
+{% for name,field in definition.fields %}
+{% set value=attribute(record,name) ?? field.default ?? '' %}
+<div class="col-md-6"><label class="form-label" for="{{ name }}">{{ field.label }}{{ field.required|default(false) ? ' *' : '' }}</label>
+{% if field.type=='select' %}
+<select class="form-select" id="{{ name }}" name="{{ name }}" {{ field.required|default(false) ? 'required' : '' }}>
+<option value="">Seleccionar</option>
+{% for choice in attribute(choices,name) %}<option value="{{ choice.id }}" {{ value==choice.id ? 'selected' : '' }} {{ not choice.active and value!=choice.id ? 'disabled' : '' }}>{{ choice.name }}{{ not choice.active ? ' (inactivo)' : '' }}</option>{% endfor %}
+</select>
+{% elseif field.type=='textarea' %}<textarea class="form-control" id="{{ name }}" name="{{ name }}" maxlength="{{ field.max }}">{{ value }}</textarea>
+{% elseif field.type=='checkbox' %}<div><input class="form-check-input" id="{{ name }}" type="checkbox" name="{{ name }}" value="1" {{ value ? 'checked' : '' }}></div>
+{% else %}
+<input class="form-control" id="{{ name }}" name="{{ name }}" value="{{ value }}" type="{{ field.type in ['money','quantity','duration'] ? 'number' : field.type }}" {% if field.type in ['money','quantity','duration'] %}min="{{ field.type=='duration' ? '5' : '0' }}" step="{{ field.type=='money' ? '0.01' : (field.type=='quantity' ? '0.001' : '1') }}"{% endif %} {% if field.max is defined %}maxlength="{{ field.max }}"{% endif %} {{ field.required|default(false) ? 'required' : '' }}>
+{% endif %}</div>
+{% endfor %}
+<div class="col-12"><label class="form-check"><input class="form-check-input" name="active" type="checkbox" value="1" {{ record.active ? 'checked' : '' }}> Registro activo</label><small class="text-body-secondary">Desactivar conserva el historial.</small></div>
+</div><div class="mt-4"><button class="btn btn-primary">Guardar</button> <a class="btn btn-outline-secondary" href="/catalogos/{{ slug }}">Cancelar</a></div></div></form>
+{% endblock %}

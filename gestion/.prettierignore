@@ -1,0 +1,8 @@
+vendor/
+node_modules/
+public/assets/
+storage/
+config/local.php
+config/local.test.php
+composer.lock
+package-lock.json
