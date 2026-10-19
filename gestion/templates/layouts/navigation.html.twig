@@ -4,7 +4,7 @@
     {% if group.collapsed|default(false) %}<details class="more-catalogs"><summary>{{ group.label }}</summary>{% elseif group.label %}<div class="nav-label">{{ group.label }}</div>{% endif %}
     {% for link in group.links %}
         {% if link[3] is null or can(link[3]) %}
-        <a class="nav-item {{ current_path==link[1] or (link[1]!='/' and current_path starts with link[1]~'/') ? 'active' : '' }}" href="{{ link[1] }}"><span aria-hidden="true">{{ link[2] }}</span>{{ link[0] }}</a>
+        <a class="nav-item {{ current_path==link[1] or (link[1]!='/' and current_path starts with link[1]~'/') ? 'active' : '' }}" href="{{ link[1] }}" {% if current_path==link[1] %}aria-current="page"{% endif %}><i class="bi bi-{{ link[2] }}" aria-hidden="true"></i><span class="nav-text">{{ link[0] }}</span></a>
         {% endif %}
     {% endfor %}
     {% if group.collapsed|default(false) %}</details>{% endif %}

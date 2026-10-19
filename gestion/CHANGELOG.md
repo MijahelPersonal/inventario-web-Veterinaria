@@ -1,5 +1,17 @@
 # Historial de STRUCH VET
 
+## Compatibilidad del editor
+
+- Formato PHP 8.2 compatible con el analizador PHP IntelliSense instalado en VS Code.
+- Conservados paréntesis al invocar métodos de objetos recién creados.
+- Verificación de sintaxis con PHP y con el analizador que originaba los avisos.
+
+## Legibilidad y barra lateral
+
+- Plus Jakarta Sans local, la misma familia de la referencia.
+- Menú de 264 px, opciones de 16 px e iconos Bootstrap consistentes.
+- Textos de tablas, formularios y descripciones más grandes; desplazamiento discreto.
+
 ## Diseño de gestión veterinaria
 
 - Menú por secciones, citas y calendario separados, directorios de mascotas y veterinarios.

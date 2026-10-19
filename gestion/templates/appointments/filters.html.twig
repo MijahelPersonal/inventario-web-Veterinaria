@@ -1,4 +1,4 @@
-<form class="card card-body mb-4" method="get"><div class="row g-2 align-items-end">
+<form class="card card-body mb-4 agenda-filters" method="get"><div class="row g-2 align-items-end">
 <input type="hidden" name="filter" value="{{ filter }}"><div class="col-sm-4"><label class="form-label" for="month">Mes<input class="form-control" id="month" type="month" name="month" value="{{ month }}"></label></div>
 <div class="col-sm-5"><label class="form-label" for="vet">Veterinario<select class="form-select" id="vet" name="vet"><option value="">Todos</option>{% for row in veterinarians %}<option value="{{ row.id }}" {{ row.id==vet ? 'selected' : '' }}>{{ row.name }}</option>{% endfor %}</select></label></div>
 <div class="col-sm-3"><button class="btn btn-primary mb-2">Filtrar</button></div></div></form>

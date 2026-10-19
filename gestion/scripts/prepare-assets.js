@@ -34,5 +34,7 @@ buildSync({
     entryPoints: [path.join(root, 'assets/js/app.js')],
     bundle: true,
     minify: true,
+    loader: { '.woff2': 'file', '.woff': 'file' },
+    assetNames: 'fonts/[name]-[hash]',
     outfile: path.join(root, 'public/assets/js/app.js'),
 });

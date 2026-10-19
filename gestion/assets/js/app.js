@@ -1,4 +1,10 @@
 'use strict';
+// La misma familia de la referencia se sirve localmente, sin solicitudes a Google Fonts.
+import '@fontsource/plus-jakarta-sans/latin-400.css';
+import '@fontsource/plus-jakarta-sans/latin-500.css';
+import '@fontsource/plus-jakarta-sans/latin-600.css';
+import '@fontsource/plus-jakarta-sans/latin-700.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import { mountCalendar } from './calendar.js';
 import { mountPointOfSale } from './pos.js';
 import { mountDashboard } from './dashboard.js';
