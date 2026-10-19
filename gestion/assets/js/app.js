@@ -1,4 +1,6 @@
 'use strict';
+import { mountCalendar } from './calendar.js';
+mountCalendar();
 // Conserva el tema elegido únicamente en este navegador o escritorio.
 try {
     document.documentElement.dataset.coreuiTheme = localStorage.getItem('struch-theme') || 'light';

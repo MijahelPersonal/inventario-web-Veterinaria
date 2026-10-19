@@ -6,6 +6,12 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $agenda = \App\Controller\AppointmentController::class;
+    $routes->addRoute('GET', '/citas', [$agenda, 'index', 'appointments.read']);
+    $routes->addRoute('GET', '/citas/eventos', [$agenda, 'events', 'appointments.read']);
+    $routes->addRoute('POST', '/citas', [$agenda, 'create', 'appointments.write']);
+    $routes->addRoute('POST', '/citas/{id:\d+}/estado', [$agenda, 'status', 'appointments.write']);
+    $routes->addRoute('POST', '/citas/horarios', [$agenda, 'hours', 'appointments.schedule']);
     $routes->addRoute('GET', '/', [HomeController::class, 'index']);
     $routes->addRoute('GET', '/login', [AuthController::class, 'form']);
     $routes->addRoute('POST', '/login', [AuthController::class, 'login']);

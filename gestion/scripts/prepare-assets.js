@@ -1,5 +1,6 @@
 const { mkdirSync, copyFileSync } = require('node:fs');
 const path = require('node:path');
+const { buildSync } = require('esbuild');
 const root = path.resolve(__dirname, '..');
 for (const directory of ['css', 'js', 'vendor']) {
     mkdirSync(path.join(root, 'public/assets', directory), { recursive: true });
@@ -16,3 +17,10 @@ for (const [source, target] of [
     copyFileSync(path.join(root, source), path.join(root, target));
 }
 console.log('Recursos públicos preparados.');
+// Empaqueta bibliotecas para usarlas localmente sin CDN ni acceso a node_modules.
+buildSync({
+    entryPoints: [path.join(root, 'assets/js/app.js')],
+    bundle: true,
+    minify: true,
+    outfile: path.join(root, 'public/assets/js/app.js'),
+});

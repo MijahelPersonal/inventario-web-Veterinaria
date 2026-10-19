@@ -14,6 +14,8 @@
     <div class="app-layout {{ not current_user ? 'guest' : '' }}">
     {% if current_user %}<aside class="app-sidebar"><nav aria-label="Navegación principal"><a class="nav-item" href="/">Resumen</a>
     {% if can('catalogs.read') %}<div class="nav-label">CATÁLOGOS</div>{% for slug,catalog in catalogs %}<a class="nav-item" href="/catalogos/{{ slug }}">{{ catalog.title }}</a>{% endfor %}{% endif %}
+    <div class="nav-label">OPERACIONES</div>
+    {% if can('appointments.read') %}<a class="nav-item" href="/citas">Agenda de citas</a>{% endif %}
     {% block module_navigation %}{% endblock %}
     </nav></aside>{% endif %}
     <main class="workspace">{% if flash %}<div role="alert" class="alert alert-{{ flash.type }}">{{ flash.message }}</div>{% endif %}{% block content %}{% endblock %}</main></div>

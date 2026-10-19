@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Agenda y disponibilidad
+
+- Calendario local con mes, semana, día y lista; filtros por veterinario.
+- Citas con duración y precio histórico del servicio, mascota, responsable y origen.
+- Validación transaccional de cruces y estados; horarios semanales por veterinario.
+- Registro repetido del mismo formulario no duplica citas.
+
 ## Catálogos y navegación
 
 - Clientes, mascotas, veterinarios, especialidades y servicios con relaciones explícitas.
