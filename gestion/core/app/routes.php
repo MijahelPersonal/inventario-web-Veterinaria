@@ -6,6 +6,11 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $store = \App\Controller\StoreController::class;
+    $routes->addRoute('GET', '/tienda', [$store, 'index', 'sales.write']);
+    $routes->addRoute('POST', '/tienda', [$store, 'checkout', 'sales.write']);
+    $routes->addRoute('POST', '/productos/{id:\d+}/imagen', [$store, 'upload', 'catalogs.write']);
+    $routes->addRoute('GET', '/media/productos/{id:\d+}', [$store, 'image', 'catalogs.read']);
     $finance = \App\Controller\FinanceController::class;
     $routes->addRoute('POST', '/ventas/{id:\d+}/anular', [$finance, 'void', 'sales.void']);
     $routes->addRoute('GET', '/ventas', [$finance, 'index', 'sales.read']);

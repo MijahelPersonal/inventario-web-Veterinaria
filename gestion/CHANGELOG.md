@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Venta en tienda y estilo administrativo
+
+- Menú azul oscuro, acentos azules y fondo claro según la referencia visual del usuario.
+- POS con buscador, categorías, tarjetas con imagen y disponibilidad, carrito y resumen lateral.
+- Conservación del carrito entre filtros; confirmación mediante el servicio existente de ventas.
+- Carga validada de imágenes privadas para productos; sin productos ni fotos de demostración.
+
 ## Ventas, cobros y caja
 
 - Ventas con productos y servicios, precios históricos y stock transaccional por lotes.

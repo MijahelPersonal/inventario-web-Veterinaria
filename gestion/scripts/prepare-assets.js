@@ -2,6 +2,18 @@ const { mkdirSync, copyFileSync } = require('node:fs');
 const path = require('node:path');
 const { buildSync } = require('esbuild');
 const root = path.resolve(__dirname, '..');
+copyStoreStyles();
+function copyStoreStyles() {
+    mkdirSync(path.join(root, 'public/assets/css'), { recursive: true });
+    copyFileSync(
+        path.join(root, 'assets/css/store.css'),
+        path.join(root, 'public/assets/css/store.css'),
+    );
+    copyFileSync(
+        path.join(root, 'assets/css/shell.css'),
+        path.join(root, 'public/assets/css/shell.css'),
+    );
+}
 for (const directory of ['css', 'js', 'vendor']) {
     mkdirSync(path.join(root, 'public/assets', directory), { recursive: true });
 }

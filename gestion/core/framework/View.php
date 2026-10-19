@@ -19,6 +19,10 @@ final class View
             'cache' => $config['environment'] === 'production' ? $root . '/storage/cache' : false,
         ]);
         $this->twig->addGlobal('app_name', $config['name']);
+        $this->twig->addGlobal(
+            'current_path',
+            parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH),
+        );
         $this->twig->addFunction(
             new \Twig\TwigFunction(
                 'can',

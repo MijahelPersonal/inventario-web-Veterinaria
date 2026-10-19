@@ -22,4 +22,7 @@
 {% endfor %}
 <div class="col-12"><label class="form-check"><input class="form-check-input" name="active" type="checkbox" value="1" {{ record.active ? 'checked' : '' }}> Registro activo</label><small class="text-body-secondary">Desactivar conserva el historial.</small></div>
 </div><div class="mt-4"><button class="btn btn-primary">Guardar</button> <a class="btn btn-outline-secondary" href="/catalogos/{{ slug }}">Cancelar</a></div></div></form>
+{% if slug=='productos' and record.id is defined %}
+<form class="card card-body mt-4" method="post" action="/productos/{{ record.id }}/imagen" enctype="multipart/form-data"><input type="hidden" name="csrf" value="{{ csrf }}"><label class="form-label" for="image">Imagen del producto (JPG, PNG o WebP, hasta 4 MB)</label><input class="form-control" id="image" name="image" type="file" accept="image/jpeg,image/png,image/webp" required><button class="btn btn-outline-primary align-self-start mt-3">Guardar imagen</button></form>
+{% endif %}
 {% endblock %}

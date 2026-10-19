@@ -1,0 +1,35 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Venta en tienda{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">PUNTO DE VENTA</span><h1>Venta en tienda</h1><p class="text-body-secondary mb-0">Selecciona productos y confirma la operación.</p></div></div>
+{% if confirmed %}<div class="alert alert-success">Venta #{{ confirmed }} registrada. <a href="/ventas?venta={{ confirmed }}">Continuar al cobro</a> · <a href="/ventas/{{ confirmed }}/ticket">Descargar ticket</a></div>{% endif %}
+<div class="pos-layout" id="point-of-sale" data-user="{{ current_user.id }}" data-currency="{{ clinic.currency|default('PEN') }}" data-confirmed="{{ confirmed ?? '' }}">
+<section class="pos-catalog" aria-label="Catálogo para venta">
+    <form class="pos-search" method="get"><input name="q" value="{{ search }}" class="form-control" placeholder="Buscar producto, marca, código o código de barras…" aria-label="Buscar producto"><input type="hidden" name="categoria" value="{{ category }}"><button class="btn btn-primary" aria-label="Buscar">Buscar</button></form>
+    <nav class="category-filters" aria-label="Categorías"><a class="category-chip {{ not category ? 'selected' : '' }}" href="/tienda?q={{ search|url_encode }}">Todos</a>{% for row in categories %}{% if row.active %}<a class="category-chip {{ category==row.id ? 'selected' : '' }}" href="/tienda?q={{ search|url_encode }}&categoria={{ row.id }}">{{ row.name }}</a>{% endif %}{% endfor %}</nav>
+    <div class="product-grid">
+    {% for product in products %}
+    <article class="product-card">
+        <div class="product-image">{% if product.image_path %}<img src="/media/productos/{{ product.id }}" alt="{{ product.name }}" loading="lazy">{% else %}<div class="product-placeholder" aria-label="Sin imagen"><svg viewBox="0 0 64 64" aria-hidden="true"><ellipse cx="21" cy="21" rx="6" ry="8"/><ellipse cx="43" cy="21" rx="6" ry="8"/><ellipse cx="10" cy="34" rx="5" ry="7"/><ellipse cx="54" cy="34" rx="5" ry="7"/><path d="M17 48c0-10 9-19 15-19s15 9 15 19c0 12-10 4-15 4s-15 8-15-4z"/></svg><span>Sin imagen</span></div>{% endif %}</div>
+        <p class="product-meta">{{ product.category_name ?? 'Sin categoría' }}{{ product.brand_name ? ' · '~product.brand_name : '' }}</p>
+        <h2>{{ product.name }}</h2><span class="product-code">{{ product.code }}</span>
+        <p class="product-price">{{ clinic.currency=='PEN' ? 'S/' : clinic.currency }} {{ product.price }}</p>
+        <div class="product-bottom"><span class="{{ product.available<=0 ? 'stock-empty' : '' }}">Stock: {{ product.available+0 }}</span><button class="btn btn-primary btn-sm add-product" type="button" data-id="{{ product.id }}" data-name="{{ product.name }}" data-price="{{ product.price }}" data-stock="{{ product.available }}" {{ product.available<=0 ? 'disabled' : '' }}>Agregar</button></div>
+    </article>
+    {% else %}<div class="catalog-empty"><h2 class="h5">No hay productos para mostrar</h2><p>Registra productos y sus entradas de inventario para venderlos aquí.</p>{% if can('catalogs.write') %}<a class="btn btn-outline-primary" href="/catalogos/productos/nuevo">Registrar producto</a>{% endif %}</div>{% endfor %}
+    </div>
+    <div class="d-flex justify-content-between align-items-center mt-3"><small class="text-body-secondary">{{ total }} productos · página {{ page }}</small><div>{% if page>1 %}<a class="btn btn-sm btn-outline-secondary" href="?q={{ search|url_encode }}&categoria={{ category }}&page={{ page-1 }}">Anterior</a>{% endif %}{% if page*24<total %}<a class="btn btn-sm btn-outline-secondary" href="?q={{ search|url_encode }}&categoria={{ category }}&page={{ page+1 }}">Siguiente</a>{% endif %}</div></div>
+</section>
+<aside class="pos-summary" aria-label="Resumen de venta">
+    <div class="summary-heading"><h2>Resumen de venta</h2><p id="cart-count" class="text-body-secondary mb-0" aria-live="polite">0 productos</p></div>
+    <form method="post" action="/tienda" id="checkout-form" class="checkout-form">
+        <input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="request_key" id="cart-request-key" value="{{ request_key }}">
+        <div class="summary-client"><label for="pos-client" class="form-label">Cliente</label><select name="client_id" id="pos-client" class="form-select"><option value="">Público general</option>{% for row in clients %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }}</option>{% endif %}{% endfor %}</select></div>
+        <div id="cart-empty" class="cart-empty"><span aria-hidden="true">＋</span><strong>Tu venta empieza aquí</strong><p>Agrega productos del catálogo.</p></div>
+        <div id="cart-lines" class="cart-lines" aria-live="polite"></div>
+        <div id="cart-inputs"></div>
+        <div class="summary-totals"><div><span>Subtotal</span><span id="cart-subtotal">S/ 0.00</span></div><div class="grand-total"><strong>TOTAL</strong><strong id="cart-total">S/ 0.00</strong></div><p id="cart-error" class="text-danger small" role="alert"></p><button class="btn btn-primary w-100" id="checkout-button" disabled>Finalizar venta</button><small>El stock se valida al confirmar. Después podrás registrar el cobro.</small><button class="btn btn-link btn-sm w-100 mt-2" id="clear-cart" type="button">Vaciar carrito</button></div>
+    </form>
+</aside>
+</div>
+{% endblock %}
