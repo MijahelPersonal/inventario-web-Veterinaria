@@ -1,0 +1,8 @@
+<!doctype html><html lang="es"><head><meta charset="utf-8"><style>body{font-family:DejaVu Sans,sans-serif;font-size:11px;color:#233}h1{color:#176b63}table{width:100%;border-collapse:collapse;margin:20px 0}th,td{padding:8px;border-bottom:1px solid #ddd;text-align:left}.muted{color:#667}</style></head><body>
+<h1>{{ clinic.clinic_name }}</h1><p>{{ clinic.address }}<br>{{ clinic.contact_phone }} · {{ clinic.contact_email }}</p>
+<h2>Ticket interno #{{ sale.id }}</h2><p>Fecha: {{ sale.created_at }} · Estado: {{ sale.status }}</p>
+<table><thead><tr><th>Concepto</th><th>Cantidad</th><th>Precio</th><th>Importe</th></tr></thead><tbody>{% for row in items %}<tr><td>{{ row.description }}</td><td>{{ row.quantity }}</td><td>{{ row.unit_price }}</td><td>{{ row.line_total }}</td></tr>{% endfor %}</tbody></table>
+<p><strong>Total: {{ sale.total }} {{ clinic.currency }}</strong><br>Cobrado neto: {{ paid }}</p>
+<h3>Cobros y reversiones</h3><table><thead><tr><th>N.º</th><th>Fecha</th><th>Método</th><th>Importe</th></tr></thead><tbody>{% for row in payments %}<tr><td>{{ row.id }}</td><td>{{ row.created_at }}</td><td>{{ row.method }}</td><td>{{ row.amount }}</td></tr>{% endfor %}</tbody></table>
+<p class="muted">Comprobante interno. No constituye factura electrónica ni comprobante fiscal.</p>
+</body></html>

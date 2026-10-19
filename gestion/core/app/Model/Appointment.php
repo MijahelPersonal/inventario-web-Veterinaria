@@ -7,6 +7,14 @@ use PDO;
 final class Appointment
 {
     public function __construct(private PDO $db) {}
+    public function hasBill(int $id): bool
+    {
+        $query = $this->db->prepare(
+            "SELECT id FROM sales WHERE appointment_id=? AND status='confirmed'",
+        );
+        $query->execute([$id]);
+        return (bool) $query->fetch();
+    }
     public function pets(): array
     {
         return $this->db

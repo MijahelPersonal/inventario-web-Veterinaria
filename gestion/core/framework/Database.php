@@ -21,10 +21,13 @@ final class Database
             $config['name'],
         );
 
-        return new PDO($dsn, $config['username'], $config['password'], [
+        $connection = new PDO($dsn, $config['username'], $config['password'], [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
         ]);
+        // Fechas de caja y reportes usan la misma zona horaria de la aplicación.
+        $connection->exec('SET time_zone = ' . $connection->quote(date('P')));
+        return $connection;
     }
 }

@@ -7,6 +7,14 @@ use PDO;
 final class Inventory
 {
     public function __construct(private PDO $db) {}
+    public function saleMovements(int $sale): array
+    {
+        $query = $this->db->prepare(
+            "SELECT m.*,l.product_id FROM stock_movements m JOIN stock_lots l ON l.id=m.lot_id WHERE m.kind='venta' AND m.reference=? ORDER BY l.product_id,l.id",
+        );
+        $query->execute([(string) $sale]);
+        return $query->fetchAll();
+    }
     public function overview(): array
     {
         return $this->db

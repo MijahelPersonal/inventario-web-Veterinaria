@@ -143,6 +143,11 @@ final class AppointmentService
                 'cancelada' => [],
                 'no_asistio' => [],
             ];
+            if ($status === 'cancelada' && $model->hasBill($id)) {
+                throw new DomainException(
+                    'Primero anula el cargo vinculado a la cita desde ventas.',
+                );
+            }
             if (
                 $record['status'] !== $status &&
                 !in_array($status, $allowed[$record['status']], true)

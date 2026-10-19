@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Ventas, cobros y caja
+
+- Ventas con productos y servicios, precios históricos y stock transaccional por lotes.
+- Cargos únicos por cita; pagos parciales con distintos métodos sin superar el saldo.
+- Reversiones auditadas sin borrar cobros y ticket interno PDF.
+- Apertura, ingresos, egresos y cierre por usuario con diferencia de efectivo.
+
 ## Administración y configuración
 
 - Gestión de personal con roles, usuario, contraseña y desactivación.

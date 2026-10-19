@@ -6,6 +6,23 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $finance = \App\Controller\FinanceController::class;
+    $routes->addRoute('POST', '/ventas/{id:\d+}/anular', [$finance, 'void', 'sales.void']);
+    $routes->addRoute('GET', '/ventas', [$finance, 'index', 'sales.read']);
+    $routes->addRoute('POST', '/ventas', [$finance, 'sale', 'sales.write']);
+    $routes->addRoute('GET', '/ventas/{id:\d+}/ticket', [$finance, 'receipt', 'sales.read']);
+    $routes->addRoute('POST', '/cobros', [$finance, 'pay', 'payments.write']);
+    $routes->addRoute('POST', '/cobros/{id:\d+}/revertir', [
+        $finance,
+        'reverse',
+        'payments.reverse',
+    ]);
+    $routes->addRoute('GET', '/caja', [$finance, 'cash', 'cash.write']);
+    $routes->addRoute('POST', '/caja/{action:open|close|entry}', [
+        $finance,
+        'cashOperation',
+        'cash.write',
+    ]);
     $admin = \App\Controller\AdministrationController::class;
     $routes->addRoute('GET', '/configuracion', [$admin, 'settings', 'settings.manage']);
     $routes->addRoute('POST', '/configuracion', [$admin, 'saveSettings', 'settings.manage']);
