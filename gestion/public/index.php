@@ -60,7 +60,7 @@ try {
             }
             $view->setUser($user);
             if ($user) {
-                $view->settings(new App\Model\Administration($context->db())->settings());
+                $view->settings((new App\Model\Administration($context->db()))->settings());
             }
             if (
                 in_array(
@@ -78,7 +78,7 @@ try {
                 ]);
                 break;
             }
-            new $class($context)->$method($result[2]);
+            (new $class($context))->$method($result[2]);
             break;
     }
 } catch (DomainException $error) {

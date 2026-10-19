@@ -42,7 +42,7 @@ final class Report
             'low_stock' => array_slice(
                 array_values(
                     array_filter(
-                        new Inventory($this->db)->overview(),
+                        (new Inventory($this->db))->overview(),
                         static fn($p) => $p['active'] &&
                             bccomp($p['available'], $p['min_stock'], 3) <= 0,
                     ),

@@ -23,12 +23,12 @@ final class ClinicalService
         }
         $this->db->beginTransaction();
         try {
-            $record = new Appointment($this->db)->find($id, true);
+            $record = (new Appointment($this->db))->find($id, true);
             if (!$record || in_array($record['status'], ['cancelada', 'no_asistio'], true)) {
                 throw new DomainException('No se pueden registrar notas de atención en esta cita.');
             }
-            new ClinicalRecord($this->db)->saveNotes($id, ...$data);
-            new AuditService($this->db)->record($user, 'clinical_notes', 'appointments', $id);
+            (new ClinicalRecord($this->db))->saveNotes($id, ...$data);
+            (new AuditService($this->db))->record($user, 'clinical_notes', 'appointments', $id);
             $this->db->commit();
         } catch (\Throwable $error) {
             $this->db->rollBack();
@@ -82,10 +82,10 @@ final class ClinicalService
                 throw new DomainException('Solo se reprograman citas abiertas sin cargo generado.');
             }
             $duration =
-                new DateTimeImmutable($record['end_at'])->getTimestamp() -
-                new DateTimeImmutable($record['start_at'])->getTimestamp();
+                (new DateTimeImmutable($record['end_at']))->getTimestamp() -
+                (new DateTimeImmutable($record['start_at']))->getTimestamp();
             $end = $start->modify('+' . $duration . ' seconds');
-            $service = new \App\Model\Catalog($this->db)->find(
+            $service = (new \App\Model\Catalog($this->db))->find(
                 'services',
                 (int) $record['service_id'],
             );
@@ -116,13 +116,13 @@ final class ClinicalService
                     'Horario fuera de disponibilidad o en conflicto con otra cita.',
                 );
             }
-            new ClinicalRecord($this->db)->reschedule(
+            (new ClinicalRecord($this->db))->reschedule(
                 $id,
                 $vet,
                 $start->format('Y-m-d H:i:s'),
                 $end->format('Y-m-d H:i:s'),
             );
-            new AuditService($this->db)->record($user, 'reschedule', 'appointments', $id, [
+            (new AuditService($this->db))->record($user, 'reschedule', 'appointments', $id, [
                 'from' => $record['start_at'],
                 'to' => $start->format('Y-m-d H:i:s'),
             ]);

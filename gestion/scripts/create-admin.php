@@ -32,7 +32,7 @@ try {
     $db->prepare(
         "INSERT INTO user_roles(user_id,role_id) SELECT ?,id FROM roles WHERE name='Administrador'",
     )->execute([$id]);
-    new App\Service\AuditService($db)->record($id, 'create_admin', 'users', $id);
+    (new App\Service\AuditService($db))->record($id, 'create_admin', 'users', $id);
     $db->commit();
     echo "Administrador creado.\n";
 } catch (Throwable $error) {

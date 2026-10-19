@@ -117,7 +117,7 @@ try {
     $query = $db->prepare('SELECT SUM(quantity) FROM stock_lots WHERE product_id=?');
     $query->execute([$product]);
     $check($query->fetchColumn() === '2.000', 'No se devolvió el stock');
-    $pdf = new App\Service\DocumentService()->bytes('<h1>Comprobante de prueba</h1>');
+    $pdf = (new App\Service\DocumentService())->bytes('<h1>Comprobante de prueba</h1>');
     $check(str_starts_with($pdf, '%PDF-'), 'PDF inválido');
     echo "OK: ventas, stock, rollback, cobros parciales, doble envío, sobrecobro, reversión, cierre y PDF.\n";
 } finally {

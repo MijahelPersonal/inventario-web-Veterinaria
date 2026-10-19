@@ -70,7 +70,9 @@ final class FinanceService
             $this->db
                 ->prepare("UPDATE sales SET status='void',void_reason=? WHERE id=?")
                 ->execute([$reason, $id]);
-            new AuditService($this->db)->record($user, 'void', 'sales', $id, ['reason' => $reason]);
+            (new AuditService($this->db))->record($user, 'void', 'sales', $id, [
+                'reason' => $reason,
+            ]);
         });
     }
     public function sale(array $input, int $user): int
@@ -91,7 +93,7 @@ final class FinanceService
             $client = empty($input['client_id']) ? null : (int) $input['client_id'];
             $items = [];
             if ($appointment) {
-                $record = new Appointment($this->db)->find($appointment, true);
+                $record = (new Appointment($this->db))->find($appointment, true);
                 if (!$record || !in_array($record['status'], ['confirmada', 'atendida'], true)) {
                     throw new DomainException('Confirma la cita antes de generar el cargo.');
                 }
@@ -152,7 +154,7 @@ final class FinanceService
                 $product = $line['product'];
                 $service = $line['service'];
                 $record = $product
-                    ? new Inventory($this->db)->product($product)
+                    ? (new Inventory($this->db))->product($product)
                     : $catalog->find('services', $service);
                 if (!$record || (!$record['active'] && !$appointment)) {
                     throw new DomainException('Un producto o servicio ya no está disponible.');
@@ -160,7 +162,7 @@ final class FinanceService
                 $price = $line['price'] ?? $record['price'];
                 $lineTotal = bcadd(bcmul($price, $line['quantity'], 5), '0.005', 2);
                 $lineCost = $product
-                    ? new InventoryService($this->db)->takeForSale(
+                    ? (new InventoryService($this->db))->takeForSale(
                         $product,
                         $line['quantity'],
                         $user,
@@ -184,7 +186,7 @@ final class FinanceService
                 throw new DomainException('Total fuera de rango.');
             }
             $model->totals($sale, $total, $cost);
-            new AuditService($this->db)->record($user, 'create', 'sales', $sale);
+            (new AuditService($this->db))->record($user, 'create', 'sales', $sale);
             return $sale;
         });
     }
@@ -241,7 +243,7 @@ final class FinanceService
                 $user,
                 $key,
             );
-            new AuditService($this->db)->record($user, 'payment', 'payments', $id);
+            (new AuditService($this->db))->record($user, 'payment', 'payments', $id);
             return $id;
         });
     }
@@ -278,7 +280,7 @@ final class FinanceService
                 $user,
                 bin2hex(random_bytes(32)),
             );
-            new AuditService($this->db)->record($user, 'reverse', 'payments', $id, [
+            (new AuditService($this->db))->record($user, 'reverse', 'payments', $id, [
                 'original' => $payment,
             ]);
         });
@@ -327,7 +329,7 @@ final class FinanceService
                     throw new DomainException('Operación de caja inválida.');
                 }
             }
-            new AuditService($this->db)->record($user, 'cash_' . $action, 'cash_sessions', $id);
+            (new AuditService($this->db))->record($user, 'cash_' . $action, 'cash_sessions', $id);
         });
     }
 }

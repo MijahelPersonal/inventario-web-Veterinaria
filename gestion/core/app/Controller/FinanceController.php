@@ -52,7 +52,7 @@ final class FinanceController extends Controller
     }
     public function void(array $parameters): void
     {
-        new FinanceService($this->context->db())->voidSale(
+        (new FinanceService($this->context->db()))->voidSale(
             (int) $parameters['id'],
             (string) ($_POST['reason'] ?? ''),
             (int) $_SESSION['user_id'],
@@ -62,19 +62,19 @@ final class FinanceController extends Controller
     }
     public function sale(array $parameters = []): void
     {
-        $id = new FinanceService($this->context->db())->sale($_POST, (int) $_SESSION['user_id']);
+        $id = (new FinanceService($this->context->db()))->sale($_POST, (int) $_SESSION['user_id']);
         Session::flash('Venta registrada. El cobro se registra por separado.');
         $this->redirect('/ventas?venta=' . $id);
     }
     public function pay(array $parameters = []): void
     {
-        new FinanceService($this->context->db())->payment($_POST, (int) $_SESSION['user_id']);
+        (new FinanceService($this->context->db()))->payment($_POST, (int) $_SESSION['user_id']);
         Session::flash('Cobro aplicado al saldo.');
         $this->redirect('/ventas?venta=' . (int) $_POST['sale_id']);
     }
     public function reverse(array $parameters): void
     {
-        new FinanceService($this->context->db())->reverse(
+        (new FinanceService($this->context->db()))->reverse(
             (int) $parameters['id'],
             (string) ($_POST['reason'] ?? ''),
             (int) $_SESSION['user_id'],
@@ -84,7 +84,7 @@ final class FinanceController extends Controller
     }
     public function cashOperation(array $parameters): void
     {
-        new FinanceService($this->context->db())->cash(
+        (new FinanceService($this->context->db()))->cash(
             $parameters['action'],
             $_POST,
             (int) $_SESSION['user_id'],
@@ -104,9 +104,9 @@ final class FinanceController extends Controller
             'items' => $model->items((int) $sale['id']),
             'payments' => $model->payments((int) $sale['id']),
             'paid' => $model->paid((int) $sale['id']),
-            'clinic' => new Administration($this->context->db())->settings(),
+            'clinic' => (new Administration($this->context->db()))->settings(),
         ];
         $html = $this->context->view->html('documents/receipt.html.twig', $data);
-        new DocumentService()->pdf($html, 'ticket-interno-' . $sale['id'] . '.pdf');
+        (new DocumentService())->pdf($html, 'ticket-interno-' . $sale['id'] . '.pdf');
     }
 }

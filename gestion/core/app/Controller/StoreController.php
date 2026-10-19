@@ -17,7 +17,7 @@ final class StoreController extends Controller
         $search = mb_substr(trim((string) ($_GET['q'] ?? '')), 0, 160);
         $category = max(0, (int) ($_GET['categoria'] ?? 0));
         $page = max(1, min(100000, (int) ($_GET['page'] ?? 1)));
-        $result = new Store($this->context->db())->products($search, $category ?: null, $page);
+        $result = (new Store($this->context->db()))->products($search, $category ?: null, $page);
         $catalog = new Catalog($this->context->db());
         $confirmed = $_SESSION['pos_confirmed'] ?? null;
         unset($_SESSION['pos_confirmed']);
@@ -34,7 +34,7 @@ final class StoreController extends Controller
     }
     public function checkout(array $parameters = []): void
     {
-        $id = new FinanceService($this->context->db())->sale($_POST, (int) $_SESSION['user_id']);
+        $id = (new FinanceService($this->context->db()))->sale($_POST, (int) $_SESSION['user_id']);
         $_SESSION['pos_confirmed'] = $id;
         Session::flash(
             'Venta #' . $id . ' registrada. Continúa en ventas y cobros para aplicar el pago.',
@@ -43,7 +43,7 @@ final class StoreController extends Controller
     }
     public function upload(array $parameters): void
     {
-        new ProductImageService($this->context->db())->save(
+        (new ProductImageService($this->context->db()))->save(
             (int) $parameters['id'],
             $_FILES['image'] ?? [],
             (int) $_SESSION['user_id'],
@@ -53,7 +53,7 @@ final class StoreController extends Controller
     }
     public function image(array $parameters): void
     {
-        $filename = new Store($this->context->db())->image((int) $parameters['id']);
+        $filename = (new Store($this->context->db()))->image((int) $parameters['id']);
         if (!$filename || !preg_match('/^[a-f0-9]{40}\.(jpg|png|webp)$/D', $filename)) {
             http_response_code(404);
             return;
@@ -63,7 +63,7 @@ final class StoreController extends Controller
             http_response_code(404);
             return;
         }
-        header('Content-Type: ' . new \finfo(FILEINFO_MIME_TYPE)->file($file));
+        header('Content-Type: ' . (new \finfo(FILEINFO_MIME_TYPE))->file($file));
         header('Content-Length: ' . filesize($file));
         readfile($file);
     }

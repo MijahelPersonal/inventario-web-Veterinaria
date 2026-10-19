@@ -13,12 +13,12 @@ final class AdministrationController extends Controller
     public function settings(array $parameters = []): void
     {
         $this->context->view->render('administration/settings.html.twig', [
-            'settings' => new Administration($this->context->db())->settings(),
+            'settings' => (new Administration($this->context->db()))->settings(),
         ]);
     }
     public function saveSettings(array $parameters = []): void
     {
-        new AdministrationService($this->context->db())->settings(
+        (new AdministrationService($this->context->db()))->settings(
             $_POST,
             (int) $_SESSION['user_id'],
         );
@@ -42,7 +42,7 @@ final class AdministrationController extends Controller
     }
     public function saveUser(array $parameters = []): void
     {
-        new AdministrationService($this->context->db())->user(
+        (new AdministrationService($this->context->db()))->user(
             $_POST,
             empty($_POST['id']) ? null : (int) $_POST['id'],
             (int) $_SESSION['user_id'],
@@ -53,7 +53,7 @@ final class AdministrationController extends Controller
     public function audit(array $parameters = []): void
     {
         $this->context->view->render('administration/audit.html.twig', [
-            'events' => new Administration($this->context->db())->audit(),
+            'events' => (new Administration($this->context->db()))->audit(),
         ]);
     }
 }

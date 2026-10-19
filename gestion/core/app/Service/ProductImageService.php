@@ -12,7 +12,7 @@ final class ProductImageService
     public function __construct(private PDO $db) {}
     public function save(int $product, array $file, int $user): void
     {
-        if (!$product || !new Catalog($this->db)->find('products', $product)) {
+        if (!$product || !(new Catalog($this->db))->find('products', $product)) {
             throw new DomainException('El producto no existe.');
         }
         if (
@@ -24,7 +24,7 @@ final class ProductImageService
         if (($file['size'] ?? 0) > 4 * 1024 * 1024) {
             throw new DomainException('La imagen no puede superar 4 MB.');
         }
-        $type = new \finfo(FILEINFO_MIME_TYPE)->file($file['tmp_name']);
+        $type = (new \finfo(FILEINFO_MIME_TYPE))->file($file['tmp_name']);
         $extensions = ['image/jpeg' => 'jpg', 'image/png' => 'png', 'image/webp' => 'webp'];
         $size = @getimagesize($file['tmp_name']);
         if (!isset($extensions[$type]) || !$size || $size[0] > 6000 || $size[1] > 6000) {
@@ -41,8 +41,8 @@ final class ProductImageService
         }
         $this->db->beginTransaction();
         try {
-            new Store($this->db)->setImage($product, $filename);
-            new AuditService($this->db)->record($user, 'image', 'products', $product);
+            (new Store($this->db))->setImage($product, $filename);
+            (new AuditService($this->db))->record($user, 'image', 'products', $product);
             $this->db->commit();
         } catch (\Throwable $error) {
             $this->db->rollBack();

@@ -29,7 +29,7 @@ final class ClinicalController extends Controller
             'record' => $record,
             'client' =>
                 $kind === 'mascotas' ? $catalog->find('clients', (int) $record['client_id']) : null,
-            'appointments' => new ClinicalRecord($this->context->db())->appointments(
+            'appointments' => (new ClinicalRecord($this->context->db()))->appointments(
                 $kind,
                 (int) $record['id'],
             ),
@@ -37,19 +37,19 @@ final class ClinicalController extends Controller
     }
     public function appointment(array $parameters): void
     {
-        $record = new ClinicalRecord($this->context->db())->appointment((int) $parameters['id']);
+        $record = (new ClinicalRecord($this->context->db()))->appointment((int) $parameters['id']);
         if (!$record) {
             throw new DomainException('La cita no existe.');
         }
         $this->context->view->render('clinical/appointment.html.twig', [
             'record' => $record,
-            'veterinarians' => new Catalog($this->context->db())->choices('veterinarians'),
+            'veterinarians' => (new Catalog($this->context->db()))->choices('veterinarians'),
             'states' => AppointmentService::STATES,
         ]);
     }
     public function notes(array $parameters): void
     {
-        new ClinicalService($this->context->db())->notes(
+        (new ClinicalService($this->context->db()))->notes(
             (int) $parameters['id'],
             $_POST,
             (int) $_SESSION['user_id'],
@@ -59,7 +59,7 @@ final class ClinicalController extends Controller
     }
     public function reschedule(array $parameters): void
     {
-        new ClinicalService($this->context->db())->reschedule(
+        (new ClinicalService($this->context->db()))->reschedule(
             (int) $parameters['id'],
             $_POST,
             (int) $_SESSION['user_id'],
@@ -69,11 +69,11 @@ final class ClinicalController extends Controller
     }
     public function pdf(array $parameters): void
     {
-        $record = new ClinicalRecord($this->context->db())->appointment((int) $parameters['id']);
+        $record = (new ClinicalRecord($this->context->db()))->appointment((int) $parameters['id']);
         if (!$record) {
             throw new DomainException('La cita no existe.');
         }
-        new DocumentService()->pdf(
+        (new DocumentService())->pdf(
             $this->context->view->html('documents/appointment.html.twig', ['record' => $record]),
             'atencion-' . $record['id'] . '.pdf',
         );

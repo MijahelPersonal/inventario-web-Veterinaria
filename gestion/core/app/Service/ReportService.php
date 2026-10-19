@@ -90,7 +90,7 @@ final class ReportService
                 'username' => 'Usuario',
             ],
         };
-        $rows = new Report($this->db)->rows(
+        $rows = (new Report($this->db))->rows(
             $type,
             $start,
             $to->modify('+1 day')->format('Y-m-d'),

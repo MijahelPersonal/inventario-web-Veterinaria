@@ -90,7 +90,7 @@ try {
     foreach (array_keys(App\Service\ReportService::TYPES) as $type) {
         $report->generate(['type' => $type]);
     }
-    $dashboard = new App\Model\Report($db)->dashboard(false);
+    $dashboard = (new App\Model\Report($db))->dashboard(false);
     if (isset($dashboard['payments_today'])) {
         throw new RuntimeException('El dashboard sin acceso incluyó finanzas');
     }

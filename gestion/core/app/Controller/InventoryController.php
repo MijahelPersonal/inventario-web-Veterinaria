@@ -17,14 +17,14 @@ final class InventoryController extends Controller
             'products' => $model->overview(),
             'lots' => $model->lots(),
             'movements' => $model->movements(),
-            'suppliers' => new Catalog($this->context->db())->choices('suppliers'),
+            'suppliers' => (new Catalog($this->context->db()))->choices('suppliers'),
             'incoming_key' => bin2hex(random_bytes(32)),
             'outgoing_key' => bin2hex(random_bytes(32)),
         ]);
     }
     public function save(array $parameters = []): void
     {
-        new InventoryService($this->context->db())->movement($_POST, (int) $_SESSION['user_id']);
+        (new InventoryService($this->context->db()))->movement($_POST, (int) $_SESSION['user_id']);
         Session::flash('Movimiento registrado con su responsable.');
         $this->redirect('/inventario');
     }

@@ -18,13 +18,13 @@ final class AuthService
             unset($_SESSION['user_id']);
             return null;
         }
-        $user = new User($this->db)->byId((int) $_SESSION['user_id']);
+        $user = (new User($this->db))->byId((int) $_SESSION['user_id']);
         if (!$user) {
             unset($_SESSION['user_id']);
             return null;
         }
         $_SESSION['last_activity'] = time();
-        $user['permissions'] = new User($this->db)->permissions((int) $user['id']);
+        $user['permissions'] = (new User($this->db))->permissions((int) $user['id']);
         return $user;
     }
     public function login(string $username, string $password): void
@@ -58,7 +58,7 @@ final class AuthService
                 $this->db->commit();
                 throw new DomainException('Demasiados intentos. Espera 15 minutos.');
             }
-            $user = new User($this->db)->byUsername($username);
+            $user = (new User($this->db))->byUsername($username);
             $valid = password_verify(
                 $password,
                 $user['password_hash'] ??
@@ -72,7 +72,7 @@ final class AuthService
                 throw new DomainException('Usuario o contraseña incorrectos.');
             }
             $this->db->prepare('DELETE FROM login_attempts WHERE attempt_key=?')->execute([$key]);
-            new AuditService($this->db)->record(
+            (new AuditService($this->db))->record(
                 (int) $user['id'],
                 'login',
                 'users',
@@ -93,7 +93,7 @@ final class AuthService
     public function logout(): void
     {
         if (!empty($_SESSION['user_id'])) {
-            new AuditService($this->db)->record(
+            (new AuditService($this->db))->record(
                 (int) $_SESSION['user_id'],
                 'logout',
                 'users',

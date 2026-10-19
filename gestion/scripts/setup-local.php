@@ -57,7 +57,7 @@ $id = (int) $db->lastInsertId();
 $db->prepare(
     "INSERT INTO user_roles(user_id,role_id) SELECT ?,id FROM roles WHERE name='Administrador'",
 )->execute([$id]);
-new App\Service\AuditService($db)->record($id, 'create_admin', 'users', $id);
+(new App\Service\AuditService($db))->record($id, 'create_admin', 'users', $id);
 if (!is_dir($root . '/storage/private')) {
     mkdir($root . '/storage/private', 0700, true);
 }

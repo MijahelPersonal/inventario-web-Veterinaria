@@ -26,7 +26,7 @@ final class AppointmentController extends Controller
             throw new DomainException('Filtro inválido.');
         }
         $calendar = $parameters['calendar'] ?? false;
-        $rows = new Appointment($this->context->db())->between(
+        $rows = (new Appointment($this->context->db()))->between(
             $start->format('Y-m-d'),
             $start->modify('+1 month')->format('Y-m-d'),
             $vet ?: null,
@@ -51,7 +51,7 @@ final class AppointmentController extends Controller
                 'states' => AppointmentService::STATES,
                 'request_key' => bin2hex(random_bytes(32)),
                 'appointments' => $rows,
-                'pets' => new Appointment($this->context->db())->pets(),
+                'pets' => (new Appointment($this->context->db()))->pets(),
                 'veterinarians' => $catalog->choices('veterinarians'),
                 'services' => $catalog->choices('services'),
             ],
@@ -63,13 +63,13 @@ final class AppointmentController extends Controller
     }
     public function create(array $parameters = []): void
     {
-        new AppointmentService($this->context->db())->create($_POST, (int) $_SESSION['user_id']);
+        (new AppointmentService($this->context->db()))->create($_POST, (int) $_SESSION['user_id']);
         Session::flash('Cita registrada.');
         $this->redirect('/citas');
     }
     public function status(array $parameters): void
     {
-        new AppointmentService($this->context->db())->changeStatus(
+        (new AppointmentService($this->context->db()))->changeStatus(
             (int) $parameters['id'],
             (string) ($_POST['status'] ?? ''),
             (string) ($_POST['notes'] ?? ''),
@@ -80,7 +80,10 @@ final class AppointmentController extends Controller
     }
     public function hours(array $parameters = []): void
     {
-        new AppointmentService($this->context->db())->saveHours($_POST, (int) $_SESSION['user_id']);
+        (new AppointmentService($this->context->db()))->saveHours(
+            $_POST,
+            (int) $_SESSION['user_id'],
+        );
         Session::flash('Horario semanal guardado. Las citas existentes conservan su horario.');
         $this->redirect('/citas');
     }
@@ -95,7 +98,7 @@ final class AppointmentController extends Controller
         if ($end <= $start || $end->getTimestamp() - $start->getTimestamp() > 93 * 86400) {
             throw new DomainException('Consulta como máximo 93 días.');
         }
-        $rows = new Appointment($this->context->db())->between(
+        $rows = (new Appointment($this->context->db()))->between(
             $start->format('Y-m-d H:i:s'),
             $end->format('Y-m-d H:i:s'),
             ((int) ($_GET['vet'] ?? 0)) ?: null,

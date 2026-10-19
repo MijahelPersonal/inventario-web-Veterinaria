@@ -114,7 +114,7 @@ final class AppointmentService
                 $userId,
                 $key,
             ]);
-            new AuditService($this->db)->record($userId, 'create', 'appointments', $id);
+            (new AuditService($this->db))->record($userId, 'create', 'appointments', $id);
             $this->db->commit();
             return $id;
         } catch (\Throwable $error) {
@@ -163,7 +163,7 @@ final class AppointmentService
                 throw new DomainException('La cita todavía no ha comenzado.');
             }
             $model->changeStatus($id, $status, $notes);
-            new AuditService($this->db)->record($userId, 'status', 'appointments', $id, [
+            (new AuditService($this->db))->record($userId, 'status', 'appointments', $id, [
                 'from' => $record['status'],
                 'to' => $status,
             ]);
@@ -195,7 +195,7 @@ final class AppointmentService
                 throw new DomainException('El veterinario no existe.');
             }
             $model->saveHours($vet, $day, $start, $end);
-            new AuditService($this->db)->record($userId, 'schedule', 'veterinarians', $vet, [
+            (new AuditService($this->db))->record($userId, 'schedule', 'veterinarians', $vet, [
                 'weekday' => $day,
                 'start' => $start,
                 'end' => $end,

@@ -47,7 +47,7 @@ final class AdministrationService
             foreach ($data as $key => $value) {
                 $model->setSetting($key, $value);
             }
-            new AuditService($this->db)->record($user, 'settings', 'settings');
+            (new AuditService($this->db))->record($user, 'settings', 'settings');
             $this->db->commit();
         } catch (\Throwable $error) {
             $this->db->rollBack();
@@ -101,7 +101,12 @@ final class AdministrationService
             if ($model->activeAdministrators() < 1) {
                 throw new DomainException('Debe quedar al menos un administrador activo.');
             }
-            new AuditService($this->db)->record($actor, $id ? 'update' : 'create', 'users', $saved);
+            (new AuditService($this->db))->record(
+                $actor,
+                $id ? 'update' : 'create',
+                'users',
+                $saved,
+            );
             $this->db->commit();
             return $saved;
         } catch (PDOException $error) {

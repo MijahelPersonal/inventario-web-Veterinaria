@@ -12,7 +12,7 @@ final class ReportController extends Controller
 {
     public function index(array $parameters = []): void
     {
-        $data = new ReportService($this->context->db())->generate($_GET);
+        $data = (new ReportService($this->context->db()))->generate($_GET);
         $catalog = new Catalog($this->context->db());
         $this->context->view->render(
             'reports/index.html.twig',
@@ -28,7 +28,7 @@ final class ReportController extends Controller
     }
     public function csv(array $parameters = []): void
     {
-        $data = new ReportService($this->context->db())->generate($_GET);
+        $data = (new ReportService($this->context->db()))->generate($_GET);
         header('Content-Type: text/csv; charset=utf-8');
         header('Content-Disposition: attachment; filename="reporte-' . $data['type'] . '.csv"');
         $output = fopen('php://output', 'w');
@@ -50,13 +50,13 @@ final class ReportController extends Controller
     }
     public function pdf(array $parameters = []): void
     {
-        $data = new ReportService($this->context->db())->generate($_GET);
+        $data = (new ReportService($this->context->db()))->generate($_GET);
         if (count($data['rows']) > 500) {
             throw new \DomainException(
                 'El PDF admite hasta 500 registros. Reduce el periodo o utiliza CSV.',
             );
         }
-        new DocumentService()->pdf(
+        (new DocumentService())->pdf(
             $this->context->view->html('documents/report.html.twig', $data),
             'reporte-' . $data['type'] . '.pdf',
         );

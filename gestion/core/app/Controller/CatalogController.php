@@ -15,7 +15,7 @@ final class CatalogController extends Controller
         $definition = CatalogService::definition($slug);
         $search = mb_substr((string) ($_GET['q'] ?? ''), 0, 160);
         $page = max(1, min(100000, (int) ($_GET['page'] ?? 1)));
-        $result = new Catalog($this->context->db())->search($definition, $search, $page);
+        $result = (new Catalog($this->context->db()))->search($definition, $search, $page);
         $this->context->view->render(
             in_array($slug, ['mascotas', 'veterinarios'], true)
                 ? 'catalog/directory.html.twig'
@@ -47,7 +47,7 @@ final class CatalogController extends Controller
     }
     public function save(array $parameters): void
     {
-        new CatalogService($this->context->db())->save(
+        (new CatalogService($this->context->db()))->save(
             $parameters['slug'],
             $_POST,
             isset($parameters['id']) ? (int) $parameters['id'] : null,

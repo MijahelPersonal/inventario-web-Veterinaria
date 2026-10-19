@@ -55,7 +55,7 @@ try {
         ['veterinarian_id' => $vet, 'start_at' => substr($input['start_at'], 0, 11) . '11:00'],
         $user,
     );
-    $record = new App\Model\ClinicalRecord($db)->appointment($id);
+    $record = (new App\Model\ClinicalRecord($db))->appointment($id);
     if (
         $record['symptoms'] !== 'Prueba de síntomas' ||
         substr($record['start_at'], 11, 5) !== '11:00' ||
@@ -80,7 +80,7 @@ try {
         ),
     );
     $agenda->changeStatus($id, 'confirmada', '', $user);
-    $sale = new App\Service\FinanceService($db)->sale(
+    $sale = (new App\Service\FinanceService($db))->sale(
         ['appointment_id' => $id, 'request_key' => bin2hex(random_bytes(32))],
         $user,
     );

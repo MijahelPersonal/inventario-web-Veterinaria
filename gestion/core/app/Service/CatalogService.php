@@ -86,7 +86,7 @@ final class CatalogService
         $this->db->beginTransaction();
         try {
             $saved = $model->save($definition['table'], $data, $id);
-            new AuditService($this->db)->record(
+            (new AuditService($this->db))->record(
                 $userId,
                 $id ? 'update' : 'create',
                 $definition['table'],

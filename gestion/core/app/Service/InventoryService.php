@@ -68,7 +68,7 @@ final class InventoryService
                     }
                 }
                 $supplier = empty($input['supplier_id']) ? null : (int) $input['supplier_id'];
-                $vendor = $supplier ? new Catalog($this->db)->find('suppliers', $supplier) : null;
+                $vendor = $supplier ? (new Catalog($this->db))->find('suppliers', $supplier) : null;
                 if (
                     ($kind === 'compra' && !$supplier) ||
                     ($supplier && (!$vendor || !$vendor['active']))
@@ -121,7 +121,7 @@ final class InventoryService
                 $user,
                 $key,
             );
-            new AuditService($this->db)->record($user, 'movement', 'stock_movements', $id);
+            (new AuditService($this->db))->record($user, 'movement', 'stock_movements', $id);
             $this->db->commit();
             return $id;
         } catch (\Throwable $error) {
