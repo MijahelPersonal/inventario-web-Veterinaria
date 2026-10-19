@@ -6,6 +6,9 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $inventory = \App\Controller\InventoryController::class;
+    $routes->addRoute('GET', '/inventario', [$inventory, 'index', 'inventory.read']);
+    $routes->addRoute('POST', '/inventario/movimientos', [$inventory, 'save', 'inventory.write']);
     $agenda = \App\Controller\AppointmentController::class;
     $routes->addRoute('GET', '/citas', [$agenda, 'index', 'appointments.read']);
     $routes->addRoute('GET', '/citas/eventos', [$agenda, 'events', 'appointments.read']);

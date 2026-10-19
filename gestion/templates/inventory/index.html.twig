@@ -1,0 +1,39 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Inventario{% endblock %}
+{% block content %}
+<div class="page-heading"><div><span class="eyebrow">EXISTENCIAS Y TRAZABILIDAD</span><h1>Inventario</h1></div></div>
+<div class="card mb-4"><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Producto</th><th>Existencia física</th><th>Disponible vigente</th><th>Mínimo</th></tr></thead><tbody>
+{% for row in products %}<tr><td>{{ row.code }} · {{ row.name }}</td><td>{{ row.quantity }} {{ row.unit }}</td><td class="{{ row.available<=row.min_stock ? 'text-danger fw-semibold' : '' }}">{{ row.available }}</td><td>{{ row.min_stock }}</td></tr>{% else %}<tr><td colspan="4" class="text-center py-4">Registra productos para comenzar.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% if can('inventory.write') %}
+<div class="row g-4 mb-4"><div class="col-lg-6"><details class="card"><summary class="card-header">Entrada / recepción de compra</summary>
+<form class="card-body row g-3" action="/inventario/movimientos" method="post">
+<input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="request_key" value="{{ incoming_key }}">
+<div class="col-12"><label class="form-label">Producto<select class="form-select" name="product_id" required>{% for row in products %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }} ({{ row.unit }})</option>{% endif %}{% endfor %}</select></label></div>
+<div class="col-6"><label class="form-label">Tipo<select class="form-select" name="kind"><option value="compra">Compra recibida</option><option value="inicial">Saldo inicial / ajuste positivo</option></select></label></div>
+<div class="col-6"><label class="form-label">Proveedor<select class="form-select" name="supplier_id"><option value="">Sin proveedor</option>{% for row in suppliers %}{% if row.active %}<option value="{{ row.id }}">{{ row.name }}</option>{% endif %}{% endfor %}</select></label></div>
+<div class="col-6"><label class="form-label">Cantidad en unidad base<input class="form-control" type="number" name="quantity" min="0.001" step="0.001" required></label></div>
+<div class="col-6"><label class="form-label">Costo por unidad base<input class="form-control" type="number" name="cost" min="0" step="0.01" required></label></div>
+<div class="col-6"><label class="form-label">Lote<input class="form-control" name="lot_code" maxlength="100" required placeholder="SIN-LOTE si corresponde"></label></div>
+<div class="col-6"><label class="form-label">Vencimiento<input class="form-control" type="date" name="expires_at"></label></div>
+<div class="col-12"><label class="form-label">Referencia de compra<input class="form-control" name="reference" maxlength="100"></label></div>
+<div class="col-12"><label class="form-label">Motivo<input class="form-control" name="reason" maxlength="255" required></label></div>
+<div class="col-12"><button class="btn btn-primary">Confirmar entrada</button></div>
+</form></details></div><div class="col-lg-6"><details class="card"><summary class="card-header">Salida / ajuste / consumo</summary>
+<form class="card-body row g-3" action="/inventario/movimientos" method="post">
+<input type="hidden" name="csrf" value="{{ csrf }}"><input type="hidden" name="request_key" value="{{ outgoing_key }}">
+<div class="col-12"><label class="form-label">Producto<select class="form-select" name="product_id" required>{% for row in products %}<option value="{{ row.id }}">{{ row.name }}</option>{% endfor %}</select></label></div>
+<div class="col-12"><label class="form-label">Lote<select class="form-select" name="lot_id" required>{% for row in lots %}<option value="{{ row.id }}">{{ row.name }} · {{ row.lot_code }} · {{ row.quantity }} {{ row.unit }} · vence {{ row.expires_at ?? 'sin fecha' }}</option>{% endfor %}</select></label></div>
+<div class="col-6"><label class="form-label">Tipo<select class="form-select" name="kind"><option value="ajuste">Ajuste negativo por conteo</option><option value="consumo">Consumo en atención</option><option value="perdida">Daño u otra pérdida</option><option value="vencimiento">Vencimiento</option></select></label></div>
+<div class="col-6"><label class="form-label">Cantidad<input class="form-control" type="number" name="quantity" min="0.001" step="0.001" required></label></div>
+<div class="col-12"><label class="form-label">Motivo y referencia de atención<input class="form-control" name="reason" maxlength="255" required></label></div>
+<div class="col-12"><button class="btn btn-outline-danger">Confirmar salida</button></div>
+</form></details></div></div>
+{% endif %}
+<div class="card mb-4"><div class="card-header">Lotes con existencias · hasta 1000</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Producto / lote</th><th>Vence</th><th>Costo</th><th>Existencias</th><th>Reservado</th></tr></thead><tbody>
+{% for row in lots %}<tr><td>{{ row.name }} · {{ row.lot_code }}</td><td>{{ row.expires_at ?? 'Sin fecha' }}</td><td>{{ row.cost }}</td><td>{{ row.quantity }}</td><td>{{ row.reserved_quantity }}</td></tr>{% else %}<tr><td colspan="5" class="text-center py-4">No hay lotes con existencias.</td></tr>{% endfor %}
+</tbody></table></div></div>
+<div class="card"><div class="card-header">Últimos 100 movimientos</div><div class="table-responsive"><table class="table mb-0"><thead><tr><th>Fecha</th><th>Producto / lote</th><th>Tipo</th><th>Cantidad</th><th>Motivo</th><th>Responsable</th></tr></thead><tbody>
+{% for row in movements %}<tr><td>{{ row.created_at }}</td><td>{{ row.name }} · {{ row.lot_code }}</td><td>{{ row.kind }}</td><td>{{ row.quantity }}</td><td>{{ row.reason }} {{ row.reference }}</td><td>{{ row.user_name }}</td></tr>{% else %}<tr><td colspan="6" class="text-center py-4">Todavía no hay movimientos.</td></tr>{% endfor %}
+</tbody></table></div></div>
+{% endblock %}

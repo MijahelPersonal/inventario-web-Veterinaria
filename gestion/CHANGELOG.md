@@ -1,5 +1,13 @@
 # Historial de STRUCH VET
 
+## Inventario por lotes
+
+- Recepción de compras por producto con proveedor, referencia, lote, costo y vencimiento.
+- Saldos iniciales, ajustes negativos, consumo y pérdidas con motivo obligatorio.
+- Movimientos transaccionales, protección contra cantidades negativas y doble envío.
+- Existencias físicas separadas de disponibilidad vigente y cantidades reservadas.
+- Salidas de venta preparadas por vencimiento más próximo y costo histórico.
+
 ## Agenda y disponibilidad
 
 - Calendario local con mes, semana, día y lista; filtros por veterinario.
