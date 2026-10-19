@@ -1,5 +1,10 @@
 # Historial de STRUCH VET
 
+## Administración del acceso local
+
+- Restablecimiento de contraseñas por consola con hash y registro de auditoría.
+- Las contraseñas no se incluyen en los argumentos ni en archivos versionados.
+
 ## Inicio de sesión por usuario
 
 - El acceso usa nombre de usuario único y contraseña; correo opcional de contacto.
