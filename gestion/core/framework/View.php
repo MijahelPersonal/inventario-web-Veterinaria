@@ -22,6 +22,10 @@ final class View
 
     public function render(string $template, array $data = []): void
     {
+        $this->twig->addGlobal('csrf', $_SESSION['csrf'] ?? '');
+        $this->twig->addGlobal('flash', Session::consumeFlash());
         echo $this->twig->render($template, $data);
     }
+
+    public function setUser(?array $user): void { $this->twig->addGlobal('current_user', $user); }
 }

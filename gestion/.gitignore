@@ -3,6 +3,8 @@
 /.env
 /dist/
 /config/local.php
+/config/local.test.php
+/storage/private/*
 /public/assets/vendor/
 /storage/cache/*
 !/storage/cache/.gitkeep
