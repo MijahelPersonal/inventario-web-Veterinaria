@@ -1,0 +1,22 @@
+{
+  "name": "struch-vet-gestion",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Gestión de escritorio de STRUCH VET",
+  "main": "electron/main.js",
+  "scripts": {
+    "assets": "node scripts/prepare-assets.js",
+    "serve": "php -S 127.0.0.1:8080 -t public scripts/router.php",
+    "start": "electron ."
+  },
+  "keywords": [],
+  "author": "",
+  "license": "UNLICENSED",
+  "type": "commonjs",
+  "dependencies": {
+    "@coreui/coreui": "^5.9.1"
+  },
+  "devDependencies": {
+    "electron": "^44.9.0"
+  }
+}
