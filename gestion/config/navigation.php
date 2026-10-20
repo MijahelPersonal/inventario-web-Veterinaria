@@ -10,6 +10,7 @@ return [
             ['Inventario', '/inventario', 'boxes', 'inventory.read'],
             ['Clientes', '/catalogos/clientes', 'people', 'catalogs.read'],
             ['Ventas y cobros', '/ventas', 'receipt', 'sales.read'],
+            ['Solicitudes web', '/solicitudes-web', 'receipt', 'web_requests.manage'],
         ],
     ],
     [

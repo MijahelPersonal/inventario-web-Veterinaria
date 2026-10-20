@@ -1,0 +1,10 @@
+{% extends 'layouts/main.html.twig' %}
+{% block title %}Solicitudes web{% endblock %}
+{% block content %}
+<div class="page-heading"><div><h1>Solicitudes de StrukVet</h1><p class="text-body-secondary">Revisa el contacto antes de confirmar una cita o una compra. Estas solicitudes no reservan horarios ni existencias.</p></div></div>
+{% for row in requests %}<article class="card mb-3"><div class="card-header d-flex justify-content-between flex-wrap gap-2"><strong>{{ {'appointment':'Cita','order':'Pedido','contact':'Contacto'}[row.kind] }} · {{ row.reference }}</strong><span>{{ row.created_at }}</span></div><div class="card-body"><p><strong>{{ row.name }}</strong> · {{ row.phone }} {{ row.email ? ' · '~row.email : '' }}</p>
+{% if row.kind=='appointment' %}<p>{{ row.data.pet_name }} · {{ row.data.species }} · {{ row.data.service }}<br>Preferencia: {{ row.data.date }} a las {{ row.data.time }}</p><a class="btn btn-outline-primary btn-sm mb-3" href="/citas#nueva-cita">Revisar agenda y registrar cita</a>{% endif %}
+{% if row.kind=='order' %}<ul>{% for item in row.data.items %}<li>{{ item.name }} · {{ item.quantity }} × {{ item.price }}</li>{% endfor %}</ul><p>Importe referencial al solicitar: {{ row.data.total }} PEN. Verifica disponibilidad antes de vender.</p>{% endif %}
+{% if row.data.message %}<p>{{ row.data.message }}</p>{% endif %}
+<form method="post" action="/solicitudes-web/{{ row.id }}" class="d-flex gap-2"><input type="hidden" name="csrf" value="{{ csrf }}"><select class="form-select w-auto" name="status" aria-label="Estado {{ row.reference }}">{% for value,label in {'new':'Nueva','contacted':'Contactada','closed':'Cerrada'} %}<option value="{{ value }}" {{ row.status==value ? 'selected' : '' }}>{{ label }}</option>{% endfor %}</select><button class="btn btn-primary btn-sm">Guardar estado</button></form></div></article>{% else %}<div class="card card-body">Todavía no hay solicitudes de la página web.</div>{% endfor %}
+{% endblock %}

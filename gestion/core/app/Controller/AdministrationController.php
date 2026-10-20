@@ -10,6 +10,32 @@ use DomainException;
 // Expone preferencias y usuarios únicamente al personal autorizado.
 final class AdministrationController extends Controller
 {
+    public function webRequests(array $parameters = []): void
+    {
+        $rows = $this->context
+            ->db()
+            ->query('SELECT * FROM web_requests ORDER BY id DESC LIMIT 100')
+            ->fetchAll();
+        foreach ($rows as &$row) {
+            $row['data'] = json_decode($row['payload'], true, 32, JSON_THROW_ON_ERROR);
+        }
+        $this->context->view->render('administration/web-requests.html.twig', [
+            'requests' => $rows,
+        ]);
+    }
+    public function webRequestStatus(array $parameters): void
+    {
+        $status = (string) ($_POST['status'] ?? '');
+        if (!in_array($status, ['new', 'contacted', 'closed'], true)) {
+            throw new DomainException('Estado inválido.');
+        }
+        $this->context
+            ->db()
+            ->prepare('UPDATE web_requests SET status=? WHERE id=?')
+            ->execute([$status, (int) $parameters['id']]);
+        Session::flash('Estado de la solicitud actualizado.');
+        $this->redirect('/solicitudes-web');
+    }
     public function settings(array $parameters = []): void
     {
         $this->context->view->render('administration/settings.html.twig', [

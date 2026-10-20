@@ -38,7 +38,11 @@ try {
         case FastRoute\Dispatcher::FOUND:
             [$class, $method] = $result[1];
             $user = null;
-            if ($class !== App\Controller\AuthController::class || $method === 'logout') {
+            $publicWeb = $class === App\Controller\PublicWebController::class;
+            if (
+                !$publicWeb &&
+                ($class !== App\Controller\AuthController::class || $method === 'logout')
+            ) {
                 $user = $context->auth()->current();
                 if (!$user) {
                     header('Location: /login', true, 303);
@@ -63,6 +67,7 @@ try {
                 $view->settings((new App\Model\Administration($context->db()))->settings());
             }
             if (
+                !$publicWeb &&
                 in_array(
                     $_SERVER['REQUEST_METHOD'] ?? 'GET',
                     ['POST', 'PUT', 'PATCH', 'DELETE'],

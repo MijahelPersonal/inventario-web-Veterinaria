@@ -4,6 +4,7 @@
 /dist/
 /config/local.php
 /config/local.test.php
+/config/web.local.php
 /storage/private/*
 /public/assets/vendor/
 /storage/cache/*

@@ -6,6 +6,10 @@ use App\Controller\AuthController;
 use FastRoute\RouteCollector;
 
 return static function (RouteCollector $routes): void {
+    $web = \App\Controller\PublicWebController::class;
+    $routes->addRoute('GET', '/api/web/catalogo', [$web, 'catalog']);
+    $routes->addRoute('GET', '/api/web/productos/{id:\d+}/imagen', [$web, 'image']);
+    $routes->addRoute('POST', '/api/web/solicitudes', [$web, 'submit']);
     $clinical = \App\Controller\ClinicalController::class;
     $routes->addRoute('GET', '/fichas/{kind:mascotas|veterinarios}/{id:\d+}', [
         $clinical,
@@ -47,6 +51,12 @@ return static function (RouteCollector $routes): void {
         'cash.write',
     ]);
     $admin = \App\Controller\AdministrationController::class;
+    $routes->addRoute('GET', '/solicitudes-web', [$admin, 'webRequests', 'web_requests.manage']);
+    $routes->addRoute('POST', '/solicitudes-web/{id:\d+}', [
+        $admin,
+        'webRequestStatus',
+        'web_requests.manage',
+    ]);
     $routes->addRoute('GET', '/configuracion', [$admin, 'settings', 'settings.manage']);
     $routes->addRoute('POST', '/configuracion', [$admin, 'saveSettings', 'settings.manage']);
     $routes->addRoute('GET', '/usuarios', [$admin, 'users', 'users.manage']);
