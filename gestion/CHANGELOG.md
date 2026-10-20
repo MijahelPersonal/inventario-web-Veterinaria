@@ -1,5 +1,11 @@
 # Historial de STRUCH VET
 
+## Perfiles de personal simplificados
+
+- Dos roles de acceso: Administrador y Cajero; un solo rol por cuenta.
+- Las cuentas nuevas proponen Cajero y se conserva la protección del último administrador activo.
+- Las cuentas de roles retirados se conservan y pasan al perfil Cajero sin permisos administrativos.
+
 ## Carga ligera por pantalla
 
 - Marco JavaScript reducido de 446160 a 3404 bytes; calendario, gráficos y POS se descargan solo donde se usan.

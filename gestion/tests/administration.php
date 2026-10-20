@@ -17,9 +17,7 @@ $roles = $model->roles();
 $admin = (int) array_values(array_filter($roles, fn($r) => $r['name'] === 'Administrador'))[0][
     'id'
 ];
-$reception = (int) array_values(array_filter($roles, fn($r) => $r['name'] === 'Recepcionista'))[0][
-    'id'
-];
+$cashier = (int) array_values(array_filter($roles, fn($r) => $r['name'] === 'Cajero'))[0]['id'];
 $db->prepare('INSERT INTO user_roles(user_id,role_id) VALUES (?,?)')->execute([$actor, $admin]);
 $service = new App\Service\AdministrationService($db);
 $created = null;
@@ -33,7 +31,14 @@ $reject = static function (callable $operation): void {
 };
 try {
     $input = ['name' => $tag, 'username' => $tag, 'roles' => [$admin], 'active' => 1];
-    $reject(fn() => $service->user([...$input, 'roles' => [$reception]], $actor, $actor));
+    if (
+        count($roles) !== 2 ||
+        array_diff(array_column($roles, 'name'), ['Administrador', 'Cajero'])
+    ) {
+        throw new RuntimeException('Roles inesperados');
+    }
+    $reject(fn() => $service->user([...$input, 'roles' => [$admin, $cashier]], $actor, $actor));
+    $reject(fn() => $service->user([...$input, 'roles' => [$cashier]], $actor, $actor));
     $reject(
         fn() => $service->user(
             ['name' => $tag, 'username' => $tag, 'roles' => [$admin]],
@@ -45,7 +50,7 @@ try {
         [
             'name' => $tag,
             'username' => $tag . '-nuevo',
-            'roles' => [$reception],
+            'roles' => [$cashier],
             'active' => 1,
             'password' => 'prueba-temporal-123',
         ],
@@ -57,7 +62,7 @@ try {
             [
                 'name' => $tag,
                 'username' => $tag . '-nuevo',
-                'roles' => [$reception],
+                'roles' => [$cashier],
                 'active' => 1,
                 'password' => 'prueba-temporal-123',
             ],

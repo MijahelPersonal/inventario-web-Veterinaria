@@ -56,8 +56,8 @@ final class AdministrationService
         $roles = array_values(array_unique(array_map('intval', $input['roles'])));
         $model = new Administration($this->db);
         $valid = array_column($model->roles(), 'id');
-        if (!$roles || array_diff($roles, $valid)) {
-            throw new DomainException('Rol desconocido.');
+        if (count($roles) !== 1 || array_diff($roles, $valid)) {
+            throw new DomainException('Selecciona un rol: Administrador o Cajero.');
         }
         if ($id === $actor && !$active) {
             throw new DomainException('No puedes desactivar tu propia cuenta.');
