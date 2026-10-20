@@ -72,6 +72,8 @@ app.whenReady().then(() => {
             minWidth: 900,
             minHeight: 600,
             title: 'STRUCH VET',
+            show: false,
+            backgroundColor: '#f3f6fb',
             webPreferences: {
                 nodeIntegration: false,
                 contextIsolation: true,
@@ -79,6 +81,9 @@ app.whenReady().then(() => {
                 preload: path.join(__dirname, 'preload.js'),
             },
         });
+        // El nombre de la aplicación permanece fijo aunque cambie el título del documento.
+        window.on('page-title-updated', (event) => event.preventDefault());
+        window.once('ready-to-show', () => window.show());
         window.webContents.setWindowOpenHandler(() => ({ action: 'deny' }));
         window.webContents.on('will-navigate', (event, url) => {
             if (new URL(url).origin !== backend.origin) event.preventDefault();

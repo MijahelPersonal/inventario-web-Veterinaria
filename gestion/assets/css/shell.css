@@ -1,4 +1,14 @@
 /* Marco administrativo: menú oscuro y acentos azules solicitados para STRUCH VET. */
+/* Conserva el último fotograma hasta preparar la siguiente página, sin fundidos blancos. */
+@view-transition {
+    navigation: auto;
+}
+::view-transition-group(root),
+::view-transition-old(root),
+::view-transition-new(root) {
+    animation: none;
+    mix-blend-mode: normal;
+}
 .page-breadcrumb {
     display: flex;
     gap: 10px;

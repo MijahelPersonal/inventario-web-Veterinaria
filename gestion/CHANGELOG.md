@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Navegación y ventana de escritorio
+
+- Título de Electron fijo en STRUCH VET, sin reemplazarlo por cada módulo.
+- Ventana inicial mostrada cuando termina de prepararse, con fondo de la gestión.
+- Navegación entre documentos con fotograma anterior conservado y sin fundidos.
+- Fuentes locales precargadas para reducir cambios visuales entre pantallas.
+
 ## Corrección del desplazamiento lateral
 
 - Menú ampliado a 288 px, sin desbordamiento horizontal al interactuar.

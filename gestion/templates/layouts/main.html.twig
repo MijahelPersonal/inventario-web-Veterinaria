@@ -3,7 +3,8 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>{% block title %}Gestión{% endblock %} · {{ app_name }}</title>
+    <title>STRUCH VET · Sistema de gestión veterinaria</title>
+    {% for font in font_preloads %}<link rel="preload" href="{{ font }}" as="font" type="font/woff2" crossorigin>{% endfor %}
     <link rel="stylesheet" href="/assets/vendor/coreui.min.css">
     <link rel="stylesheet" href="/assets/js/app.css">
     <link rel="stylesheet" href="/assets/css/app.css">

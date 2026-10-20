@@ -19,6 +19,17 @@ final class View
             'cache' => $config['environment'] === 'production' ? $root . '/storage/cache' : false,
         ]);
         $this->twig->addGlobal('app_name', $config['name']);
+        // Adelanta las fuentes locales para evitar cambios de tipografía al abrir otra pantalla.
+        $fontFiles = glob(
+            $root . '/public/assets/js/fonts/plus-jakarta-sans-latin-*-normal-*.woff2',
+        );
+        $this->twig->addGlobal(
+            'font_preloads',
+            array_map(
+                static fn(string $file): string => '/assets/js/fonts/' . basename($file),
+                $fontFiles,
+            ),
+        );
         $this->twig->addGlobal(
             'current_path',
             parse_url($_SERVER['REQUEST_URI'] ?? '/', PHP_URL_PATH),
