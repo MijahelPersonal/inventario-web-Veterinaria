@@ -4,6 +4,6 @@
 <div class="page-heading"><div><h1>Calendario de consultas veterinarias</h1><p class="text-body-secondary mb-0">Vista por mes, semana y día de las citas programadas.</p></div>{% if can('appointments.write') %}<a class="btn btn-primary" href="#nueva-cita" data-open-details="nueva-cita">＋ Agendar consulta</a>{% endif %}</div>
 {% include 'appointments/filters.html.twig' %}
 {% if can('appointments.write') %}{% include 'appointments/form.html.twig' %}{% endif %}
-<div class="card"><div class="card-body"><div id="calendar" data-vet="{{ vet }}" data-month="{{ month }}"></div></div></div>
+<div class="card"><div class="card-body"><div id="calendar" data-vet="{{ vet }}" data-date="{{ calendar_date }}"></div></div></div>
 <p class="text-body-secondary small mt-3">Las citas solicitadas reservan horario. Abre una cita desde el calendario para consultar sus datos.</p>
 {% endblock %}

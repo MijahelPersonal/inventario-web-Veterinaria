@@ -45,6 +45,8 @@ final class AppointmentController extends Controller
             $calendar ? 'appointments/calendar.html.twig' : 'appointments/list.html.twig',
             [
                 'month' => $month,
+                // Conserva el día actual al alternar las vistas del mes vigente.
+                'calendar_date' => $month === date('Y-m') ? date('Y-m-d') : $month . '-01',
                 'vet' => $vet,
                 'calendar' => $calendar,
                 'filter' => $filter,

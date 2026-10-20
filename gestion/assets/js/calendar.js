@@ -12,7 +12,7 @@ export function mountCalendar() {
         plugins: [dayGridPlugin, timeGridPlugin, listPlugin],
         locale: esLocale,
         initialView: 'dayGridMonth',
-        initialDate: element.dataset.month ? `${element.dataset.month}-01` : undefined,
+        initialDate: element.dataset.date || undefined,
         headerToolbar: {
             left: 'prev,next today',
             center: 'title',
