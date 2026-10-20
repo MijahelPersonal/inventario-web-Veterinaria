@@ -2,6 +2,31 @@ const { mkdirSync, copyFileSync } = require('node:fs');
 const path = require('node:path');
 const { buildSync } = require('esbuild');
 const root = path.resolve(__dirname, '..');
+// Los iconos del marco se sirven como SVG para que nunca dependan de una fuente tardía.
+const sidebarIcons = [
+    'speedometer2',
+    'cart-plus',
+    'box-seam',
+    'boxes',
+    'people',
+    'receipt',
+    'calendar-check',
+    'calendar3',
+    'heart-pulse',
+    'person-vcard',
+    'clipboard2-pulse',
+    'bar-chart',
+    'shield-check',
+    'gear',
+    'heart-pulse-fill',
+];
+mkdirSync(path.join(root, 'public/assets/icons'), { recursive: true });
+for (const name of sidebarIcons) {
+    copyFileSync(
+        path.join(root, 'node_modules/bootstrap-icons/icons', `${name}.svg`),
+        path.join(root, 'public/assets/icons', `${name}.svg`),
+    );
+}
 copyStoreStyles();
 function copyStoreStyles() {
     mkdirSync(path.join(root, 'public/assets/css'), { recursive: true });

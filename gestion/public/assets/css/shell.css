@@ -1,14 +1,4 @@
 /* Marco administrativo: menú oscuro y acentos azules solicitados para STRUCH VET. */
-/* Conserva el último fotograma hasta preparar la siguiente página, sin fundidos blancos. */
-@view-transition {
-    navigation: auto;
-}
-::view-transition-group(root),
-::view-transition-old(root),
-::view-transition-new(root) {
-    animation: none;
-    mix-blend-mode: normal;
-}
 .page-breadcrumb {
     display: flex;
     gap: 10px;
@@ -280,10 +270,11 @@
     color: #bdcee7;
     border-radius: 7px;
 }
-.authenticated .nav-item > i {
+.authenticated .nav-item > .nav-icon {
     display: inline-grid;
     place-items: center;
     width: 22px;
+    height: 22px;
     flex: 0 0 22px;
     font-size: 20px;
 }
@@ -501,6 +492,15 @@
     font-size: 34px;
     line-height: 1;
 }
+.brand-heart .bi {
+    width: 1em;
+    height: 1em;
+}
+.system-footer svg.bi {
+    width: 1em;
+    height: 1em;
+    vertical-align: -0.125em;
+}
 .sidebar-brand small {
     font-size: 9px;
     letter-spacing: 0.5px;
@@ -633,4 +633,9 @@
 .system-footer {
     flex-shrink: 0;
     margin-top: 32px;
+}
+
+.authenticated .nav-icon > svg {
+    width: 22px;
+    height: 22px;
 }

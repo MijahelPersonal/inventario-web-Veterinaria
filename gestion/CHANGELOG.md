@@ -4,7 +4,9 @@
 
 - Título de Electron fijo en STRUCH VET, sin reemplazarlo por cada módulo.
 - Ventana inicial mostrada cuando termina de prepararse, con fondo de la gestión.
-- Navegación entre documentos con fotograma anterior conservado y sin fundidos.
+- Retirada la transición entre documentos que capturaba pantallas incompletas.
+- Inicialización crítica antes de pintar la página para evitar el calendario vacío durante la carga.
+- Iconos de menú, marca y pie incrustados como SVG, independientes de la carga de fuentes.
 - Fuentes locales precargadas para reducir cambios visuales entre pantallas.
 
 ## Corrección del desplazamiento lateral

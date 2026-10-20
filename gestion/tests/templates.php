@@ -4,6 +4,7 @@ require dirname(__DIR__) . '/vendor/autoload.php';
 $root = dirname(__DIR__);
 $twig = new Twig\Environment(new Twig\Loader\FilesystemLoader($root . '/templates'));
 $twig->addFunction(new Twig\TwigFunction('can', static fn(string $permission): bool => true));
+$twig->addFunction(new Twig\TwigFunction('icon', static fn(string $name): string => ''));
 $count = 0;
 $files = new RecursiveIteratorIterator(
     new RecursiveDirectoryIterator($root . '/templates', FilesystemIterator::SKIP_DOTS),

@@ -19,6 +19,20 @@ final class View
             'cache' => $config['environment'] === 'production' ? $root . '/storage/cache' : false,
         ]);
         $this->twig->addGlobal('app_name', $config['name']);
+        // Solo inserta iconos locales conocidos; no acepta rutas arbitrarias desde las vistas.
+        $this->twig->addFunction(
+            new \Twig\TwigFunction(
+                'icon',
+                static function (string $name) use ($root): string {
+                    if (!preg_match('/^[a-z0-9-]+$/D', $name)) {
+                        return '';
+                    }
+                    $file = $root . '/public/assets/icons/' . $name . '.svg';
+                    return is_file($file) ? file_get_contents($file) : '';
+                },
+                ['is_safe' => ['html']],
+            ),
+        );
         // Adelanta las fuentes locales para evitar cambios de tipografía al abrir otra pantalla.
         $fontFiles = glob(
             $root . '/public/assets/js/fonts/plus-jakarta-sans-latin-*-normal-*.woff2',
