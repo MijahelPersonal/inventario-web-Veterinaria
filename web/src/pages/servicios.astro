@@ -1,0 +1,90 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import { services } from '../lib/services';
+import { getCatalog, money } from '../lib/backend';
+const catalog = await getCatalog();
+---
+
+<SiteLayout title="Servicios veterinarios">
+  <section class="page-intro wrap">
+    <a class="breadcrumb" href="/">
+      Inicio <span>/ Servicios veterinarios</span>
+    </a>
+    <span class="eyebrow">CERCA DE TI, CERCA DE ELLOS</span>
+    <h1>
+      Cuidados con criterio.
+      <br />
+      <em>Y con mucho corazón.</em>
+    </h1>
+    <p>
+      Los acompañamos en cada etapa, desde sus primeras huellas
+      <br />
+      hasta esos años llenos de historias juntos.
+    </p>
+  </section>
+  <section class="wrap section service-detail-grid">
+    {services.map((service) => (
+      <article id={service.key} class="service-detail">
+        <span class={'service-icon icon-' + service.key}>
+          <Icon name={service.icon} size={31} />
+        </span>
+        <h2>{service.title}</h2>
+        <p>{service.detail}</p>
+        <a href="/citas" class="text-link">
+          Solicitar una cita <Icon name="arrow" size={17} />
+        </a>
+      </article>
+    ))}
+  </section>
+  {catalog.services.length > 0 && (
+    <section class="wrap section">
+      <div class="section-heading">
+        <div>
+          <span class="eyebrow">NUESTRO CATÁLOGO DE ATENCIÓN</span>
+          <h2>Conoce los servicios disponibles</h2>
+        </div>
+      </div>
+      <div class="available-services">
+        {catalog.services.map((service) => (
+          <article>
+            <div>
+              <h3>{service.name}</h3>
+              <p>{service.description}</p>
+              <small>{service.duration_minutes} minutos estimados</small>
+            </div>
+            <strong>{money(service.price)}</strong>
+            <a class="button button-outline" href="/citas">
+              Solicitar cita
+            </a>
+          </article>
+        ))}
+      </div>
+    </section>
+  )}
+  <section class="wrap care-split section">
+    <img
+      src="/images/veterinary-care.webp"
+      alt="Revisión veterinaria de un cachorro, imagen ilustrativa"
+      loading="lazy"
+      width="1200"
+      height="800"
+    />
+    <div>
+      <span class="eyebrow">CADA MASCOTA ES UN MUNDO</span>
+      <h2>
+        Primero escuchamos.
+        <br />
+        Después, cuidamos.
+      </h2>
+      <p>
+        El motivo de visita, la edad y los antecedentes nos ayudan a orientar cada atención. El
+        equipo confirmará contigo el servicio, la duración y su costo antes de realizarlo.
+      </p>
+      <a href="/citas" class="button button-green">
+        Conversemos sobre su cuidado <Icon name="calendar" size={18} />
+      </a>
+      <small class="image-disclosure">Fotografía ilustrativa generada con IA.</small>
+    </div>
+  </section>
+</SiteLayout>

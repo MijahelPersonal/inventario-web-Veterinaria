@@ -1,0 +1,16 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<SiteLayout title="Página no encontrada">
+  <section class="wrap section empty-state">
+    <Icon name="paw" size={60} />
+    <span class="eyebrow">404 · NOS FUIMOS DE PASEO</span>
+    <h1>Esta huella no lleva a ninguna parte.</h1>
+    <p>La página que buscas no existe o cambió de lugar.</p>
+    <a class="button button-green" href="/">
+      Volver al inicio
+    </a>
+  </section>
+</SiteLayout>

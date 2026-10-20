@@ -1,0 +1,178 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import ProductCard from '../components/ProductCard.astro';
+import { getCatalog } from '../lib/backend';
+const catalog = await getCatalog();
+const q = (Astro.url.searchParams.get('q') || '').slice(0, 150);
+const category = Astro.url.searchParams.get('categoria') || '';
+const pet = Astro.url.searchParams.get('mascota') || '';
+const order = Astro.url.searchParams.get('orden') || 'nombre';
+const categories = [...new Set(catalog.products.map((product) => product.category))].filter(
+  Boolean,
+);
+const needle = (value: string) =>
+  value
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .toLocaleLowerCase('es');
+let products = catalog.products.filter(
+  (product) =>
+    !q ||
+    needle([product.name, product.brand, product.category, product.code].join(' ')).includes(
+      needle(q),
+    ),
+);
+if (category)
+  products = products.filter(
+    (product) =>
+      needle(product.category).includes(needle(category)) ||
+      needle(product.description || '').includes(needle(category)),
+  );
+if (pet)
+  products = products.filter((product) =>
+    needle(product.name + ' ' + product.description).includes(pet === 'perros' ? 'perr' : 'gat'),
+  );
+products.sort((a, b) =>
+  order === 'precio-menor'
+    ? Number(a.price) - Number(b.price)
+    : order === 'precio-mayor'
+      ? Number(b.price) - Number(a.price)
+      : a.name.localeCompare(b.name, 'es'),
+);
+---
+
+<SiteLayout title={q ? 'Resultados para ' + q : 'Tienda para mascotas'}>
+  <section class="shop-banner wrap">
+    <div>
+      <a class="breadcrumb" href="/">
+        Inicio <span>/ Tienda</span>
+      </a>
+      <span class="eyebrow">ELLOS SE LO MERECEN</span>
+      <h1>
+        Pequeñas cosas.
+        <br />
+        <em>Grandes colitas felices.</em>
+      </h1>
+      <p>Descubre sus próximos favoritos.</p>
+    </div>
+    <img
+      src="/images/pet-essentials.webp"
+      alt="Alimento, un plato y accesorios para mascotas; composición ilustrativa"
+      width="1000"
+      height="700"
+    />
+  </section>
+  <section class="wrap section shop-layout">
+    <aside class="shop-sidebar">
+      <h2>Encuentra lo que necesita</h2>
+      <form id="catalog-filters" class="catalog-filters" method="get">
+        <label>
+          Buscar
+          <input name="q" type="search" value={q} placeholder="Nombre, marca o código…" />
+        </label>
+        <label>
+          Categoría
+          <select name="categoria">
+            <option value="">Todas las categorías</option>
+            {categories.map((name) => (
+              <option value={name} selected={category === name}>
+                {name}
+              </option>
+            ))}
+            {category && !categories.includes(category) && (
+              <option selected value={category}>
+                {category}
+              </option>
+            )}
+          </select>
+        </label>
+        <label>
+          Tu mascota
+          <select name="mascota">
+            <option value="">Todos los compañeros</option>
+            <option value="perros" selected={pet === 'perros'}>
+              Perros
+            </option>
+            <option value="gatos" selected={pet === 'gatos'}>
+              Gatos
+            </option>
+          </select>
+        </label>
+        <label>
+          Ordenar por
+          <select name="orden">
+            <option value="nombre" selected={order === 'nombre'}>
+              Nombre
+            </option>
+            <option value="precio-menor" selected={order === 'precio-menor'}>
+              Precio: menor a mayor
+            </option>
+            <option value="precio-mayor" selected={order === 'precio-mayor'}>
+              Precio: mayor a menor
+            </option>
+          </select>
+        </label>
+        <button class="button button-green">
+          Aplicar filtros <Icon name="search" size={16} />
+        </button>
+        {(q || category || pet) && (
+          <a class="clear-filters" href="/tienda">
+            Limpiar filtros
+          </a>
+        )}
+      </form>
+      <div class="shop-care-note">
+        <Icon name="stethoscope" size={27} />
+        <h3>¿No sabes por dónde empezar?</h3>
+        <p>Conversemos sobre lo que necesita tu mascota.</p>
+        <a href="/contacto">
+          Te orientamos <Icon name="arrow" size={15} />
+        </a>
+      </div>
+    </aside>
+    <div>
+      <div class="results-heading">
+        <h2>{q ? 'Resultados para “' + q + '”' : 'Nuestro catálogo'}</h2>
+        <span>
+          {products.length} {products.length === 1 ? 'producto' : 'productos'}
+        </span>
+      </div>
+      {products.length ? (
+        <div class="shop-product-grid">
+          {products.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-icon">
+            <Icon name="bag" size={42} />
+          </span>
+          <h2>
+            {catalog.products.length
+              ? 'No encontramos esa combinación.'
+              : catalog.connected
+                ? 'Estamos preparando sus próximos favoritos.'
+                : 'No pudimos cargar el catálogo ahora.'}
+          </h2>
+          <p>
+            {catalog.products.length
+              ? 'Prueba con otro nombre o modifica los filtros.'
+              : catalog.connected
+                ? 'Los productos aparecerán aquí cuando estén publicados desde nuestra tienda. Mientras tanto, podemos ayudarte a encontrar lo que necesita tu mascota.'
+                : 'Inténtalo de nuevo en unos minutos. Todavía puedes explorar los servicios y enviarnos una consulta.'}
+          </p>
+          <a class="button button-outline" href={catalog.products.length ? '/tienda' : '/contacto'}>
+            {catalog.products.length ? 'Ver todos los productos' : 'Consultar un producto'}{' '}
+            <Icon name="arrow" size={16} />
+          </a>
+        </div>
+      )}
+      <p class="catalog-note">
+        <Icon name="shield" size={16} /> Disponibilidad sujeta a confirmación al revisar tu
+        solicitud de pedido.
+      </p>
+    </div>
+  </section>
+</SiteLayout>

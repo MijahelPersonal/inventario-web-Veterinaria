@@ -1,0 +1,68 @@
+---
+import SiteLayout from '../../layouts/SiteLayout.astro';
+import Icon from '../../components/Icon.astro';
+import { getCatalog, money } from '../../lib/backend';
+const catalog = await getCatalog();
+const product = catalog.products.find((product) => String(product.id) === Astro.params.id);
+if (!product) Astro.response.status = 404;
+---
+
+<SiteLayout title={product?.name || 'Producto no encontrado'}>
+  {product ? (
+    <section class="wrap section">
+      <a class="breadcrumb" href="/tienda">
+        Tienda <span>/ {product.name}</span>
+      </a>
+      <div class="product-detail">
+        <div class="detail-photo">
+          {product.image ? (
+            <img src={'/api/productos/' + product.id} alt={product.name} width="600" height="600" />
+          ) : (
+            <Icon name="paw" size={100} />
+          )}
+        </div>
+        <div>
+          <span class="eyebrow">{product.category || 'ESENCIALES'}</span>
+          <h1>{product.name}</h1>
+          <p class="muted">{[product.brand, product.presentation].filter(Boolean).join(' · ')}</p>
+          <strong class="detail-price">{money(product.price)}</strong>
+          <p class="detail-description">
+            {product.description ||
+              'Consulta con nuestro equipo para conocer más sobre este producto.'}
+          </p>
+          <span class:list={['stock-note', { 'out-of-stock': Number(product.available) < 1 }]}>
+            {Number(product.available) >= 1
+              ? 'Disponible para solicitar'
+              : 'Sin disponibilidad por ahora'}
+          </span>
+          <button
+            class="button button-green add-to-cart"
+            data-product={JSON.stringify(product)}
+            disabled={Number(product.available) < 1}
+          >
+            Agregar al carrito <Icon name="bag" size={19} />
+          </button>
+          <div class="soft-note">
+            <Icon name="shield" />
+            <p>
+              El carrito es una solicitud de compra. El equipo confirma disponibilidad, precio final
+              y entrega contigo antes de cobrar.
+            </p>
+          </div>
+          <a class="text-link" href="/contacto">
+            Tengo una consulta sobre este producto <Icon name="arrow" size={17} />
+          </a>
+        </div>
+      </div>
+    </section>
+  ) : (
+    <section class="wrap section empty-state">
+      <Icon name="search" size={45} />
+      <h1>Este producto no está disponible.</h1>
+      <p>Puede haber sido retirado del catálogo o el enlace ya no es válido.</p>
+      <a class="button button-green" href="/tienda">
+        Volver a la tienda
+      </a>
+    </section>
+  )}
+</SiteLayout>

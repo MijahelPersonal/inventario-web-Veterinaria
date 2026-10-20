@@ -1,0 +1,74 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+---
+
+<SiteLayout title="Nuestra forma de cuidar">
+  <section class="page-intro wrap">
+    <a class="breadcrumb" href="/">
+      Inicio <span>/ Nosotros</span>
+    </a>
+    <span class="eyebrow">HOLA, SOMOS STRUKVET</span>
+    <h1>
+      Por los que nos enseñan
+      <br />
+      <em>a querer sin palabras.</em>
+    </h1>
+    <p>
+      Nuestro propósito es sencillo: hacer más fácil cuidar
+      <br />a quienes hacen tu vida más bonita.
+    </p>
+  </section>
+  <section class="wrap care-split section">
+    <img
+      src="/images/veterinary-care.webp"
+      alt="Una veterinaria atendiendo a un cachorro, fotografía ilustrativa"
+      width="1200"
+      height="800"
+    />
+    <div>
+      <h2>Un lugar para toda su vida.</h2>
+      <p>
+        StrukVet reúne productos y atención veterinaria en una experiencia cercana. Queremos que
+        encuentres lo que necesita tu mascota y que puedas conversar con el equipo sobre sus
+        cuidados.
+      </p>
+      <p>
+        Creemos en escuchar, explicar con claridad y coordinar cada visita con tiempo. Porque detrás
+        de cada mascota hay una familia que quiere verla bien.
+      </p>
+      <small class="image-disclosure">
+        Las fotografías de esta página son ilustraciones fotográficas generadas con IA; no
+        representan al personal de la veterinaria.
+      </small>
+    </div>
+  </section>
+  <section class="wrap section value-grid">
+    <article>
+      <Icon name="heart" size={34} />
+      <h2>Cercanía</h2>
+      <p>Nos importa saber quién está del otro lado: tú y tu compañero.</p>
+    </article>
+    <article>
+      <Icon name="shield" size={34} />
+      <h2>Claridad</h2>
+      <p>Información sencilla y decisiones que se conversan antes de actuar.</p>
+    </article>
+    <article>
+      <Icon name="paw" size={34} />
+      <h2>Compañía</h2>
+      <p>Cuidados que respetan las necesidades de cada etapa de su vida.</p>
+    </article>
+  </section>
+  <section class="appointment-banner wrap">
+    <div>
+      <span class="eyebrow">CONOZCÁMONOS</span>
+      <h2>Su historia nos importa.</h2>
+      <p>Cuéntanos cómo podemos acompañarlos.</p>
+    </div>
+    <a class="button button-cream" href="/citas">
+      Solicitar una cita <Icon name="arrow" size={18} />
+    </a>
+  </section>
+  <div class="section"></div>
+</SiteLayout>

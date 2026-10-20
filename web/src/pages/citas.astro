@@ -1,0 +1,141 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import ContactFields from '../components/ContactFields.astro';
+import PrivacyCheck from '../components/PrivacyCheck.astro';
+import { getCatalog } from '../lib/backend';
+import { services } from '../lib/services';
+const catalog = await getCatalog();
+const today = new Intl.DateTimeFormat('en-CA', {
+  timeZone: 'America/Lima',
+  year: 'numeric',
+  month: '2-digit',
+  day: '2-digit',
+}).format(new Date());
+---
+
+<SiteLayout title="Agenda una cita">
+  <section class="page-intro wrap">
+    <a class="breadcrumb" href="/">
+      Inicio <span>/ Agenda una cita</span>
+    </a>
+    <span class="eyebrow">EL PRIMER PASO PARA CUIDARLOS</span>
+    <h1>
+      Un momento para
+      <br />
+      <em>su bienestar.</em>
+    </h1>
+    <p>
+      Cuéntanos sobre tu compañero y elige cuándo te gustaría visitarnos.
+      <br />
+      Nos pondremos en contacto para confirmar los detalles.
+    </p>
+  </section>
+  <section class="wrap form-layout section">
+    <aside class="booking-aside">
+      <div class="booking-picture">
+        <img src="/images/pets-hero.webp" alt="Perro y gato juntos" width="1100" height="950" />
+        <span>
+          <Icon name="heart" size={18} /> Un cuidado tan único como ellos.
+        </span>
+      </div>
+      <h2>Así de sencillo.</h2>
+      <ol class="steps">
+        <li>
+          <span>01</span>
+          <div>
+            <strong>Cuéntanos qué necesita</strong>
+            <p>Tus datos y los de tu mascota.</p>
+          </div>
+        </li>
+        <li>
+          <span>02</span>
+          <div>
+            <strong>Elige tu preferencia</strong>
+            <p>Indícanos el día y la hora.</p>
+          </div>
+        </li>
+        <li>
+          <span>03</span>
+          <div>
+            <strong>Espera nuestra confirmación</strong>
+            <p>Coordinaremos contigo la disponibilidad.</p>
+          </div>
+        </li>
+      </ol>
+      <div class="soft-note">
+        <Icon name="shield" size={21} />
+        <p>
+          Esta solicitud no confirma ni reserva un horario. Si necesitas atención urgente, acude a
+          un centro veterinario disponible.
+        </p>
+      </div>
+    </aside>
+    <form class="request-form form-card" data-kind="appointment">
+      <div class="form-section-title">
+        <span>01</span>
+        <h2>Vamos a conocernos</h2>
+      </div>
+      <ContactFields />
+      <div class="form-section-title">
+        <span>02</span>
+        <h2>Tu mejor compañía</h2>
+      </div>
+      <div class="form-grid">
+        <label>
+          Nombre de tu mascota <span>*</span>
+          <input name="pet_name" maxlength="120" placeholder="Por ejemplo, Rocky" required />
+        </label>
+        <label>
+          ¿Qué mascota tienes? <span>*</span>
+          <select name="species" required>
+            <option value="">Seleccionar</option>
+            <option>Perro</option>
+            <option>Gato</option>
+            <option>Otra mascota</option>
+          </select>
+        </label>
+        <label class="full-field">
+          ¿Cómo podemos ayudarles? <span>*</span>
+          <select name="service" required>
+            <option value="">Selecciona un servicio</option>
+            {catalog.services.length
+              ? catalog.services.map((s) => <option value={s.name}>{s.name}</option>)
+              : services.map((s) => <option value={s.title}>{s.title}</option>)}
+            <option value="Quiero orientación sobre el servicio">
+              No estoy seguro, necesito orientación
+            </option>
+          </select>
+        </label>
+      </div>
+      <div class="form-section-title">
+        <span>03</span>
+        <h2>¿Cuándo les gustaría venir?</h2>
+      </div>
+      <div class="form-grid">
+        <label>
+          Fecha preferida <span>*</span>
+          <input name="date" type="date" min={today} required />
+        </label>
+        <label>
+          Hora preferida <span>*</span>
+          <input name="time" type="time" min="08:00" max="20:00" required />
+        </label>
+        <label class="full-field">
+          Algo más que debamos saber <small>(opcional)</small>
+          <textarea
+            name="message"
+            rows="3"
+            maxlength="1500"
+            placeholder="Motivo de la visita o alguna preferencia para coordinarla…"
+          ></textarea>
+        </label>
+      </div>
+      <PrivacyCheck />
+      <button class="button button-green" type="submit">
+        Enviar solicitud de cita <Icon name="arrow" size={18} />
+      </button>
+      <p class="form-fineprint">No solicitamos pagos ni datos de tarjeta en este formulario.</p>
+    </form>
+  </section>
+</SiteLayout>

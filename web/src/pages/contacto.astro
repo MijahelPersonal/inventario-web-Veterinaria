@@ -1,0 +1,64 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import ContactFields from '../components/ContactFields.astro';
+import PrivacyCheck from '../components/PrivacyCheck.astro';
+---
+
+<SiteLayout title="Hablemos de tu mascota">
+  <section class="page-intro wrap">
+    <a class="breadcrumb" href="/">
+      Inicio <span>/ Contacto</span>
+    </a>
+    <span class="eyebrow">ESTAMOS PARA ACOMPAÑARTE</span>
+    <h1>
+      Las buenas historias
+      <br />
+      <em>empiezan conversando.</em>
+    </h1>
+    <p>
+      Déjanos tu consulta y un medio para responderte.
+      <br />
+      Nuestro equipo la recibirá en la gestión de StrukVet.
+    </p>
+  </section>
+  <section class="wrap section form-layout">
+    <aside class="contact-aside">
+      <span class="service-icon">
+        <Icon name="mail" size={30} />
+      </span>
+      <h2>¿En qué te ayudamos?</h2>
+      <p>
+        Podemos orientarte sobre los productos, coordinar una visita o resolver una duda sobre tu
+        solicitud.
+      </p>
+      <a href="/citas" class="text-link">
+        Si necesitas una cita, empieza aquí <Icon name="arrow" size={18} />
+      </a>
+      <img src="/images/pets-hero.webp" alt="Perro y gato" width="1100" height="950" />
+      <div class="soft-note">
+        <Icon name="heart" />
+        <p>Este formulario no es un canal de urgencias veterinarias.</p>
+      </div>
+    </aside>
+    <form class="request-form form-card" data-kind="contact">
+      <h2>Te escuchamos.</h2>
+      <p class="muted">Los campos con * nos ayudan a responderte.</p>
+      <ContactFields />
+      <label class="block-label">
+        Tu mensaje <span>*</span>
+        <textarea
+          name="message"
+          rows="6"
+          maxlength="1500"
+          required
+          placeholder="Cuéntanos cómo podemos ayudarte…"
+        ></textarea>
+      </label>
+      <PrivacyCheck />
+      <button class="button button-green" type="submit">
+        Enviar mensaje <Icon name="arrow" size={18} />
+      </button>
+    </form>
+  </section>
+</SiteLayout>
