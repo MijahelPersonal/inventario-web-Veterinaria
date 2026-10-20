@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Carga ligera por pantalla
+
+- Marco JavaScript reducido de 446160 a 3404 bytes; calendario, gráficos y POS se descargan solo donde se usan.
+- Caché de plantillas compiladas con detección de cambios en desarrollo; existencias y cobros siguen consultándose en cada petición.
+- Retirada una consulta de proveedores que Inventario ya no utilizaba.
+- Recursos versionados para evitar mezclar archivos antiguos y nuevos al actualizar.
+
 ## Navegación y ventana de escritorio
 
 - Título de Electron fijo en STRUCH VET, sin reemplazarlo por cada módulo.

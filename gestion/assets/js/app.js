@@ -5,14 +5,8 @@ import '@fontsource/plus-jakarta-sans/latin-500.css';
 import '@fontsource/plus-jakarta-sans/latin-600.css';
 import '@fontsource/plus-jakarta-sans/latin-700.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { mountCalendar } from './calendar.js';
-import { mountPointOfSale } from './pos.js';
-import { mountDashboard } from './dashboard.js';
 import { mountUpdates } from './updates.js';
 mountUpdates();
-mountCalendar();
-mountPointOfSale();
-mountDashboard();
 // Completa el saldo sugerido; el backend comprueba nuevamente el importe permitido.
 const paymentSelect = document.querySelector('[data-payment-sale]');
 if (paymentSelect) {

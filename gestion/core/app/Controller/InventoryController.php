@@ -1,7 +1,6 @@
 <?php
 declare(strict_types=1);
 namespace App\Controller;
-use App\Model\Catalog;
 use App\Model\Inventory;
 use App\Service\InventoryService;
 use Core\Controller;
@@ -17,7 +16,6 @@ final class InventoryController extends Controller
             'products' => $model->overview(),
             'lots' => $model->lots(),
             'movements' => $model->movements(),
-            'suppliers' => (new Catalog($this->context->db()))->choices('suppliers'),
             'incoming_key' => bin2hex(random_bytes(32)),
             'outgoing_key' => bin2hex(random_bytes(32)),
         ]);

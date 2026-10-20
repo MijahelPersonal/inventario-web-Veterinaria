@@ -11,7 +11,8 @@
     <link rel="stylesheet" href="/assets/css/shell.css">
     <link rel="stylesheet" href="/assets/css/store.css">
     <script src="/assets/vendor/coreui.bundle.min.js" defer blocking="render"></script>
-    <script src="/assets/js/app.js" defer blocking="render"></script>
+    <script src="/assets/js/app.js?v={{ asset_version }}" defer blocking="render"></script>
+    {% if current_user %}{% if current_path=='/calendario' %}<script src="/assets/js/calendar-page.js?v={{ asset_version }}" defer blocking="render"></script>{% elseif current_path=='/' %}<script src="/assets/js/dashboard-page.js?v={{ asset_version }}" defer blocking="render"></script>{% elseif current_path=='/tienda' %}<script src="/assets/js/store-page.js?v={{ asset_version }}" defer blocking="render"></script>{% endif %}{% endif %}
 </head>
 <body class="{{ current_user ? 'authenticated' : 'guest' }}" style="--brand: {{ clinic.primary_color|default('#2563eb') }}">
     <header class="header px-4">

@@ -56,10 +56,15 @@ for (const [source, target] of [
 console.log('Recursos públicos preparados.');
 // Empaqueta bibliotecas para usarlas localmente sin CDN ni acceso a node_modules.
 buildSync({
-    entryPoints: [path.join(root, 'assets/js/app.js')],
+    entryPoints: Object.fromEntries(
+        ['app', 'calendar-page', 'dashboard-page', 'store-page'].map((name) => [
+            name,
+            path.join(root, 'assets/js', `${name}.js`),
+        ]),
+    ),
     bundle: true,
     minify: true,
     loader: { '.woff2': 'file', '.woff': 'file' },
     assetNames: 'fonts/[name]-[hash]',
-    outfile: path.join(root, 'public/assets/js/app.js'),
+    outdir: path.join(root, 'public/assets/js'),
 });

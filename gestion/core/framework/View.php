@@ -16,9 +16,13 @@ final class View
         $this->twig = new Environment(new FilesystemLoader($root . '/templates'), [
             'autoescape' => 'html',
             'debug' => false,
-            'cache' => $config['environment'] === 'production' ? $root . '/storage/cache' : false,
+            // Solo guarda PHP compilado de las vistas; los datos se consultan en cada petición.
+            'cache' => $root . '/storage/cache',
+            'auto_reload' => $config['environment'] !== 'production',
         ]);
         $this->twig->addGlobal('app_name', $config['name']);
+        $bundle = $root . '/public/assets/js/app.js';
+        $this->twig->addGlobal('asset_version', is_file($bundle) ? filemtime($bundle) : 1);
         // Solo inserta iconos locales conocidos; no acepta rutas arbitrarias desde las vistas.
         $this->twig->addFunction(
             new \Twig\TwigFunction(
