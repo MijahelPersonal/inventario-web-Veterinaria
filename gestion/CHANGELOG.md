@@ -1,5 +1,12 @@
 # Historial de STRUCH VET
 
+## Corrección del desplazamiento lateral
+
+- Menú ampliado a 288 px, sin desbordamiento horizontal al interactuar.
+- Resaltado mediante color, sin desplazar las filas fuera de su contenedor.
+- Posición del menú conservada entre pantallas y opción activa siempre visible.
+- Cabecera y usuario permanecen fijos mientras se desplazan las opciones.
+
 ## 0.2.0 — Simplificación y escritorio
 
 - Dashboard, menú simplificado, corazón amarillo e iconos con color.

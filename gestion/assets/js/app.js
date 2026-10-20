@@ -35,6 +35,28 @@ document.getElementById('sidebar-toggle')?.addEventListener('click', (event) => 
     const collapsed = document.body.classList.toggle('sidebar-collapsed');
     event.currentTarget.setAttribute('aria-expanded', String(!collapsed));
 });
+// Conserva la posición del menú y mantiene visible la pantalla seleccionada al navegar.
+const sidebarMenu = document.querySelector('.app-sidebar nav');
+if (sidebarMenu) {
+    try {
+        const saved = Number(sessionStorage.getItem('struch-sidebar-scroll'));
+        if (Number.isFinite(saved) && saved >= 0) sidebarMenu.scrollTop = saved;
+    } catch {}
+    const active = sidebarMenu.querySelector('[aria-current="page"], .nav-item.active');
+    if (active) {
+        const menuBounds = sidebarMenu.getBoundingClientRect();
+        const activeBounds = active.getBoundingClientRect();
+        if (activeBounds.bottom > menuBounds.bottom - 8)
+            sidebarMenu.scrollTop += activeBounds.bottom - menuBounds.bottom + 8;
+        else if (activeBounds.top < menuBounds.top + 8)
+            sidebarMenu.scrollTop -= menuBounds.top - activeBounds.top + 8;
+    }
+    window.addEventListener('pagehide', () => {
+        try {
+            sessionStorage.setItem('struch-sidebar-scroll', String(sidebarMenu.scrollTop));
+        } catch {}
+    });
+}
 // Previsualiza la apariencia; Guardar preferencias la conserva en el servidor.
 document.querySelectorAll('[name="theme"]').forEach((input) => {
     input.addEventListener('change', () => {

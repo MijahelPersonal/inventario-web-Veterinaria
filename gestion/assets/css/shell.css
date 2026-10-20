@@ -114,7 +114,7 @@
     align-items: stretch;
 }
 :root {
-    --sidebar-width: 264px;
+    --sidebar-width: 288px;
     --cui-body-font-family: 'Plus Jakarta Sans', system-ui, sans-serif;
     --cui-body-font-size: 1rem;
     --cui-primary: #2563eb;
@@ -208,6 +208,7 @@
     flex-direction: column;
     z-index: 30;
     color: #b6c6df;
+    overflow: hidden;
 }
 .sidebar-brand {
     display: flex;
@@ -217,6 +218,7 @@
     padding: 14px 10px;
     text-decoration: none;
     color: #edf4ff;
+    flex-shrink: 0;
 }
 .brand-mark {
     display: grid;
@@ -244,12 +246,17 @@
 }
 .authenticated .app-sidebar nav {
     overflow-y: auto;
+    /* Reserva el ancho del scroll para que los enlaces no desborden al enfocarlos. */
+    overflow-x: hidden;
+    scrollbar-gutter: stable;
     flex: 1;
-    padding: 8px 0;
+    padding: 8px 6px 12px 0;
     min-height: 0;
     scrollbar-width: thin;
     scrollbar-color: #586675 transparent;
     overscroll-behavior: contain;
+    scroll-padding-block: 8px;
+    user-select: none;
 }
 .authenticated .nav-item {
     display: flex;
@@ -271,7 +278,9 @@
     font-size: 20px;
 }
 .authenticated .nav-text {
-    white-space: nowrap;
+    min-width: 0;
+    white-space: normal;
+    overflow-wrap: break-word;
 }
 .authenticated .app-sidebar nav::-webkit-scrollbar {
     width: 5px;
@@ -292,6 +301,10 @@
     color: #fff;
     font-weight: 650;
     box-shadow: none;
+}
+.authenticated .nav-item:focus-visible {
+    outline: 2px solid #d6e7ff;
+    outline-offset: -3px;
 }
 .authenticated .nav-label {
     color: #7e94b0;
@@ -315,6 +328,7 @@
 .sidebar-footer {
     border-top: 1px solid #34475e;
     padding: 12px 8px;
+    flex-shrink: 0;
 }
 .sidebar-user {
     display: flex;
@@ -489,12 +503,8 @@
         margin-left 0.24s ease;
 }
 .nav-item {
-    transition:
-        background-color 0.18s ease,
-        transform 0.18s ease;
-}
-.nav-item:hover {
-    transform: translateX(3px);
+    /* Solo cambia el color: desplazar toda la fila provocaba scroll horizontal. */
+    transition: background-color 0.18s ease;
 }
 .nav-item .bi {
     color: #60a5fa;
