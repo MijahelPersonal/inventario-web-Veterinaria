@@ -7,6 +7,8 @@ return [
         'links' => [
             ['Venta en tienda', '/tienda', 'cart-plus', 'sales.write'],
             ['Productos', '/catalogos/productos', 'box-seam', 'catalogs.read'],
+            ['Categorías web', '/catalogos/categorias', 'boxes', 'products.manage'],
+            ['Marcas', '/catalogos/marcas', 'box-seam', 'products.manage'],
             ['Inventario', '/inventario', 'boxes', 'inventory.read'],
             ['Clientes', '/catalogos/clientes', 'people', 'catalogs.read'],
             ['Ventas y cobros', '/ventas', 'receipt', 'sales.read'],

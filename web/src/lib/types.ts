@@ -10,6 +10,11 @@ export interface Product {
   available: string;
   image: string | null;
   demo?: boolean;
+  regular_price?: string;
+  on_sale?: boolean;
+  discount_percent?: number;
+  web_group?: string;
+  pet_type?: string;
 }
 export interface Service {
   id: number;

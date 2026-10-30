@@ -86,7 +86,7 @@ final class WebRequestService
                     throw new DomainException('Cantidad inválida.');
                 }
                 $query = $this->db->prepare(
-                    'SELECT p.id,p.name,p.price,COALESCE(SUM(CASE WHEN l.expires_at IS NULL OR l.expires_at>=CURRENT_DATE THEN l.quantity-l.reserved_quantity ELSE 0 END),0) available FROM products p LEFT JOIN stock_lots l ON l.product_id=p.id WHERE p.id=? AND p.active=1 AND p.publish_online=1 GROUP BY p.id',
+                    'SELECT p.id,p.name,p.price,p.offer_price,p.offer_from,p.offer_until,COALESCE(SUM(CASE WHEN l.expires_at IS NULL OR l.expires_at>=CURRENT_DATE THEN l.quantity-l.reserved_quantity ELSE 0 END),0) available FROM products p LEFT JOIN stock_lots l ON l.product_id=p.id WHERE p.id=? AND p.active=1 AND p.publish_online=1 GROUP BY p.id',
                 );
                 $query->execute([$id]);
                 $product = $query->fetch();
@@ -95,6 +95,7 @@ final class WebRequestService
                         'Un producto ya no tiene disponibilidad suficiente. Actualiza tu carrito.',
                     );
                 }
+                $product = WebPricing::apply($product);
                 $line = bcmul($qty, $product['price'], 2);
                 $total = bcadd($total, $line, 2);
                 $payload['items'][] = [

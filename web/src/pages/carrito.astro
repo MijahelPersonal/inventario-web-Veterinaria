@@ -1,76 +1,74 @@
 ---
 import SiteLayout from '../layouts/SiteLayout.astro';
 import Icon from '../components/Icon.astro';
-import ContactFields from '../components/ContactFields.astro';
-import PrivacyCheck from '../components/PrivacyCheck.astro';
 ---
 
-<SiteLayout title="Tu carrito">
-  <section class="page-intro wrap">
-    <a class="breadcrumb" href="/">
-      Inicio <span>/ Carrito</span>
+<SiteLayout title="Mi carrito">
+  <section class="wrap page-intro">
+    <a class="breadcrumb" href="/tienda">
+      Tienda <span>/ Mi carrito</span>
     </a>
-    <span class="eyebrow">UN POCO MÁS DE ALEGRÍA</span>
-    <h1>
-      Sus próximos <em>favoritos.</em>
-    </h1>
-    <p>Revisa tu selección y envíanos una solicitud de compra.</p>
+    <span class="eyebrow">SU PRÓXIMA ALEGRÍA ESTÁ AQUÍ</span>
+    <h1>Tu carrito.</h1>
+    <p>Un último vistazo a sus nuevos favoritos.</p>
+    <ol class="checkout-steps">
+      <li aria-current="step">
+        <span>1</span>Tu carrito
+      </li>
+      <li>
+        <span>2</span>Tus datos
+      </li>
+      <li>
+        <span>3</span>Coordinación
+      </li>
+    </ol>
   </section>
   <section class="wrap section" id="cart-page">
     <div id="cart-empty" class="empty-state">
       <span class="empty-icon">
-        <Icon name="bag" size={45} />
+        <Icon name="bag" size={42} />
       </span>
-      <h2>Su próxima alegría empieza aquí.</h2>
-      <p>Todavía no agregaste productos al carrito.</p>
-      <a href="/tienda" class="button button-green">
-        Explorar la tienda <Icon name="arrow" size={17} />
+      <h2>Un carrito con mucho por descubrir.</h2>
+      <p>Elige los productos que acompañarán sus próximos días.</p>
+      <a class="button button-green" href="/tienda">
+        Encontrar sus favoritos <Icon name="arrow" size={18} />
       </a>
     </div>
     <div class="cart-layout" id="cart-content" hidden>
       <div>
+        <div class="cart-table-header">
+          <span>Sus productos</span>
+          <span>Cantidad</span>
+        </div>
         <div id="cart-lines" class="cart-items"></div>
         <div class="cart-toolbar">
           <a class="text-link" href="/tienda">
-            ← Seguir explorando
+            ← Seguir comprando
           </a>
           <button id="clear-cart" type="button">
             Vaciar carrito
           </button>
         </div>
-        <div class="soft-note">
-          <Icon name="shield" />
-          <p>
-            Los precios y las existencias se comprueban en el servidor al enviar tu solicitud. No se
-            reserva stock ni se realiza un cobro en esta página.
-          </p>
-        </div>
       </div>
-      <form class="request-form form-card" data-kind="order">
-        <h2>Coordinemos tu pedido</h2>
+      <aside class="form-card order-summary">
+        <span class="eyebrow">YA CASI SON SUYOS</span>
+        <h2>Resumen de tu selección</h2>
         <div class="cart-total">
           <span>Subtotal estimado</span>
           <strong id="cart-total">S/ 0.00</strong>
         </div>
-        <ContactFields />
-        <label class="block-label">
-          Notas para coordinar <small>(opcional)</small>
-          <textarea
-            name="message"
-            maxlength="1500"
-            rows="3"
-            placeholder="Indícanos alguna preferencia para coordinar la entrega…"
-          ></textarea>
-        </label>
-        <PrivacyCheck />
-        <button class="button button-green" type="submit">
-          Solicitar pedido <Icon name="arrow" size={18} />
-        </button>
-        <p class="form-fineprint">
-          El equipo te contactará para confirmar disponibilidad, entrega y pago. No ingreses datos
-          de tarjeta.
+        <p>
+          Entrega y pago se coordinan con nuestro equipo. El importe se verifica al enviar la
+          solicitud.
         </p>
-      </form>
+        <a class="button button-green" href="/checkout">
+          Continuar con mis datos <Icon name="arrow" size={18} />
+        </a>
+        <div class="soft-note">
+          <Icon name="shield" size={20} />
+          <p>Sin cobros automáticos. Sin datos de tarjeta.</p>
+        </div>
+      </aside>
     </div>
   </section>
 </SiteLayout>

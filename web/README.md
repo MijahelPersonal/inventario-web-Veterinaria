@@ -50,3 +50,16 @@ Definir `SITE_URL` con el dominio HTTPS público y `BACKEND_URL` con la direcci�
 - Comprobación de precio calculado en servidor, idempotencia, límites y stock sin modificar.
 
 El diseño incluye reglas para móvil; la verificación visual realizada corresponde a escritorio.
+
+## Reconstrucción comercial · octubre 2026
+
+La documentación de arquitectura, marca original reutilizada, rutas, imágenes, validación y funciones pendientes está en [RECONSTRUCCION.md](RECONSTRUCCION.md). El frontend usa el nombre StruchVet; los contratos y la clave anterior de almacenamiento del carrito se conservan para no perder selecciones existentes.
+
+El checkout ahora vive en `/checkout`, después de revisar `/carrito`. El flujo sigue siendo una solicitud pendiente de confirmación, sin pasarela de pago. Las páginas de categorías tienen rutas propias. La página `/ofertas` muestra los descuentos configurados en gestión y vigentes según la fecha de Lima. La migración 014 incorpora esos campos.
+
+En Linux, el backend requiere PHP PDO MySQL, mbstring y BCMath para las validaciones y cálculos de importes. Gestión conserva su administración e inicio de sesión independientes.
+
+
+## Continuación del 30 de octubre de 2026
+
+Estado actual, pruebas y limitación pendiente de verificación visual: [RECONSTRUCCION.md](RECONSTRUCCION.md). Decisión sobre plataformas: [ARQUITECTURA.md](ARQUITECTURA.md). El catálogo real se administra en gestión y aún no tiene productos publicados.

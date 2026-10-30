@@ -11,6 +11,11 @@ const available = Math.floor(Number(product.available));
 
 <article class="product-card">
   <a class="product-visual" href={'/productos/' + product.id}>
+    {product.on_sale && (
+      <span class="discount-badge">
+        {product.discount_percent ? `-${product.discount_percent}%` : 'Oferta'}
+      </span>
+    )}
     {product.image ? (
       <img
         src={'/api/productos/' + product.id}
@@ -21,20 +26,27 @@ const available = Math.floor(Number(product.available));
       />
     ) : (
       <span class="no-product-image">
-        <Icon name="paw" size={55} />
-        <small>Imagen por agregar</small>
+        <Icon name="bag" size={45} />
+        <small>Fotografía por agregar</small>
       </span>
     )}
-    {available < 1 && <span class="product-stock-label">Sin disponibilidad</span>}
+    <span class:list={['product-stock-label', { unavailable: available < 1 }]}>
+      {available > 0 ? 'Disponible' : 'Agotado'}
+    </span>
   </a>
   <div class="product-info">
-    <span class="product-category">{product.category || 'Esenciales'}</span>
+    <span class="product-category">{product.brand || product.category || 'StruchVet'}{product.demo && ' · Prueba'}</span>
     <a href={'/productos/' + product.id}>
       <h2>{product.name}</h2>
     </a>
-    <span class="product-presentation">{product.presentation}</span>
+    <span class="product-presentation">
+      {product.presentation || product.category || 'Cuidado para tu mascota'}
+    </span>
     <div class="product-buy">
-      <strong>{money(product.price)}</strong>
+      <span class="price-stack">
+        {product.on_sale && <del>{money(product.regular_price || product.price)}</del>}
+        <strong>{money(product.price)}</strong>
+      </span>
       <button
         class="add-to-cart"
         type="button"
@@ -42,7 +54,7 @@ const available = Math.floor(Number(product.available));
         disabled={available < 1}
         data-product={JSON.stringify(product)}
       >
-        <Icon name="bag" size={18} />
+        <Icon name="bag" size={19} />
       </button>
     </div>
   </div>

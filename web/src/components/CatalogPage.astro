@@ -1,0 +1,284 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from './Icon.astro';
+import ProductCard from './ProductCard.astro';
+import { getCatalog } from '../lib/backend';
+import { categories as sections, matchesCategory, normalize } from '../lib/categories';
+interface Props {
+  section?: string;
+}
+const { section = '' } = Astro.props;
+const current = sections.find((c) => c.slug === section);
+const catalog = await getCatalog();
+const q = (Astro.url.searchParams.get('q') || '').slice(0, 150);
+const brand = (Astro.url.searchParams.get('marca') || '').slice(0, 160);
+const group = Astro.url.searchParams.get('grupo') || '';
+const min = Astro.url.searchParams.get('min') || '';
+const max = Astro.url.searchParams.get('max') || '';
+const priceValue = (value: string) => (/^\d{1,9}(\.\d{1,2})?$/.test(value) ? Number(value) : null);
+const category = Astro.url.searchParams.get('categoria') || '';
+const pet = Astro.url.searchParams.get('mascota') || '';
+const order = Astro.url.searchParams.get('orden') || 'nombre';
+let products = catalog.products.filter((p) => matchesCategory(p, section));
+if (pet) products = products.filter((p) => matchesCategory(p, pet));
+if (q)
+  products = products.filter((p) =>
+    normalize([p.name, p.brand, p.category, p.code, p.description].join(' ')).includes(
+      normalize(q),
+    ),
+  );
+if (category) products = products.filter((p) => normalize(p.category) === normalize(category));
+if (brand) products = products.filter((p) => normalize(p.brand) === normalize(brand));
+if (group) products = products.filter((p) => matchesCategory(p, group));
+if (priceValue(min) !== null)
+  products = products.filter((p) => Number(p.price) >= priceValue(min)!);
+if (priceValue(max) !== null)
+  products = products.filter((p) => Number(p.price) <= priceValue(max)!);
+const filteredCount = products.length;
+const totalPages = Math.max(1, Math.ceil(filteredCount / 20));
+const page = Math.min(
+  totalPages,
+  Math.max(1, Number.parseInt(Astro.url.searchParams.get('pagina') || '1', 10) || 1),
+);
+products.sort((a, b) =>
+  order === 'precio-menor'
+    ? Number(a.price) - Number(b.price)
+    : order === 'precio-mayor'
+      ? Number(b.price) - Number(a.price)
+      : a.name.localeCompare(b.name, 'es'),
+);
+products = products.slice((page - 1) * 20, page * 20);
+const pageLink = (n: number) => {
+  const u = new URL(Astro.url);
+  u.searchParams.set('pagina', String(n));
+  return u.pathname + u.search;
+};
+const brands = [...new Set(catalog.products.map((p) => p.brand).filter(Boolean))].sort((a, b) =>
+  a.localeCompare(b, 'es'),
+);
+const options = [...new Set(catalog.products.map((p) => p.category).filter(Boolean))];
+---
+
+<SiteLayout title={current?.title || 'Tienda para mascotas'}>
+  <div class="wrap">
+    <a class="breadcrumb" href="/">
+      Inicio <span>/ {current?.title || 'Tienda'}</span>
+    </a>
+  </div>
+  <section class:list={['catalog-hero', 'wrap', { 'catalog-hero-offers': section === 'ofertas' }]}>
+    <div>
+      <span class="eyebrow">SU TIENDA. SU PEQUEÑO GRAN MUNDO.</span>
+      <h1>{current?.title || 'Encuentra sus favoritos.'}</h1>
+      <p>
+        {current?.description || 'Alimentos, accesorios y cuidados para cada etapa de su vida.'}
+      </p>
+      {section === 'farmacia' && (
+        <small>
+          Consulta al equipo antes de elegir un tratamiento. La disponibilidad no sustituye una
+          evaluación veterinaria.
+        </small>
+      )}
+      {section === 'ofertas' && (
+        <small>Precios especiales publicados por la tienda y válidos dentro de su vigencia.</small>
+      )}
+    </div>
+    <img
+      src={current?.image || '/images/companeros-v2.webp'}
+      alt={current?.title || 'Perro y gato, imagen ilustrativa'}
+      width="600"
+      height="400"
+      loading="eager"
+    />
+  </section>
+  <div class="wrap category-tabs" aria-label="Explorar categorías">
+    <a href="/tienda" aria-current={!section ? 'page' : undefined}>
+      Todo el catálogo
+    </a>
+    {sections.map((c) => (
+      <a href={'/' + c.slug} aria-current={section === c.slug ? 'page' : undefined}>
+        {c.title}
+      </a>
+    ))}
+  </div>
+  <section class="wrap section shop-layout">
+    <aside class="shop-sidebar">
+      <div class="sidebar-title">
+        <Icon name="search" size={19} />
+        <h2>Encuentra lo que buscas</h2>
+      </div>
+      <form class="catalog-filters" method="get">
+        {group && <input type="hidden" name="grupo" value={group} />}
+        <label>
+          Marca
+          <select name="marca">
+            <option value="">Todas las marcas</option>
+            {brands.map((name) => (
+              <option value={name} selected={brand === name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        <div class="price-filters">
+          <label>
+            Precio mínimo
+            <input type="number" name="min" value={min} min="0" step="0.01" placeholder="S/ 0" />
+          </label>
+          <label>
+            Precio máximo
+            <input
+              type="number"
+              name="max"
+              value={max}
+              min="0"
+              step="0.01"
+              placeholder="Sin límite"
+            />
+          </label>
+        </div>
+        <label>
+          Buscar producto
+          <input
+            name="q"
+            type="search"
+            value={q}
+            placeholder="Nombre, marca o código"
+            maxlength="150"
+          />
+        </label>
+        <label>
+          Categoría
+          <select name="categoria">
+            <option value="">Todas las categorías</option>
+            {options.map((name) => (
+              <option value={name} selected={category === name}>
+                {name}
+              </option>
+            ))}
+          </select>
+        </label>
+        {!['perros', 'gatos'].includes(section) && (
+          <label>
+            Tu mascota
+            <select name="mascota">
+              <option value="">Todas las mascotas</option>
+              <option value="perros" selected={pet === 'perros'}>
+                Perros
+              </option>
+              <option value="gatos" selected={pet === 'gatos'}>
+                Gatos
+              </option>
+            </select>
+          </label>
+        )}
+        <label>
+          Ordenar por
+          <select name="orden">
+            <option value="nombre" selected={order === 'nombre'}>
+              Nombre: A a Z
+            </option>
+            <option value="precio-menor" selected={order === 'precio-menor'}>
+              Precio: menor a mayor
+            </option>
+            <option value="precio-mayor" selected={order === 'precio-mayor'}>
+              Precio: mayor a menor
+            </option>
+          </select>
+        </label>
+        <button class="button button-green" type="submit">
+          Aplicar filtros <Icon name="arrow" size={17} />
+        </button>
+        {(q || pet || category || brand || min || max || group) && (
+          <a class="clear-filters" href={section ? '/' + section : '/tienda'}>
+            Limpiar filtros
+          </a>
+        )}
+      </form>
+      <div class="shop-care-note">
+        <Icon name="stethoscope" size={30} />
+        <h3>Elegir bien también es cuidar.</h3>
+        <p>Si tienes dudas sobre un producto, conversemos.</p>
+        <a class="text-link" href="/contacto">
+          Te ayudamos <Icon name="arrow" size={16} />
+        </a>
+      </div>
+    </aside>
+    <div class="catalog-results">
+      <div class="results-heading">
+        <div>
+          <span class="eyebrow">SELECCIONADOS PARA ELLOS</span>
+          <h2>
+            {q
+              ? 'Resultados para “' + q + '”'
+              : section === 'ofertas'
+                ? 'Promociones vigentes'
+                : 'Nuestro catálogo'}
+          </h2>
+        </div>
+        <span>
+          {filteredCount} {filteredCount === 1 ? 'producto' : 'productos'}
+        </span>
+      </div>
+      {products.length ? (
+        <div class="shop-product-grid">
+          {products.map((product) => (
+            <ProductCard product={product} />
+          ))}
+        </div>
+      ) : (
+        <div class="empty-state">
+          <span class="empty-icon">
+            <Icon name={section === 'ofertas' ? 'leaf' : 'bag'} size={38} />
+          </span>
+          <span class="eyebrow">SIEMPRE HAY ALGO POR DESCUBRIR</span>
+          <h2>
+            {section === 'ofertas'
+              ? 'Pronto, nuevas oportunidades.'
+              : catalog.connected
+                ? q || category || pet || section
+                  ? 'No encontramos productos en esta selección.'
+                  : 'Estamos preparando sus favoritos.'
+                : 'El catálogo no está disponible ahora.'}
+          </h2>
+          <p>
+            {section === 'ofertas'
+              ? 'No hay ofertas vigentes para esta selección. Mientras tanto, descubre los productos disponibles en nuestra tienda.'
+              : catalog.connected
+                ? 'Prueba otra categoría o consulta al equipo por el producto que necesitas.'
+                : 'Vuelve a intentarlo en unos minutos o escríbenos para ayudarte.'}
+          </p>
+          <a
+            class="button button-green"
+            href={section || q || category || pet ? '/tienda' : '/contacto'}
+          >
+            {section || q || category || pet
+              ? 'Explorar todo el catálogo'
+              : 'Consultar un producto'}
+            <Icon name="arrow" size={17} />
+          </a>
+        </div>
+      )}
+      {filteredCount > 20 && (
+        <nav class="pagination" aria-label="Páginas del catálogo">
+          {page > 1 && (
+            <a class="button button-outline" href={pageLink(page - 1)}>
+              Anterior
+            </a>
+          )}
+          <span>
+            Página {page} de {Math.ceil(filteredCount / 20)}
+          </span>
+          {page * 20 < filteredCount && (
+            <a class="button button-outline" href={pageLink(page + 1)}>
+              Siguiente
+            </a>
+          )}
+        </nav>
+      )}
+      <p class="catalog-note">
+        <Icon name="shield" size={17} /> Los precios y existencias se verifican al coordinar tu
+        pedido.
+      </p>
+    </div>
+  </section>
+</SiteLayout>

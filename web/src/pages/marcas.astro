@@ -1,0 +1,43 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import { getCatalog } from '../lib/backend';
+const catalog = await getCatalog();
+const brands = [...new Set(catalog.products.map((p) => p.brand).filter(Boolean))].sort((a, b) =>
+  a.localeCompare(b, 'es'),
+);
+---
+
+<SiteLayout title="Marcas de nuestra tienda">
+  <section class="wrap page-intro">
+    <a class="breadcrumb" href="/tienda">
+      Tienda <span>/ Marcas</span>
+    </a>
+    <h1>Sus marcas, en un solo lugar.</h1>
+    <p>Explora las marcas disponibles en nuestro catálogo.</p>
+  </section>
+  <section class="wrap section">
+    {brands.length ? (
+      <div class="brand-directory">
+        {brands.map((brand) => (
+          <a href={'/tienda?marca=' + encodeURIComponent(brand)}>
+            <strong>{brand}</strong>
+            <span>
+              {catalog.products.filter((p) => p.brand === brand).length} productos{' '}
+              <Icon name="arrow" size={20} />
+            </span>
+          </a>
+        ))}
+      </div>
+    ) : (
+      <div class="empty-state">
+        <Icon name="bag" size={40} />
+        <h2>Estamos preparando nuestra selección de marcas.</h2>
+        <p>Aparecerán aquí cuando se publiquen sus productos desde gestión.</p>
+        <a href="/tienda" class="button button-green">
+          Ver el catálogo
+        </a>
+      </div>
+    )}
+  </section>
+</SiteLayout>

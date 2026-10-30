@@ -2,22 +2,85 @@
 import '@fontsource-variable/manrope';
 import '@fontsource-variable/dm-sans';
 import '../styles/site.css';
+import '../styles/commerce.css';
 import Icon from '../components/Icon.astro';
+import Brand from '../components/Brand.astro';
 interface Props {
   title?: string;
   description?: string;
 }
 const {
-  title = 'El bienestar de tu mascota, en un solo lugar',
-  description = 'StrukVet: productos para mascotas y atención veterinaria cercana. Descubre nuestro catálogo y solicita una cita.',
+  title = 'Todo su mundo. Todo tu cariño.',
+  description = 'StruchVet: tienda para perros y gatos, alimentos, accesorios y atención veterinaria. Encuentra sus esenciales y coordina tu pedido.',
 } = Astro.props;
 const path = Astro.url.pathname;
 const nav = [
-  { label: 'Inicio', url: '/' },
-  { label: 'Tienda', url: '/tienda' },
-  { label: 'Servicios veterinarios', url: '/servicios' },
-  { label: 'Nosotros', url: '/nosotros' },
-  { label: 'Contacto', url: '/contacto' },
+  {
+    name: 'Perros',
+    url: '/perros',
+    links: [
+      ['Alimentos para perros', '/perros?grupo=alimentos'],
+      ['Snacks y premios', '/perros?q=snack'],
+      ['Salud y farmacia', '/perros?grupo=farmacia'],
+      ['Collares y accesorios', '/perros?grupo=accesorios'],
+    ],
+  },
+  {
+    name: 'Gatos',
+    url: '/gatos',
+    links: [
+      ['Alimentos para gatos', '/gatos?grupo=alimentos'],
+      ['Snacks y premios', '/gatos?q=snack'],
+      ['Salud y farmacia', '/gatos?grupo=farmacia'],
+      ['Arena y accesorios', '/gatos?grupo=accesorios'],
+    ],
+  },
+  {
+    name: 'Farmacia',
+    url: '/farmacia',
+    links: [
+      ['Todos los cuidados', '/farmacia'],
+      ['Antiparasitarios', '/antiparasitarios'],
+      ['Suplementos', '/farmacia?q=suplemento'],
+    ],
+  },
+  {
+    name: 'Alimentos',
+    url: '/alimentos',
+    links: [
+      ['Para perros', '/alimentos?mascota=perros'],
+      ['Para gatos', '/alimentos?mascota=gatos'],
+      ['Snacks y premios', '/alimentos?q=snack'],
+    ],
+  },
+  { name: 'Marcas', url: '/marcas', links: [['Explorar todas las marcas', '/marcas']] },
+  {
+    name: 'Accesorios',
+    url: '/accesorios',
+    links: [
+      ['Juguetes', '/accesorios?q=juguete'],
+      ['Higiene y cuidado', '/accesorios?q=higiene'],
+      ['Collares y correas', '/accesorios?q=correa'],
+    ],
+  },
+  {
+    name: 'Antiparasitarios',
+    url: '/antiparasitarios',
+    links: [
+      ['Ver antiparasitarios', '/antiparasitarios'],
+      ['Para perros', '/antiparasitarios?mascota=perros'],
+      ['Para gatos', '/antiparasitarios?mascota=gatos'],
+    ],
+  },
+  {
+    name: 'Ofertas',
+    url: '/ofertas',
+    links: [
+      ['Todas las ofertas vigentes', '/ofertas'],
+      ['Para perros', '/ofertas?mascota=perros'],
+      ['Para gatos', '/ofertas?mascota=gatos'],
+    ],
+  },
 ];
 ---
 
@@ -27,140 +90,176 @@ const nav = [
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="description" content={description} />
-    <meta name="theme-color" content="#234d42" />
-    <title>{title} · StrukVet</title>
+    <meta name="theme-color" content="#2563eb" />
+    <title>{title} · StruchVet</title>
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   </head>
   <body>
     <a class="skip-link" href="#contenido">
       Saltar al contenido
     </a>
-    <div class="announcement">
-      <span>
-        <Icon name="heart" size={13} /> Pequeños compañeros. Grandes cuidados.
-      </span>
-      <a href="/citas">
-        Un momento para su bienestar <span aria-hidden="true">↗</span>
-      </a>
+    <div class="utility-bar">
+      <div class="wrap">
+        <span>
+          <Icon name="heart" size={14} /> Descubre alimentos, farmacia y accesorios para tu mascota.
+        </span>
+        <a href="/contacto">
+          Atención al cliente <Icon name="arrow" size={14} />
+        </a>
+      </div>
     </div>
-    <header class="site-header">
+    <header class="site-header commerce-header">
       <div class="header-main wrap">
-        <a class="logo" href="/" aria-label="StrukVet, inicio">
-          <span class="logo-mark">
-            <Icon name="paw" size={25} />
-          </span>
-          <span>
-            Struk<span class="logo-light">Vet</span>
-            <span class="logo-dot">.</span>
-          </span>
+        <a class="brand" href="/" aria-label="StruchVet, inicio">
+          <Brand />
         </a>
         <form class="search-box" action="/tienda" role="search">
-          <Icon name="search" size={20} />
           <input
             type="search"
             name="q"
-            placeholder="¿Qué necesita tu mejor amigo?"
+            placeholder="Busca sus marcas y productos favoritos"
             aria-label="Buscar productos"
-            autocomplete="off"
+            maxlength="150"
           />
           <button type="submit" aria-label="Buscar">
-            <Icon name="arrow" size={18} />
+            <Icon name="search" size={26} />
           </button>
         </form>
         <div class="header-actions">
-          <a class="appointment-top" href="/citas">
-            <Icon name="calendar" size={19} />
-            <span>Agenda una cita</span>
+          <a class="header-help" href="/contacto" aria-label="Atención al cliente">
+            <Icon name="phone" size={28} />
+            <span>¿Te ayudamos?</span>
           </a>
           <a class="cart-link" href="/carrito" aria-label="Ver carrito">
-            <Icon name="bag" size={23} />
+            <Icon name="bag" size={31} />
             <span data-cart-count>0</span>
+            <strong>Mi carrito</strong>
           </a>
           <button
             id="menu-toggle"
             class="icon-button mobile-menu"
             aria-label="Abrir menú"
             aria-expanded="false"
+            aria-controls="main-nav"
           >
-            <Icon name="menu" />
+            <Icon name="menu" size={28} />
           </button>
         </div>
       </div>
       <div class="nav-border">
-        <nav class="main-nav wrap" id="main-nav" aria-label="Navegación principal">
+        <nav id="main-nav" class="main-nav wrap" aria-label="Navegación principal">
+          <a class="all-products" href="/tienda">
+            <Icon name="menu" size={21} /> Tienda
+          </a>
           <div class="nav-links">
             {nav.map((item) => (
-              <a
-                href={item.url}
-                class:list={{ active: path === item.url }}
-                aria-current={path === item.url ? 'page' : undefined}
-              >
-                {item.label}
-                {item.url === '/tienda' && <Icon name="chevron" size={13} />}
-              </a>
+              <div class="nav-category">
+                <a href={item.url} aria-current={path === item.url ? 'page' : undefined}>
+                  {item.name}
+                </a>
+                <details class="nav-dropdown">
+                  <summary aria-label={'Subcategorías de ' + item.name}>
+                    <Icon name="chevron" size={16} />
+                  </summary>
+                  <div class="mega-menu">
+                    <strong>{item.name}</strong>
+                    {item.links.map(([label, url]) => (
+                      <a href={url}>
+                        {label}
+                        <Icon name="arrow" size={16} />
+                      </a>
+                    ))}
+                    <a class="mega-all" href={item.url}>
+                      Ver todo {item.name.toLowerCase()}
+                    </a>
+                  </div>
+                </details>
+              </div>
             ))}
           </div>
-          <a href="/tienda?categoria=bienestar" class="nav-note">
-            <Icon name="leaf" size={16} /> Todo para una vida más feliz
-          </a>
         </nav>
       </div>
     </header>
     <main id="contenido">
       <slot />
     </main>
+    <section class="support-strip">
+      <div class="wrap">
+        <div>
+          <Icon name="shield" size={27} />
+          <span>
+            <strong>Elige con confianza</strong>
+            <small>Disponibilidad revisada al coordinar.</small>
+          </span>
+        </div>
+        <div>
+          <Icon name="stethoscope" size={27} />
+          <span>
+            <strong>Cuidado que acompaña</strong>
+            <small>Atención para cada etapa de su vida.</small>
+          </span>
+        </div>
+        <a href="/contacto">
+          <Icon name="mail" size={27} />
+          <span>
+            <strong>Estamos para ayudarte</strong>
+            <small>Hablemos de lo que necesita.</small>
+          </span>
+          <Icon name="arrow" size={20} />
+        </a>
+      </div>
+    </section>
     <footer class="site-footer">
-      <div class="wrap footer-top">
+      <div class="wrap footer-main">
         <div class="footer-brand">
-          <a class="logo" href="/">
-            <span class="logo-mark">
-              <Icon name="paw" size={25} />
-            </span>
-            <span>
-              Struk<span class="logo-light">Vet</span>
-              <span class="logo-dot">.</span>
-            </span>
+          <a class="brand" href="/" aria-label="StruchVet, inicio">
+            <Brand />
           </a>
           <p>
-            Cuidamos a quienes hacen
+            Ellos hacen tu vida más bonita.
             <br />
-            tu vida más bonita.
+            Nosotros te ayudamos a cuidar la suya.
           </p>
-          <span class="footer-small">Productos, cuidado y mucho cariño.</span>
+          <span class="footer-pill">
+            <Icon name="paw" size={15} /> Una vida juntos, bien cuidada.
+          </span>
         </div>
         <div>
-          <h3>Explora</h3>
-          <a href="/tienda">Tienda para mascotas</a>
-          <a href="/servicios">Nuestros servicios</a>
-          <a href="/nosotros">Conoce StrukVet</a>
+          <h3>Su tienda</h3>
+          <a href="/perros">Para perros</a>
+          <a href="/gatos">Para gatos</a>
+          <a href="/alimentos">Alimentos y nutrición</a>
+          <a href="/farmacia">Farmacia veterinaria</a>
+          <a href="/accesorios">Accesorios y cuidado</a>
         </div>
         <div>
-          <h3>Estamos para ayudarte</h3>
+          <h3>Estamos contigo</h3>
+          <a href="/servicios">Servicios veterinarios</a>
           <a href="/citas">Solicitar una cita</a>
-          <a href="/contacto">Habla con nosotros</a>
+          <a href="/contacto">Atención al cliente</a>
+          <a href="/nosotros">Conoce StruchVet</a>
           <a href="/carrito">Mi carrito</a>
         </div>
-        <div class="footer-letter">
-          <span class="mini-label">UNA VIDA JUNTOS</span>
+        <div class="footer-help">
+          <span class="eyebrow">HABLEMOS DE TU COMPAÑERO</span>
           <h3>
-            Ellos ponen el amor.
+            Una pregunta pequeña.
             <br />
-            Nosotros, los cuidados.
+            Un cuidado importante.
           </h3>
-          <Icon name="heart" size={30} />
+          <p>Cuéntanos qué necesita y coordinaremos contigo.</p>
+          <a class="button button-green" href="/contacto">
+            Escríbenos <Icon name="arrow" size={18} />
+          </a>
         </div>
       </div>
       <div class="wrap footer-bottom">
-        <span>
-          © {new Date().getFullYear()} StrukVet. Creado por <strong>MijxhelDev</strong>.
-        </span>
+        <span>© {new Date().getFullYear()} StruchVet · MijxhelDev</span>
         <a href="/privacidad">Privacidad y condiciones</a>
-        <span>
-          Hecho para los que dejan huella <Icon name="paw" size={13} />
-        </span>
+        <span>Hecho con cariño, para ellos.</span>
       </div>
     </footer>
-    <div class="toast" id="toast" role="status" aria-live="polite" hidden></div>
+    <div id="toast" class="toast" role="status" aria-live="polite" hidden></div>
     <script>
       import '../scripts/site';
     </script>

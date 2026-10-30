@@ -1,0 +1,80 @@
+---
+import SiteLayout from '../layouts/SiteLayout.astro';
+import Icon from '../components/Icon.astro';
+import ContactFields from '../components/ContactFields.astro';
+import PrivacyCheck from '../components/PrivacyCheck.astro';
+---
+
+<SiteLayout title="Coordina tu pedido">
+  <section class="wrap page-intro">
+    <a class="breadcrumb" href="/carrito">
+      Carrito <span>/ Tus datos</span>
+    </a>
+    <span class="eyebrow">UN PASO MÁS CERCA</span>
+    <h1>Coordinemos tu pedido.</h1>
+    <p>Déjanos tus datos. Nosotros nos encargamos de acompañarte.</p>
+    <ol class="checkout-steps">
+      <li>
+        <span>✓</span>Tu carrito
+      </li>
+      <li aria-current="step">
+        <span>2</span>Tus datos
+      </li>
+      <li>
+        <span>3</span>Coordinación
+      </li>
+    </ol>
+  </section>
+  <section id="cart-page" class="wrap section">
+    <div id="cart-empty" class="empty-state">
+      <Icon name="bag" size={44} />
+      <h2>Primero, sus favoritos.</h2>
+      <p>Agrega un producto al carrito para solicitar tu pedido.</p>
+      <a class="button button-green" href="/tienda">
+        Ir a la tienda
+      </a>
+    </div>
+    <div class="checkout-layout" id="cart-content" hidden>
+      <form class="request-form form-card" data-kind="order">
+        <span class="eyebrow">TUS DATOS DE CONTACTO</span>
+        <h2>¿Con quién coordinamos?</h2>
+        <ContactFields />
+        <label class="block-label">
+          Notas para coordinar <small>(opcional)</small>
+          <textarea
+            name="message"
+            maxlength="1500"
+            rows="4"
+            placeholder="Indica alguna preferencia para coordinar tu pedido…"
+          ></textarea>
+        </label>
+        <PrivacyCheck />
+        <button class="button button-green" type="submit">
+          Enviar solicitud de pedido <Icon name="arrow" size={18} />
+        </button>
+        <p class="form-fineprint">
+          Esta solicitud no es un pago ni una compra confirmada. El equipo revisará disponibilidad,
+          entrega y pago contigo. No ingreses datos de tarjeta.
+        </p>
+      </form>
+      <aside class="form-card checkout-summary">
+        <h2>Sus próximos favoritos</h2>
+        <div id="cart-lines" class="cart-items compact-cart"></div>
+        <div class="cart-total">
+          <span>Subtotal estimado</span>
+          <strong id="cart-total">S/ 0.00</strong>
+        </div>
+        <a href="/carrito" class="text-link">
+          Revisar mi carrito <Icon name="arrow" size={16} />
+        </a>
+        <div class="soft-note">
+          <Icon name="shield" size={22} />
+          <p>
+            Los precios y existencias se verifican en el servidor. Enviar la solicitud no reserva
+            stock.
+          </p>
+        </div>
+      </aside>
+    </div>
+  </section>
+</SiteLayout>

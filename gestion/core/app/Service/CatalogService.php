@@ -34,7 +34,7 @@ final class CatalogService
             if (isset($input[$key]) && !is_scalar($input[$key])) {
                 throw new DomainException('Valor inválido: ' . $field['label']);
             }
-            $value = trim((string) ($input[$key] ?? ''));
+            $value = trim((string) ($input[$key] ?? ($field['type'] === 'option' ? ($old[$key] ?? $field['default'] ?? '') : '')));
             if ($value === '') {
                 if ($field['required'] ?? false) {
                     throw new DomainException('Completa: ' . $field['label']);
@@ -44,6 +44,11 @@ final class CatalogService
             }
             if (mb_strlen($value) > ($field['max'] ?? 190)) {
                 throw new DomainException('Valor demasiado largo: ' . $field['label']);
+            }
+            if ($field['type'] === 'option' && !array_key_exists($value, $field['options'])) { throw new DomainException('Selecciona una opción válida: ' . $field['label']); }
+            if ($field['type'] === 'campaign_date') {
+                $date = \DateTimeImmutable::createFromFormat('!Y-m-d', $value);
+                if (!$date || $date->format('Y-m-d') !== $value) { throw new DomainException('Fecha de oferta inválida.'); }
             }
             if ($field['type'] === 'email' && !filter_var($value, FILTER_VALIDATE_EMAIL)) {
                 throw new DomainException('Correo inválido.');
@@ -81,6 +86,13 @@ final class CatalogService
                 }
             }
             $data[$key] = $value;
+        }
+        if ($slug === 'productos') {
+            if ($data['offer_price'] !== null && (bccomp($data['offer_price'], '0', 2) <= 0 || bccomp($data['offer_price'], $data['price'], 2) >= 0)) {
+                throw new DomainException('El precio de oferta debe ser mayor que cero y menor que el precio regular.');
+            }
+            if (($data['offer_from'] || $data['offer_until']) && $data['offer_price'] === null) { throw new DomainException('Indica el precio de oferta antes de configurar su vigencia.'); }
+            if ($data['offer_from'] && $data['offer_until'] && $data['offer_from'] > $data['offer_until']) { throw new DomainException('La fecha final de la oferta debe ser igual o posterior a la inicial.'); }
         }
         $data['active'] = isset($input['active']) ? 1 : 0;
         $this->db->beginTransaction();

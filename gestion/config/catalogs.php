@@ -45,7 +45,12 @@ return [
                 'required' => true,
                 'default' => '0.000',
             ],
-            'publish_online' => ['label' => 'Publicar en futura tienda', 'type' => 'checkbox'],
+            'web_group' => ['label' => 'Sección de la tienda web', 'type' => 'option', 'default' => 'general', 'options' => ['general' => 'General', 'alimentos' => 'Alimentos y nutrición', 'farmacia' => 'Farmacia veterinaria', 'antiparasitarios' => 'Antiparasitarios', 'accesorios' => 'Accesorios y cuidado']],
+            'pet_type' => ['label' => 'Destinado a', 'type' => 'option', 'default' => 'ambos', 'options' => ['ambos' => 'Perros y gatos', 'perros' => 'Perros', 'gatos' => 'Gatos', 'otros' => 'Otras mascotas']],
+            'offer_price' => ['label' => 'Precio web en oferta (S/, opcional)', 'type' => 'money'],
+            'offer_from' => ['label' => 'Oferta desde (opcional)', 'type' => 'campaign_date'],
+            'offer_until' => ['label' => 'Oferta hasta (inclusive, opcional)', 'type' => 'campaign_date'],
+            'publish_online' => ['label' => 'Publicar en la tienda web', 'type' => 'checkbox'],
         ],
     ],
     'categorias' => [

@@ -90,6 +90,7 @@ function renderCart() {
     plus.type = 'button';
     plus.textContent = '+';
     plus.setAttribute('aria-label', 'Aumentar cantidad de ' + item.name);
+    plus.disabled = item.quantity >= Math.min(item.available, 999);
     plus.addEventListener('click', () => {
       if (item.quantity >= Math.min(item.available, 999)) {
         notify('Llegaste a la cantidad disponible.');
@@ -112,6 +113,26 @@ function renderCart() {
     lines.append(row);
   }
   document.getElementById('cart-total')!.textContent = currency(totalCents / 100);
+  const invalid = cart.some((item) => item.quantity > item.available);
+  document
+    .querySelectorAll<HTMLButtonElement>('#cart-content [type="submit"]')
+    .forEach((button) => (button.disabled = invalid));
+  const proceed = document.querySelector<HTMLAnchorElement>('#cart-content a[href="/checkout"]');
+  if (proceed) {
+    proceed.setAttribute('aria-disabled', String(invalid));
+    proceed.tabIndex = invalid ? -1 : 0;
+    proceed.style.pointerEvents = invalid ? 'none' : '';
+  }
+  document.getElementById('cart-warning')?.remove();
+  if (invalid) {
+    const warning = document.createElement('p');
+    warning.id = 'cart-warning';
+    warning.className = 'cart-warning';
+    warning.setAttribute('role', 'alert');
+    warning.textContent =
+      'La disponibilidad cambió. Reduce o retira los productos sin existencias suficientes antes de continuar.';
+    lines.before(warning);
+  }
 }
 
 // Envía solo identificadores y cantidades; el servidor calcula el importe real.
@@ -170,4 +191,32 @@ export function mountCart() {
   });
 
   renderCart();
+  if (document.getElementById('cart-lines') && cart.length) {
+    fetch('/api/catalogo', { cache: 'no-store' })
+      .then(async (response) => {
+        if (!response.ok) throw new Error('catalog');
+        const { products } = (await response.json()) as { products: Product[] };
+        let changed = false;
+        cart.forEach((item) => {
+          const product = products.find((p) => p.id === item.id);
+          const available = product ? Math.floor(Number(product.available)) : 0;
+          if (item.available !== available || (product && item.price !== Number(product.price)))
+            changed = true;
+          item.available = available;
+          if (product) {
+            item.price = Number(product.price);
+            item.name = product.name;
+            item.image = product.image;
+          }
+        });
+        saveCart();
+        if (changed)
+          notify('Actualizamos precios y existencias con la tienda. Revisa tu selección.');
+      })
+      .catch(() =>
+        notify(
+          'No pudimos actualizar el catálogo. Verificaremos los importes y existencias al enviar el pedido.',
+        ),
+      );
+  }
 }

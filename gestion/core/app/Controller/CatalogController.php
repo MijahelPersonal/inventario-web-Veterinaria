@@ -56,4 +56,18 @@ final class CatalogController extends Controller
         Session::flash('Registro guardado.');
         $this->redirect('/catalogos/' . $parameters['slug']);
     }
+    public function retireProduct(array $parameters): void
+    {
+        $db = $this->context->db();
+        $id = (int) $parameters['id'];
+        if (!(new Catalog($db))->find('products', $id)) { throw new DomainException('El producto no existe.'); }
+        $db->beginTransaction();
+        try {
+            $db->prepare('UPDATE products SET active=0,publish_online=0 WHERE id=?')->execute([$id]);
+            (new \App\Service\AuditService($db))->record((int) $_SESSION['user_id'], 'unpublish', 'products', $id);
+            $db->commit();
+        } catch (\Throwable $error) { if ($db->inTransaction()) $db->rollBack(); throw $error; }
+        Session::flash('Producto retirado de la tienda. Su inventario e historial se conservan.');
+        $this->redirect('/catalogos/productos');
+    }
 }

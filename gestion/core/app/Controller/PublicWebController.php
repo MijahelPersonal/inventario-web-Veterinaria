@@ -17,9 +17,14 @@ final class PublicWebController extends Controller
         $db = $this->context->db();
         $products = $db
             ->query(
-                "SELECT p.id,p.code,p.name,p.description,p.presentation,p.price,COALESCE(c.name,'Esenciales') category,COALESCE(b.name,'') brand,IF(p.image_path IS NULL,NULL,CONCAT('/api/web/productos/',p.id,'/imagen')) image,COALESCE(SUM(CASE WHEN l.expires_at IS NULL OR l.expires_at>=CURRENT_DATE THEN l.quantity-l.reserved_quantity ELSE 0 END),0) available FROM products p LEFT JOIN stock_lots l ON l.product_id=p.id LEFT JOIN product_categories c ON c.id=p.category_id LEFT JOIN brands b ON b.id=p.brand_id WHERE p.active=1 AND p.publish_online=1 GROUP BY p.id ORDER BY p.name LIMIT 500",
+                "SELECT p.id,p.code,p.name,p.description,p.presentation,p.price,p.web_group,p.pet_type,p.offer_price,p.offer_from,p.offer_until,COALESCE(c.name,'Esenciales') category,COALESCE(b.name,'') brand,IF(p.image_path IS NULL,NULL,CONCAT('/api/web/productos/',p.id,'/imagen')) image,COALESCE(SUM(CASE WHEN l.expires_at IS NULL OR l.expires_at>=CURRENT_DATE THEN l.quantity-l.reserved_quantity ELSE 0 END),0) available FROM products p LEFT JOIN stock_lots l ON l.product_id=p.id LEFT JOIN product_categories c ON c.id=p.category_id LEFT JOIN brands b ON b.id=p.brand_id WHERE p.active=1 AND p.publish_online=1 GROUP BY p.id ORDER BY p.name LIMIT 500",
             )
             ->fetchAll();
+        $products = array_map([\App\Service\WebPricing::class, 'apply'], $products);
+        foreach ($products as &$product) {
+            $product['demo'] = str_starts_with((string) $product['code'], 'DEMO100-');
+        }
+        unset($product);
         $services = $db
             ->query(
                 "SELECT id,name,description,price,duration_minutes FROM services WHERE active=1 AND name NOT LIKE '%(prueba)%' ORDER BY name",

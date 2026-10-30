@@ -31,7 +31,7 @@ return static function (RouteCollector $routes): void {
     $store = \App\Controller\StoreController::class;
     $routes->addRoute('GET', '/tienda', [$store, 'index', 'sales.write']);
     $routes->addRoute('POST', '/tienda', [$store, 'checkout', 'sales.write']);
-    $routes->addRoute('POST', '/productos/{id:\d+}/imagen', [$store, 'upload', 'catalogs.write']);
+    $routes->addRoute('POST', '/productos/{id:\d+}/imagen', [$store, 'upload', 'products.manage']);
     $routes->addRoute('GET', '/media/productos/{id:\d+}', [$store, 'image', 'catalogs.read']);
     $finance = \App\Controller\FinanceController::class;
     $routes->addRoute('GET', '/cobros/nuevo', [$finance, 'paymentForm', 'payments.write']);
@@ -75,7 +75,8 @@ return static function (RouteCollector $routes): void {
     $routes->addRoute('GET', '/login', [AuthController::class, 'form']);
     $routes->addRoute('POST', '/login', [AuthController::class, 'login']);
     $routes->addRoute('POST', '/logout', [AuthController::class, 'logout']);
-    $slugs = 'productos|clientes|mascotas|veterinarios|servicios';
+    $routes->addRoute('POST', '/catalogos/productos/{id:\d+}/retirar', [\App\Controller\CatalogController::class, 'retireProduct', 'products.manage']);
+    foreach (['productos|categorias|marcas' => 'products.manage', 'clientes|mascotas|veterinarios|servicios' => 'catalogs.write'] as $slugs => $writePermission) {
     $base = '/catalogos/{slug:' . $slugs . '}';
     $routes->addRoute('GET', $base, [
         \App\Controller\CatalogController::class,
@@ -85,21 +86,22 @@ return static function (RouteCollector $routes): void {
     $routes->addRoute('GET', $base . '/nuevo', [
         \App\Controller\CatalogController::class,
         'form',
-        'catalogs.write',
+        $writePermission,
     ]);
     $routes->addRoute('GET', $base . '/{id:\d+}/editar', [
         \App\Controller\CatalogController::class,
         'form',
-        'catalogs.write',
+        $writePermission,
     ]);
     $routes->addRoute('POST', $base, [
         \App\Controller\CatalogController::class,
         'save',
-        'catalogs.write',
+        $writePermission,
     ]);
     $routes->addRoute('POST', $base . '/{id:\d+}', [
         \App\Controller\CatalogController::class,
         'save',
-        'catalogs.write',
+        $writePermission,
     ]);
+    }
 };
