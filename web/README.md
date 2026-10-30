@@ -1,65 +1,164 @@
-# StrukVet · Web pública
+# StruchVet Web · Tienda pública
 
-Aplicación independiente con Astro, TypeScript y CSS propio. PHP/MySQL permanecen en `../gestion`; Astro consulta su API desde el servidor, sin exponer credenciales al navegador.
+Página web de la veterinaria para que los clientes exploren productos, marcas y ofertas, preparen su carrito y envíen solicitudes de pedidos o citas. El personal administra el catálogo y atiende esas solicitudes desde **Gestión**.
 
-## Desarrollo local
+**[Descargas e instalación de StruchVet Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria#descargas)** · **[Guía completa del proyecto](https://github.com/MijahelPersonal/inventario-web-Veterinaria)**
 
-1. Iniciar MySQL y el servidor PHP de la gestión en `http://127.0.0.1:8080`.
-2. Desde `gestion`, ejecutar `php scripts/migrate.php` para incorporar la migración 013.
-3. Desde `web`, ejecutar `npm ci` y `node scripts/setup-local.mjs`.
-4. Ejecutar `npm run dev` y abrir `http://127.0.0.1:4321`.
+## Qué incluye
 
-El instalador local conserva las configuraciones existentes. `.env` y `gestion/config/web.local.php` contienen la misma clave privada y no se suben a Git. Cada aplicación conserva sus propias dependencias.
+- Inicio, categorías de perros/gatos y alimentos, marcas, ofertas y búsqueda con filtros.
+- Ficha de producto, presentación, precio, fotografía y disponibilidad.
+- Carrito y checkout con importes comprobados por el servidor.
+- Solicitudes de cita y contacto recibidas en Gestión.
+- Páginas informativas y diseño adaptable.
 
-## Organización del código
+Los pedidos son **solicitudes pendientes de confirmación**: enviar el formulario no cobra dinero, reserva ni descuenta existencias. El personal coordina disponibilidad, entrega y pago antes de registrar la venta. Una solicitud de cita tampoco ocupa automáticamente la agenda. No se envían mensajes de correo o WhatsApp automáticamente.
 
-- `src/layouts`: cabecera, navegación y pie compartidos.
-- `src/pages`: inicio, tienda, detalle, carrito, servicios, citas, contacto y privacidad.
-- `src/pages/api`: intermediarios del servidor para solicitudes e imágenes.
-- `src/components`: iconos, tarjetas y campos reutilizables.
-- `src/lib`: tipos, conexión privada al backend y contenido de servicios.
-- `src/scripts/cart.ts`: estado y controles del carrito.
-- `src/scripts/forms.ts`: envío y respuesta de formularios.
-- `src/scripts/site.ts` y `ui.ts`: inicialización, menú y avisos.
-- `src/styles`: estilos generales y de páginas interiores, con reglas adaptables.
-- `src/assets`: originales PNG generados por IA.
-- `public/images`: versiones WebP optimizadas para servir en la web.
+## Dirección para visitar la web
 
-`npm run format` ordena el código; `npm run format:check` comprueba el formato. `npm run build` valida los tipos y compila el servidor.
+Todavía no se ha publicado un dominio de producción. En desarrollo se abre la dirección indicada por Astro, normalmente **http://127.0.0.1:4321/**; si ese puerto está ocupado puede indicar otro, como `4322`. Estas direcciones sólo corresponden al equipo donde se ejecuta la web.
 
-## Conexión con la gestión
+Para que otras personas puedan visitarla por Internet, hace falta desplegarla en un servidor con dominio y HTTPS; se explica en [Producción](#producción).
 
-La tienda muestra productos activos con «Publicar en futura tienda» habilitado. Usa precios y existencias reales, descontando reservas y lotes vencidos. Si no hay productos publicados, muestra un estado vacío; no inventa existencias. Las imágenes de productos proceden de la gestión.
+## Relación con Gestión y Desktop
 
-El carrito permite buscar productos, consultar detalles y enviar un **pedido pendiente de confirmación**. El servidor vuelve a comprobar disponibilidad y calcula los importes. Enviar una solicitud no cobra dinero ni reserva o descuenta stock. El personal confirma disponibilidad, entrega y pago antes de registrar la venta.
+| Componente | Función |
+| --- | --- |
+| `gestion/` | Backend PHP y administración: productos, inventario, ventas y atención veterinaria. |
+| `web/` | Frontend Astro/TypeScript que consulta la API de Gestión desde el servidor. |
+| `electron/` | Aplicación instalable que abre Gestión con PHP incluido o se conecta a Gestión HTTPS. |
 
-Las solicitudes de citas y contacto también se guardan en MySQL y aparecen en **Solicitudes web**. Solicitar una cita no ocupa automáticamente la agenda: el personal coordina el horario y registra la cita confirmada. No se envían correos ni WhatsApp automáticamente.
+Los productos visibles deben estar activos y tener **Publicar en la tienda web** habilitado. Se muestran precios y existencias del backend, descontando reservas y lotes vencidos. Las imágenes se sirven desde Gestión. Un catálogo vacío se muestra vacío; la web no inventa existencias.
 
-Los formularios comprueban origen, consentimiento, campos y límites de frecuencia; las solicitudes repetidas conservan su referencia. Las fotografías de IA son ilustrativas; no representan personal ni instalaciones reales. Antes de publicar, completar los canales reales de contacto y revisar la política de privacidad.
+Los 100 productos de demostración cargados en el entorno local pertenecen a esa base de datos: **no se distribuyen como datos de los nuevos instaladores ni se incluyen en Git**. Su documentación está en [CATALOGO-DEMO100.md](docs/CATALOGO-DEMO100.md).
+
+La web conserva sus propias dependencias y servidor. Para conectarla, utiliza un backend PHP de Gestión desplegado; el servidor privado y efímero de Desktop está reservado a su propio cliente.
+
+## Requisitos para desarrollar
+
+- Node.js 22 y npm.
+- PHP 8.3–8.5, Composer, PDO MySQL, BCMath y mbstring; las extensiones adicionales se detallan en la guía de Gestión/Desktop.
+- MariaDB/MySQL accesible y configuración privada de Gestión preparada.
+
+Los visitantes de una web ya publicada sólo necesitan su navegador.
+
+## Instalación local
+
+### 1. Obtener el proyecto
+
+La etapa completa de Desktop y sus guías está en `feat/struchvet-desktop`:
+
+```bash
+git clone --branch feat/struchvet-desktop --single-branch https://github.com/MijahelPersonal/inventario-web-Veterinaria.git struchvet
+cd struchvet
+```
+
+### 2. Preparar el backend
+
+```bash
+cd gestion
+composer install
+npm ci
+npm run assets
+```
+
+Copia `config/local.example.php` a `config/local.php`. Completa usuario, contraseña y cualquier otro dato de conexión necesario para la base creada por el administrador. Guarda un respaldo antes de aplicar migraciones sobre datos existentes.
+
+```bash
+php scripts/migrate.php
+```
+
+En una instalación nueva, si aún no existe una cuenta de acceso:
+
+```bash
+php scripts/create-admin.php
+```
+
+Después inicia el backend:
+
+```bash
+npm run serve
+```
+
+Queda disponible en **http://127.0.0.1:8080**. El comando de migraciones aplica las pendientes, incluidas las de conexión web y ofertas; no se limita a una migración concreta.
+
+### 3. Preparar Astro en otra terminal
+
+Desde la raíz del proyecto:
+
+```bash
+cd web
+npm ci
+node scripts/setup-local.mjs
+npm run dev
+```
+
+Abre la dirección que muestre la terminal. El script comparte una clave privada entre los dos servidores y conserva configuraciones existentes. `web/.env` y `gestion/config/web.local.php` están excluidos de Git; no adjuntarlos a issues ni commits.
+
+### 4. Publicar productos y probar
+
+1. Inicia sesión en Gestión.
+2. Registra o edita un producto en **Productos**, configura marca/categoría/precio y activa su publicación web.
+3. Añade su fotografía y registra existencias en **Inventario**.
+4. Abre la tienda, busca el producto y añádelo al carrito.
+5. Envía una solicitud de pedido y comprueba su recepción en **Solicitudes web** de Gestión.
+
+Haz estas pruebas sobre una base separada si no quieres cambiar los datos de operación. Los precios de oferta y sus fechas se administran desde Gestión.
+
+## Estructura
+
+```text
+web/
+├── src/
+│   ├── pages/          # Inicio, categorías, ficha, carrito, checkout y formularios
+│   │   └── api/        # Intermediarios privados para catálogo, imágenes y solicitudes
+│   ├── layouts/        # Estructura compartida de páginas
+│   ├── components/     # Navegación, tarjetas, iconos y componentes de catálogo
+│   ├── lib/            # Tipos, categorías y conexión con Gestión
+│   ├── scripts/        # Carrito, formularios, navegación y comportamiento
+│   ├── styles/         # Diseño general y adaptable
+│   └── assets/         # Originales gráficos y su procedencia
+├── public/images/      # Imágenes públicas de la web
+├── scripts/            # Preparación local
+├── docs/               # Procedencia de recursos y catálogo de prueba
+├── .env.example        # Ejemplo sin credenciales
+└── package.json        # Dependencias y comandos
+```
 
 ## Producción
 
-Definir `SITE_URL` con el dominio HTTPS público y `BACKEND_URL` con la dirección privada del servidor PHP. Compartir `BACKEND_API_KEY` mediante configuración privada. Ejecutar `npm run build` y `npm start`; este último lee `.env`. El servidor Node debe permanecer activo detrás de un proxy HTTPS. La web no se incorpora a Electron.
+1. Despliega Gestión con `gestion/public/` como raíz pública y configura su base privada.
+2. Prepara el dominio HTTPS de la tienda y un servicio Node persistente.
+3. Configura las variables de `web/.env` en el servidor:
 
-## Validación realizada
+| Variable | Uso |
+| --- | --- |
+| `SITE_URL` | Dominio HTTPS público de la tienda. |
+| `BACKEND_URL` | Dirección del backend PHP accesible desde el servidor Astro. |
+| `BACKEND_API_KEY` | Clave privada que debe coincidir con la de Gestión. No usar prefijos `PUBLIC_`. |
 
-- Compilación Astro y comprobación de tipos.
-- Pruebas PHP de acceso, inventario, plantillas y recepción web.
-- Navegación de escritorio, búsqueda, detalle, carrito y ajuste de cantidades.
-- Envío de cita a la gestión y pedido de dos unidades por S/ 30.00 en la base de pruebas.
-- Comprobación de precio calculado en servidor, idempotencia, límites y stock sin modificar.
+4. Desde `web/`, compila y arranca:
 
-El diseño incluye reglas para móvil; la verificación visual realizada corresponde a escritorio.
+```bash
+npm ci
+npm run build
+npm start
+```
 
-## Reconstrucción comercial · octubre 2026
+El comando `start` lee `.env`. El proceso Node debe mantenerse activo detrás de un proxy HTTPS. Configura los puertos del servidor mediante el entorno correspondiente y limita la exposición del backend. `npm run dev` se utiliza para desarrollo.
 
-La documentación de arquitectura, marca original reutilizada, rutas, imágenes, validación y funciones pendientes está en [RECONSTRUCCION.md](RECONSTRUCCION.md). El frontend usa el nombre StruchVet; los contratos y la clave anterior de almacenamiento del carrito se conservan para no perder selecciones existentes.
+Antes de publicar, completa los canales reales de contacto y revisa privacidad y condiciones comerciales. Las fotografías generadas por IA son ilustrativas y no representan personal ni instalaciones reales. Los pedidos requieren confirmación; no se anuncia una pasarela de pago operativa.
 
-El checkout ahora vive en `/checkout`, después de revisar `/carrito`. El flujo sigue siendo una solicitud pendiente de confirmación, sin pasarela de pago. Las páginas de categorías tienen rutas propias. La página `/ofertas` muestra los descuentos configurados en gestión y vigentes según la fecha de Lima. La migración 014 incorpora esos campos.
+## Pruebas y documentación
 
-En Linux, el backend requiere PHP PDO MySQL, mbstring y BCMath para las validaciones y cálculos de importes. Gestión conserva su administración e inicio de sesión independientes.
+```bash
+npm run build
+npm run format:check
+```
 
+La compilación valida tipos y produce el servidor. Las pruebas PHP y de integración están en `gestion/tests/`; deben utilizar su base separada. Las comprobaciones visuales y límites de cada sesión se registran en [RECONSTRUCCION.md](RECONSTRUCCION.md): compilar no acredita por sí solo una revisión visual completa de todos los dispositivos.
 
-## Continuación del 30 de octubre de 2026
-
-Estado actual, pruebas y limitación pendiente de verificación visual: [RECONSTRUCCION.md](RECONSTRUCCION.md). Decisión sobre plataformas: [ARQUITECTURA.md](ARQUITECTURA.md). El catálogo real se administra en gestión y aún no tiene productos publicados.
+- [Estado de reconstrucción comercial](RECONSTRUCCION.md).
+- [Arquitectura elegida](ARQUITECTURA.md).
+- [Catálogo de demostración local](docs/CATALOGO-DEMO100.md).
+- [Integración de Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/docs/DESKTOP.md).
