@@ -30,7 +30,7 @@ final class ProductImageService
         if (!isset($extensions[$type]) || !$size || $size[0] > 6000 || $size[1] > 6000) {
             throw new DomainException('Usa JPG, PNG o WebP de hasta 6000 × 6000 píxeles.');
         }
-        $directory = dirname(__DIR__, 3) . '/storage/uploads/products';
+        $directory = \Core\Paths::storage('uploads/products');
         if (!is_dir($directory)) {
             mkdir($directory, 0700, true);
         }

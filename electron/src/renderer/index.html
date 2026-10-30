@@ -1,0 +1,160 @@
+<!doctype html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta
+      http-equiv="Content-Security-Policy"
+      content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'"
+    />
+    <title>StruchVet Desktop</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <header>
+        <img src="icon.png" width="56" height="56" alt="Corazón de StruchVet" />
+        <div>
+          <h1>StruchVet Desktop</h1>
+          <span id="version"></span>
+        </div>
+      </header>
+      <p id="message" role="status" aria-live="polite">Iniciando…</p>
+      <nav>
+        <button id="settings-tab">Conexión</button
+        ><button id="updates-tab">Actualizaciones</button>
+      </nav>
+      <section id="settings" hidden>
+        <h2>Tu gestión, lista para trabajar</h2>
+        <p>
+          Conecta una base MySQL/MariaDB existente o utiliza el servidor HTTPS
+          de tu veterinaria. La base debe estar creada y accesible; no necesitas
+          instalar PHP, Node.js ni Composer.
+        </p>
+        <form id="configuration">
+          <label
+            >Modo de conexión<select name="mode" id="mode">
+              <option value="local">PHP incluido + MySQL/MariaDB</option>
+              <option value="remote">Servidor de Gestión HTTPS</option>
+            </select></label
+          >
+          <div id="database-fields">
+            <div class="row">
+              <label
+                >Servidor<input
+                  name="host"
+                  value="127.0.0.1"
+                  required
+                  autocomplete="off" /></label
+              ><label
+                >Puerto<input
+                  name="port"
+                  type="number"
+                  min="1"
+                  max="65535"
+                  value="3306"
+                  required
+              /></label>
+            </div>
+            <label
+              >Base de datos<input
+                name="name"
+                value="struch_vet"
+                required
+                autocomplete="off" /></label
+            ><label
+              >Usuario de base de datos<input
+                name="username"
+                required
+                autocomplete="off" /></label
+            ><label
+              >Contraseña de base de datos (reingrésala al guardar)<input
+                name="password"
+                type="password"
+                autocomplete="off" /></label
+            ><label
+              >Certificado CA para TLS SQL (opcional)<input
+                name="ssl_ca"
+                autocomplete="off"
+                placeholder="Ruta absoluta al certificado CA"
+            /></label>
+            <p class="hint">
+              SQL remoto requiere una red confiable o VPN. Para Internet,
+              utiliza Gestión por HTTPS. Las imágenes subidas en este modo se
+              conservan en este equipo.
+            </p>
+          </div>
+          <div id="remote-fields" hidden>
+            <label
+              >Dirección del servidor<input
+                name="url"
+                type="url"
+                placeholder="https://gestion.tuveterinaria.pe"
+                autocomplete="off"
+            /></label>
+            <p class="hint">
+              Necesitas conexión a la red del servidor. Si está en Internet,
+              necesitas Internet para trabajar.
+            </p>
+          </div>
+          <button class="primary" type="submit">Guardar y conectar</button>
+        </form>
+      </section>
+      <section id="setup" hidden>
+        <h2>Preparar Gestión</h2>
+        <p id="pending"></p>
+        <form id="prepare">
+          <div id="admin-fields">
+            <h3>Primer administrador</h3>
+            <label>Nombre<input name="name" autocomplete="name" /></label
+            ><label
+              >Usuario<input name="username" autocomplete="username" /></label
+            ><label
+              >Correo (opcional)<input
+                name="email"
+                type="email"
+                autocomplete="email" /></label
+            ><label
+              >Contraseña<input
+                name="password"
+                type="password"
+                minlength="12"
+                autocomplete="new-password"
+            /></label>
+            <p class="hint">
+              Usa al menos 12 caracteres. Esta contraseña no se guarda en la
+              configuración.
+            </p>
+          </div>
+          <button class="primary" type="submit">
+            Respaldar y preparar base
+          </button>
+        </form>
+      </section>
+      <section id="updates" hidden>
+        <h2>Actualizaciones</h2>
+        <p id="update-status" aria-live="polite"></p>
+        <p id="new-version"></p>
+        <pre id="notes"></pre>
+        <progress id="progress" max="100" value="0" hidden></progress>
+        <div class="buttons">
+          <button id="check">Comprobar ahora</button
+          ><button id="download" hidden>Descargar</button
+          ><button id="install" class="primary" hidden>
+            Respaldar e instalar</button
+          ><button id="later">Posponer</button>
+        </div>
+        <p class="hint">
+          Las actualizaciones se consultan en GitHub Releases. Nunca se
+          descargan ni instalan sin tu acción.
+        </p>
+      </section>
+      <p id="error" role="alert"></p>
+      <footer>
+        <button id="open">Abrir Gestión</button
+        ><button id="backup">Crear respaldo</button>
+      </footer>
+    </main>
+    <script src="app.js"></script>
+  </body>
+</html>

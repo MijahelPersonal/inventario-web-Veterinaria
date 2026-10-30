@@ -9,7 +9,7 @@ final class Session
             return;
         }
         // Las pruebas del navegador usan otra cookie para no cerrar la sesión de trabajo.
-        session_name(getenv('STRUCH_TESTING') === '1' ? 'struch_vet_test' : 'struch_vet');
+        session_name(Paths::desktop() ? 'struch_vet_desktop' : (getenv('STRUCH_TESTING') === '1' ? 'struch_vet_test' : 'struch_vet'));
         session_start([
             'use_strict_mode' => 1,
             'cookie_httponly' => true,

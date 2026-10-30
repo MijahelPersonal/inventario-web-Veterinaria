@@ -11,6 +11,6 @@
 {% for value,label in {'light':'Claro','dark':'Oscuro'} %}<label class="form-check"><input class="form-check-input" type="radio" name="theme" value="{{ value }}" {{ settings.theme|default('light')==value ? 'checked' : '' }}> {{ label }}</label>{% endfor %}
 </div></fieldset><button class="btn btn-success">Guardar preferencias</button></div></form>
 <section class="card"><div class="card-body"><h2 class="h5">Sistema y actualizaciones</h2><p>Sistema de gestión veterinaria · STRUCH VET · <strong>v{{ system_version }}</strong></p><p class="text-body-secondary">Creado por {{ system_creator }}</p>
-<div id="desktop-updates"><p id="update-status" role="status">Las actualizaciones de escritorio se consultan desde la aplicación Electron instalada.</p><div class="d-flex flex-wrap gap-2"><button type="button" class="btn btn-outline-primary" id="check-update" hidden>Buscar actualizaciones</button><button type="button" class="btn btn-primary" id="download-update" hidden>Descargar actualización</button><button type="button" class="btn btn-success" id="install-update" hidden>Reiniciar e instalar</button></div><p id="update-notes" class="mt-3 text-body-secondary"></p></div>
+<p>En StruchVet Desktop, utiliza el menú <strong>StruchVet → Comprobar actualizaciones</strong>. La aplicación web se actualiza en su servidor.</p>
 </div></section>
 {% endblock %}

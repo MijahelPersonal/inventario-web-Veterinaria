@@ -15,8 +15,8 @@ final class DocumentService
             'defaultFont' => 'DejaVu Sans',
         ]);
         $options->setChroot(dirname(__DIR__, 3) . '/public');
-        $options->setTempDir(dirname(__DIR__, 3) . '/storage/cache');
-        $options->setFontCache(dirname(__DIR__, 3) . '/storage/cache');
+        $options->setTempDir(\Core\Paths::storage('cache'));
+        $options->setFontCache(\Core\Paths::storage('cache'));
         $pdf = new Dompdf($options);
         $pdf->loadHtml($html, 'UTF-8');
         $pdf->setPaper('A4');

@@ -1,0 +1,157 @@
+name: StruchVet Desktop
+
+on:
+  pull_request:
+    paths: ['electron/**', 'gestion/**', '.github/workflows/desktop.yml']
+  push:
+    branches: [main, feat/struchvet-desktop]
+    tags: ['v*']
+    paths: ['electron/**', 'gestion/**', '.github/workflows/desktop.yml']
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: desktop-${{ github.ref }}
+  cancel-in-progress: ${{ !startsWith(github.ref, 'refs/tags/') }}
+
+jobs:
+  php-quality:
+    runs-on: ubuntu-24.04
+    services:
+      mariadb:
+        image: mariadb:11.8
+        env:
+          MARIADB_DATABASE: struch_vet_test
+          MARIADB_USER: struch_ci
+          MARIADB_PASSWORD: ci-only-not-a-production-secret
+          MARIADB_ROOT_PASSWORD: ci-root-only-not-a-production-secret
+        ports: ['3306:3306']
+        options: >-
+          --health-cmd="healthcheck.sh --connect --innodb_initialized"
+          --health-interval=10s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5.12'
+          extensions: bcmath, dom, fileinfo, mbstring, pdo_mysql, xml, zip
+          tools: composer:v2
+          coverage: none
+      - run: composer install --working-dir=gestion --no-dev --prefer-dist --no-interaction
+      - name: Configure isolated CI test database
+        shell: bash
+        run: |
+          php -r '$c=["database"=>["host"=>"127.0.0.1","port"=>3306,"name"=>"struch_vet_test","username"=>"struch_ci","password"=>"ci-only-not-a-production-secret"]]; file_put_contents("gestion/config/local.test.php","<?php return ".var_export($c,true).";");'
+      - name: PHP integration checks
+        working-directory: gestion
+        run: |
+          php tests/desktop.php
+          php tests/inventory.php
+          php tests/ecommerce.php
+          php tests/web.php
+          php tests/access.php
+          php tests/templates.php
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-24.04, windows-2022]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: |
+            electron/package-lock.json
+            gestion/package-lock.json
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5.12'
+          extensions: bcmath, ctype, dom, fileinfo, gd, iconv, mbstring, pdo_mysql, simplexml, tokenizer, xml, xmlreader, xmlwriter, zip
+          tools: composer:v2
+          coverage: none
+      - name: Validate release tag
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: bash
+        run: |
+          node -e 'const v=require("./electron/package.json").version; if(!/^\d+\.\d+\.\d+$/.test(v)||process.env.GITHUB_REF_NAME!=="v"+v)throw Error("Tag must equal electron/package.json stable semver");'
+      - name: Install Linux packaging tools
+        if: runner.os == 'Linux'
+        run: sudo apt-get update && sudo apt-get install -y rpm libfuse2t64 xvfb
+      - name: Install PHP dependencies
+        run: composer install --working-dir=gestion --no-dev --prefer-dist --no-interaction --optimize-autoloader
+      - name: Prepare management assets
+        shell: bash
+        env:
+          ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+        run: |
+          npm --prefix gestion ci
+          npm --prefix gestion run assets
+      - name: Install desktop dependencies
+        run: npm --prefix electron ci
+      - name: Prepare bundled PHP and application
+        run: npm --prefix electron run prepare:resources
+      - name: Retain platform runtime manifest
+        shell: bash
+        run: node -e 'const fs=require("node:fs"); fs.mkdirSync("electron/dist",{recursive:true}); fs.copyFileSync("electron/resources/manifest.json","electron/dist/runtime-manifest-${{ runner.os }}.json");'
+      - name: Verify staged resources
+        run: npm --prefix electron run verify:resources
+      - name: Check desktop code
+        run: npm --prefix electron test
+      - name: Build Linux installers
+        if: runner.os == 'Linux'
+        run: npm --prefix electron run build:linux
+      - name: Build Windows NSIS installer
+        if: runner.os == 'Windows'
+        env:
+          CSC_LINK: ${{ secrets.WIN_CSC_LINK }}
+          CSC_KEY_PASSWORD: ${{ secrets.WIN_CSC_KEY_PASSWORD }}
+        run: npm --prefix electron run build:win
+      - name: Retain installers and update metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: struchvet-desktop-${{ runner.os }}
+          path: |
+            electron/dist/*.AppImage
+            electron/dist/*.rpm
+            electron/dist/*.deb
+            electron/dist/*.exe
+            electron/dist/*.blockmap
+            electron/dist/latest*.yml
+            electron/dist/runtime-manifest-*.json
+          if-no-files-found: error
+          retention-days: 14
+
+  release-draft:
+    if: startsWith(github.ref, 'refs/tags/') && github.event_name == 'push'
+    needs: [build, php-quality]
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: write
+      id-token: write
+      attestations: write
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          path: release-artifacts
+          merge-multiple: true
+      - name: Generate checksums
+        working-directory: release-artifacts
+        run: sha256sum *.AppImage *.rpm *.deb *.exe *.blockmap *.yml > SHA256SUMS
+      - name: Attest installers
+        uses: actions/attest-build-provenance@v2
+        with:
+          subject-path: |
+            release-artifacts/*.AppImage
+            release-artifacts/*.rpm
+            release-artifacts/*.deb
+            release-artifacts/*.exe
+      - name: Create reviewable draft release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "$GITHUB_REF_NAME" release-artifacts/* --repo "$GITHUB_REPOSITORY" --draft --verify-tag --generate-notes --title "StruchVet Desktop $GITHUB_REF_NAME"

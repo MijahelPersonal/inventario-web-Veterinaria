@@ -17,7 +17,7 @@ final class View
             'autoescape' => 'html',
             'debug' => false,
             // Solo guarda PHP compilado de las vistas; los datos se consultan en cada petición.
-            'cache' => $root . '/storage/cache',
+            'cache' => Paths::storage('cache'),
             'auto_reload' => $config['environment'] !== 'production',
         ]);
         $this->twig->addGlobal('app_name', $config['name']);

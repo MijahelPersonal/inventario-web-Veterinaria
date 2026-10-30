@@ -21,11 +21,17 @@ final class Database
             $config['name'],
         );
 
-        $connection = new PDO($dsn, $config['username'], $config['password'], [
+        $options = [
             PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES => false,
-        ]);
+            PDO::ATTR_TIMEOUT => 5,
+        ];
+        if (!empty($config['ssl_ca'])) {
+            $options[PDO::MYSQL_ATTR_SSL_CA] = $config['ssl_ca'];
+            $options[PDO::MYSQL_ATTR_SSL_VERIFY_SERVER_CERT] = true;
+        }
+        $connection = new PDO($dsn, $config['username'], $config['password'], $options);
         // Fechas de caja y reportes usan la misma zona horaria de la aplicación.
         $connection->exec('SET time_zone = ' . $connection->quote(date('P')));
         return $connection;

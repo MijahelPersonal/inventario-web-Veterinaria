@@ -12,5 +12,10 @@ if (in_array(PHP_SAPI, ['cli', 'cli-server'], true) && getenv('STRUCH_TESTING') 
 date_default_timezone_set($config['timezone']);
 ini_set('display_errors', '0');
 error_reporting(E_ALL);
+if (Core\Paths::desktop()) {
+    Core\Paths::prepare();
+    ini_set('error_log', Core\Paths::storage('logs/php.log'));
+    ini_set('session.save_path', Core\Paths::storage('sessions'));
+}
 
 return $config;
