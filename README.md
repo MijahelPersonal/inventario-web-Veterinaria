@@ -30,7 +30,7 @@ Los instaladores estarán disponibles en [GitHub Releases](https://github.com/Mi
 
 **Linux:** AppImage, RPM y DEB. En AppImage, concede permiso de ejecución y abre el archivo. Desde **StruchVet → Instalar AppImage en este usuario** se crea una copia en `~/Applications/StruchVet/` y una entrada con icono en el menú de aplicaciones. RPM y DEB proporcionan sus entradas de menú mediante el gestor de paquetes de la distribución.
 
-**Windows:** configuración NSIS `.exe` preparada para el runner Windows. Firma y prueba de instalación en Windows son requisitos previos a distribuir una versión estable.
+**Windows:** instalador NSIS `.exe` compilado correctamente en GitHub Actions sobre Windows 2022, junto con sus metadatos de actualización. Está en los [artefactos de la ejecución verificada](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41132992374). Firma y prueba de instalación en Windows son requisitos previos a distribuir una versión estable.
 
 **macOS:** icono ICNS y configuración DMG/ZIP preparados; falta integrar y verificar un runtime PHP relocatable y disponer de firma/notarización. La preparación rechaza macOS expresamente hasta entonces.
 

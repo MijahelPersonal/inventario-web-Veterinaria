@@ -48,6 +48,7 @@ jobs:
         working-directory: gestion
         run: |
           php tests/desktop.php
+          php tests/desktop-restore.php
           php tests/inventory.php
           php tests/ecommerce.php
           php tests/web.php

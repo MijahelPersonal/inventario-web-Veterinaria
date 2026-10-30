@@ -18,10 +18,12 @@ Generados en `electron/dist/`, excluidos de Git por su tamaño y carácter de sa
 
 - `npm --prefix electron test`: **7 pruebas aprobadas**, sin omisiones. Incluyen configuración, permisos de archivo, rechazo de recursos alterados, instalación AppImage por usuario, PHP real incluido, renderizado Twig del login, validación de token/Host, cierre y reinicio del servicio, y estados del actualizador.
 - `php gestion/tests/desktop.php`: almacenamiento/configuración externos; respaldo SQL de fixture sin modificar la base; migraciones explícitas/idempotentes y bloqueo de recuperación; HTTP privado, recursos y sesiones. Se ejecuta contra `struch_vet_test`.
+- `php gestion/tests/desktop-restore.php`: dos restauraciones reales de una tabla InnoDB aislada, usando el SQL intacto de DesktopMaintenance. Se conservan esquema, filas/hash, Unicode, comillas, bytes binarios, NULL, decimales y timestamps, con SQL normal y `NO_BACKSLASH_ESCAPES`. Sólo se crean/renombran/eliminan tablas propias con marcador único; las tablas originales quedan intactas. Este ensayo no sustituye la restauración completa con claves foráneas.
 - PHP: `tests/inventory.php`, `ecommerce.php`, `access.php`, `templates.php` aprobados en la base de pruebas; otras comprobaciones de tienda/web también pasaron durante la integración. Las 28 plantillas compilan.
 - PDF real generado con PHP incluido (7.399 bytes), usando el almacenamiento externo de caché.
 - Base principal comprobada sin cambios: 100 productos de demostración y 2.950 unidades. La base de pruebas conservó 13 unidades después de actualizar.
 - Web: `npm --prefix web run build`, **42 archivos sin errores ni advertencias**. La tienda conserva su proyecto y configuración independientes.
+- Conexión HTTPS inválida: la aplicación vuelve al asistente con un mensaje comprensible para corregir la dirección, sin desactivar la validación de certificados.
 - `gui-smoke.cjs`: ejecutado con Electron real cargando el main/preload/renderer del ASAR empaquetado y sus recursos externos. Perfil limpio muestra el asistente; perfil configurado conecta la base de pruebas, inicia sesión y abre Inventario. Verifica sandbox, aislamiento, ausencia de `require` en renderer y rechazo de IPC privilegiado desde Gestión. Capturas reales en `docs/screenshots/`.
 - Formularios reales de inventario dentro de Electron: entrada de 2 unidades y salida por consumo de 1 sobre el producto temporal; saldo de **12 → 14 → 13**. No se usó la base principal.
 - Perfil limpio en **X11 y Wayland** de Fedora KDE: asistente renderizado y capturado. El entorno emitió avisos gráficos Mesa/Vulkan, pero las comprobaciones de ventana/renderizado pasaron sin desactivar sandbox.
@@ -42,13 +44,19 @@ Generados en `electron/dist/`, excluidos de Git por su tamaño y carácter de sa
 
 El harness adapta los metadatos de la aplicación al fixture y llama la ruta real de instalación de la biblioteca sin cerrar el propio proceso de comprobación. Esto verifica descarga/corrupción/reemplazo/reinicio por separado; **no certifica todavía la cadena completa de GitHub público, la confirmación de la interfaz y la instalación de una release firmada**. Las pruebas con EventEmitter de la suite rápida verifican estados, no sustituyen este ensayo.
 
+## GitHub Actions verificado
+
+[Ejecución 41132992374](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41132992374), sobre el commit de código `7f37218`, finalizó con éxito en sus tres jobs: **PHP/MariaDB**, **build Ubuntu 24.04** y **build Windows 2022**. En ambos sistemas se preparó y ejecutó el PHP incluido y pasaron las pruebas Node antes de compilar. Se conservaron los artefactos `struchvet-desktop-Linux` y `struchvet-desktop-Windows`; el de Windows contiene NSIS `.exe`, blockmap, `latest.yml` y manifiesto de runtime. El job de release se omitió correctamente porque no se creó ningún tag.
+
+Los artefactos de CI tienen retención de 14 días. No se confundió la compilación Windows con una instalación ejecutada en Windows.
+
 ## Pendientes y límites
 
-- Compilar y ejecutar NSIS en Windows, probar instalación/desinstalación, firma real y actualización de una versión firmada a otra. La configuración y el workflow están preparados; no se generó un `.exe` en este entorno Linux.
+- Ejecutar el NSIS ya construido en una máquina Windows limpia, probar instalación/desinstalación, firma real y actualización de una versión firmada a otra. La compilación Windows de CI pasó; la instalación gráfica NSIS no se ejecutó en este equipo Linux.
 - Instalar RPM/DEB con los gestores nativos en máquinas limpias y verificar sus actualizadores. Aquí se construyeron y revisaron sus contenidos, pero no se modificó el sistema operativo del usuario para instalarlos.
 - Probar otras distribuciones, arquitecturas y equipos. Un build Fedora no acredita compatibilidad universal; CI construye una variante Linux desde Ubuntu 24.04.
 - Runtime PHP macOS relocatable, firma, notarización y pruebas DMG/ZIP. La preparación rechaza esa plataforma hasta completar el runtime.
-- Restauración SQL completa en una **segunda base**: no ejecutada porque la cuenta de pruebas no tiene permiso `CREATE DATABASE`. Se comprobó el contenido/escritura atómica del respaldo; no se afirma recuperación completa validada.
+- Restauración SQL completa en una **segunda base**: no ejecutada porque la cuenta de pruebas no tiene permiso `CREATE DATABASE`. Se comprobó el contenido/escritura atómica y se ejecutó el roundtrip real de una tabla aislada sin reescribir su SQL; no se afirma recuperación completa del esquema con claves foráneas.
 - Ensayar una release pública de prueba y su cadena de firma/procedencia antes de autorizar una estable. No se publicó ningún tag ni release en este trabajo.
 - Revisar certificados y derechos de redistribución de runtime VC/bibliotecas antes de publicar una estable. No hay servidor MariaDB embebido; la conexión SQL/HTTPS debe estar provisionada.
 
