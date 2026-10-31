@@ -11,12 +11,12 @@
 
 | Mi sistema | Descargar paquete | Archivo que debo abrir después de descomprimir el ZIP |
 | --- | --- | --- |
-| **Windows · x64** | **[Descargar para Windows](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276/artifacts/13014921620)** | `StruchVet-Desktop-0.3.0-win-x64.exe` |
-| **Fedora KDE · x64** | **[Descargar para Fedora](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/workflows/desktop.yml)** | `StruchVet-Desktop-0.3.0-linux-x86_64.rpm` |
+| **Windows · x64** | **[Descargar para Windows](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41175192021/artifacts/13032539198)** | `StruchVet-Desktop-0.3.0-win-x64.exe` |
+| **Fedora KDE · x64** | **[Descargar para Fedora](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41175192021/artifacts/13033025386)** | `StruchVet-Desktop-0.3.0-linux-x86_64.rpm` |
 
-**Cómo descargar:** abre el enlace de tu sistema, inicia sesión en GitHub si lo solicita, guarda el ZIP y descomprímelo. El paquete Fedora contiene un único instalador `.rpm`; no incluye DEB ni AppImage. Para usar el programa no necesitas clonar el repositorio ni compilarlo.
+**Cómo descargar:** abre el enlace de tu sistema, inicia sesión en GitHub si lo solicita, guarda el ZIP y descomprímelo. El paquete Fedora pesa aproximadamente **117 MB** y contiene un único instalador `.rpm`, más sus metadatos; no incluye DEB ni AppImage. Para usar el programa no necesitas clonar el repositorio ni compilarlo.
 
-Las compilaciones de prueba se descargan desde GitHub Actions y se conservan durante **14 días**. La descarga Fedora se publica por separado de Windows. Aún no hay una versión estable publicada; las futuras descargas permanentes se encontrarán en [Releases](https://github.com/MijahelPersonal/inventario-web-Veterinaria/releases). Los paquetes incluyen metadatos de actualización y un manifiesto del runtime; no incluyen datos de clientes.
+Las compilaciones de prueba se descargan desde GitHub Actions y se conservan durante **14 días**. La descarga Fedora se publica por separado de Windows. Ambos paquetes proceden de [esta compilación verificada](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41175192021). Aún no hay una versión estable publicada; las futuras descargas permanentes se encontrarán en [Releases](https://github.com/MijahelPersonal/inventario-web-Veterinaria/releases). Los paquetes incluyen metadatos de actualización y un manifiesto del runtime; no incluyen datos de clientes.
 
 | Estado de esta versión | Verificación |
 | --- | --- |
