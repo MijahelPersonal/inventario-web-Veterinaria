@@ -50,7 +50,7 @@ final class PublicWebController extends Controller
             http_response_code(404);
             return;
         }
-        $path = dirname(__DIR__, 3) . '/storage/uploads/products/' . $file;
+        $path = \Core\Paths::storage('uploads/products') . '/' . $file;
         if (!is_file($path)) {
             http_response_code(404);
             return;

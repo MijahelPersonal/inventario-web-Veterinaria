@@ -90,7 +90,7 @@ try {
     http_response_code(422);
     $view->render('errors/error.html.twig', ['code' => 422, 'message' => $error->getMessage()]);
 } catch (Throwable $error) {
-    error_log((string) $error, 3, $root . '/storage/logs/app.log');
+    error_log((string) $error, 3, Core\Paths::storage('logs/app.log'));
     http_response_code(500);
     echo 'No se pudo procesar la solicitud.';
 }

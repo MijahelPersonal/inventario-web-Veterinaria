@@ -69,7 +69,7 @@ final class StoreController extends Controller
             http_response_code(404);
             return;
         }
-        $file = dirname(__DIR__, 3) . '/storage/uploads/products/' . $filename;
+        $file = \Core\Paths::storage('uploads/products') . '/' . $filename;
         if (!is_file($file)) {
             http_response_code(404);
             return;

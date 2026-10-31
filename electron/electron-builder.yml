@@ -1,0 +1,57 @@
+appId: dev.mijxhel.struchvet
+productName: StruchVet Desktop
+asar: true
+directories:
+  output: dist
+  buildResources: assets/icons
+files:
+  - src/**/*
+  - package.json
+extraResources:
+  - from: resources/manifest.json
+    to: runtime-manifest.json
+  - from: resources/gestion
+    to: gestion
+  - from: resources/runtime
+    to: runtime
+  - from: assets/icons
+    to: icons
+artifactName: StruchVet-Desktop-${version}-${os}-${arch}.${ext}
+publish:
+  provider: github
+  owner: MijahelPersonal
+  repo: inventario-web-Veterinaria
+  releaseType: draft
+win:
+  icon: assets/icons/icon.ico
+  target:
+    - target: nsis
+      arch: [x64]
+  verifyUpdateCodeSignature: true
+  signtoolOptions:
+    publisherName: MijahelPersonal
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+linux:
+  icon: assets/icons/png
+  executableName: struchvet-desktop
+  syncDesktopName: true
+  category: Office
+  synopsis: Gestión veterinaria e inventario
+  target: [AppImage, rpm, deb]
+  maintainer: MijahelPersonal <mijahelrojaspersonal@gmail.com>
+  desktop:
+    entry:
+      StartupWMClass: struchvet-desktop
+      Keywords: Veterinaria;Inventario;StruchVet;
+mac:
+  icon: assets/icons/icon.icns
+  category: public.app-category.business
+  hardenedRuntime: true
+  target: [dmg, zip]

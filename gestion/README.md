@@ -9,7 +9,7 @@ Desde esta carpeta:
 1. `composer install` y `npm ci` para recuperar dependencias en otra instalación.
 2. `npm run assets` prepara CoreUI y los recursos propios dentro de public/assets.
 3. `npm run serve` inicia PHP en http://127.0.0.1:8080 (solo desarrollo).
-4. En otra terminal, `npm start` abre Electron. Electron no inicia PHP ni MySQL.
+4. Para escritorio, usar el proyecto independiente `../electron`: ver [Desktop](../docs/DESKTOP.md). Incluye y administra PHP; MySQL/MariaDB se conecta mediante el asistente.
 
 Si usas Apache de Laragon, configura la raíz del sitio en esta carpeta **public**, nunca en la raíz del proyecto. El .htaccess requiere mod_rewrite y permisos de configuración adecuados. Nginx requiere configuración equivalente propia.
 
@@ -24,7 +24,7 @@ Si usas Apache de Laragon, configura la raíz del sitio en esta carpeta **public
 - public: única raíz accesible por HTTP.
 - database/migrations y seeds: futuros cambios de esquema y datos iniciales.
 - storage: caché, logs y archivos privados. Debe ser escribible por PHP.
-- electron: lanzador de escritorio, preload limitado y actualizador con descarga e instalación controladas.
+- `../electron`: aplicación independiente de escritorio con PHP incluido y actualizaciones.
 - tests: pruebas ejecutables contra struch_vet_test, separada de los datos de operación.
 
 ## Configuración
@@ -43,7 +43,7 @@ Pruebas: `php tests/access.php`, `php tests/catalogs.php` y `php tests/templates
 
 Consulte `CHANGELOG.md` y el historial Git para avances por módulo. El sistema está en desarrollo y requiere validación operativa antes de producción.
 
-Electron usa STRUCH_VET_URL si está definida; por defecto abre el servidor local de desarrollo. Backend remoto: HTTPS obligatorio. El entorno PHP/MySQL de distribución se decidirá por separado.
+StruchVet Desktop guarda configuración y datos en el perfil del usuario. No incluye `config/local.php` ni datos privados en sus instaladores. Véase [integración](../docs/DESKTOP.md).
 
 ## Apariencia y versión 0.2.0
 
@@ -53,4 +53,4 @@ Configuración permite diez colores y tema claro u oscuro. El pie compartido mue
 
 El POS confirma venta, stock y cobro juntos. Solicita método de pago y, si hace falta comenzar un turno, fondo inicial explícito. Ventas y cobros permite consultar comprobantes y cobrar saldos pendientes de productos o servicios sin duplicar el pago del POS.
 
-Para empaquetado y distribución consulta [Actualizaciones](docs/ACTUALIZACIONES.md). `npm run test:desktop` comprueba los estados del actualizador; `php tests/finance.php` incluye reenvíos del checkout y rollback completo ante stock insuficiente.
+Para empaquetado y distribución consulta [Actualizaciones](docs/ACTUALIZACIONES.md). Desde `../electron`, `npm test` comprueba el servicio PHP privado y los estados del actualizador; `php tests/finance.php` incluye reenvíos del checkout y rollback completo ante stock insuficiente.
