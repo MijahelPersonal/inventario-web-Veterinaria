@@ -26,6 +26,8 @@ document.addEventListener('keydown', (event) => {
 
 // Desplegables con teclado, clic y puntero; Escape y clic exterior los cierran.
 const menus = Array.from(document.querySelectorAll<HTMLDetailsElement>('.nav-dropdown'));
+// El menú compacto se abre por clic, incluso en ventanas estrechas con ratón.
+const desktopHover = matchMedia('(min-width: 1081px) and (hover: hover)');
 menus.forEach((menu) => {
   menu.addEventListener('toggle', () => {
     if (menu.open)
@@ -35,10 +37,10 @@ menus.forEach((menu) => {
   });
   const category = menu.closest('.nav-category');
   category?.addEventListener('mouseenter', () => {
-    if (matchMedia('(hover: hover)').matches) menu.open = true;
+    if (desktopHover.matches) menu.open = true;
   });
   category?.addEventListener('mouseleave', () => {
-    if (matchMedia('(hover: hover)').matches && !menu.contains(document.activeElement))
+    if (desktopHover.matches && !menu.contains(document.activeElement))
       menu.open = false;
   });
 });
