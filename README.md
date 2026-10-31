@@ -104,7 +104,7 @@ Gestión es el sistema interno de la veterinaria. Puede abrirse dentro de Deskto
 - **Atención veterinaria:** veterinarios, servicios, citas, agenda, calendario y registros clínicos.
 - **Administración:** usuarios, permisos, preferencias, reportes y solicitudes recibidas desde la web.
 
-[Ver el código de Gestión](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/feat/struchvet-desktop/gestion) · [Guía técnica de Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/docs/DESKTOP.md)
+[Ver el código de Gestión](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/main/gestion) · [Guía técnica de Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/docs/DESKTOP.md)
 
 ### StruchVet Web · uso de los clientes
 
@@ -114,7 +114,7 @@ Un pedido web se registra como **solicitud pendiente** para que el personal conf
 
 **Dirección pública:** todavía no se ha publicado un dominio de producción. Para probarla localmente se utiliza `http://127.0.0.1:4321/`; si Astro indica otro puerto libre, utiliza el que muestre la terminal. Esa dirección sólo corresponde al equipo donde se está ejecutando.
 
-**[Abrir código de la página web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/feat/struchvet-desktop/web)** · **[Descargar código del proyecto en ZIP](https://github.com/MijahelPersonal/inventario-web-Veterinaria/archive/refs/heads/feat/struchvet-desktop.zip)** · [Guía de la web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/web/README.md)
+**[Abrir código de la página web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/main/web)** · **[Descargar código del proyecto en ZIP](https://github.com/MijahelPersonal/inventario-web-Veterinaria/archive/refs/heads/main.zip)** · [Guía de la web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/web/README.md)
 
 La web se aloja en un servidor y los clientes la visitan desde su navegador. Tiene sus propias dependencias y despliegue; el instalador Desktop abre Gestión.
 
@@ -123,9 +123,9 @@ La web se aloja en un servidor y los clientes la visitan desde su navegador. Tie
 
 Primera ejecución de Desktop 0.3.0 e inventario en Fedora KDE. Los registros que aparecen son datos temporales de pruebas.
 
-![Asistente de conexión](https://raw.githubusercontent.com/MijahelPersonal/inventario-web-Veterinaria/refs/heads/feat/struchvet-desktop/docs/screenshots/desktop-inicio.png)
+![Asistente de conexión](https://raw.githubusercontent.com/MijahelPersonal/inventario-web-Veterinaria/refs/heads/main/docs/screenshots/desktop-inicio.png)
 
-![Inventario dentro de Desktop](https://raw.githubusercontent.com/MijahelPersonal/inventario-web-Veterinaria/refs/heads/feat/struchvet-desktop/docs/screenshots/desktop-inventario.png)
+![Inventario dentro de Desktop](https://raw.githubusercontent.com/MijahelPersonal/inventario-web-Veterinaria/refs/heads/main/docs/screenshots/desktop-inventario.png)
 
 </details>
 
@@ -134,12 +134,12 @@ Primera ejecución de Desktop 0.3.0 e inventario en Fedora KDE. Los registros qu
 
 Esta sección es para quien va a preparar el servidor o desarrollar el proyecto. Los clientes de la tienda sólo necesitan su navegador.
 
-**Requisitos:** Node.js 22, PHP 8.3–8.5 con PDO MySQL, BCMath y mbstring, Composer y una base MariaDB/MySQL configurada. El código completo de esta etapa está en `feat/struchvet-desktop`.
+**Requisitos:** Node.js 22, PHP 8.3–8.5 con PDO MySQL, BCMath y mbstring, Composer y una base MariaDB/MySQL configurada. El código completo está en la rama principal `main`.
 
 ### Obtener el código
 
 ```bash
-git clone --branch feat/struchvet-desktop --single-branch https://github.com/MijahelPersonal/inventario-web-Veterinaria.git struchvet
+git clone --branch main --single-branch https://github.com/MijahelPersonal/inventario-web-Veterinaria.git struchvet
 cd struchvet
 ```
 
@@ -188,12 +188,12 @@ npm run build
 npm start
 ```
 
-El proceso Node debe permanecer activo detrás de un proxy HTTPS y tener acceso al backend PHP. El dominio público debe configurarlo el responsable del despliegue; este repositorio aún no anuncia uno. Más detalles en [la guía web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/web/README.md).
+El proceso Node debe permanecer activo detrás de un proxy HTTPS y tener acceso al backend PHP. El dominio público debe configurarlo el responsable del despliegue; este repositorio aún no anuncia uno. Más detalles en [la guía web](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/web/README.md).
 
 <a id="estructura"></a>
 ## 6. Estructura del proyecto
 
-Estructura del código completo disponible en [la rama Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/feat/struchvet-desktop):
+Estructura del código completo disponible en [la rama principal](https://github.com/MijahelPersonal/inventario-web-Veterinaria/tree/main):
 
 ```text
 StruchVet/
@@ -251,7 +251,7 @@ npm run build:linux
 npm run build:win
 ```
 
-Las salidas se guardan en `electron/dist/`. El compilador necesita PHP y herramientas de construcción; los usuarios que descargan el instalador reciben el PHP incluido. Los requisitos específicos de Fedora, extensiones y bibliotecas están en [la guía del runtime](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/electron/resources/README.md).
+Las salidas se guardan en `electron/dist/`. El compilador necesita PHP y herramientas de construcción; los usuarios que descargan el instalador reciben el PHP incluido. Los requisitos específicos de Fedora, extensiones y bibliotecas están en [la guía del runtime](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/electron/resources/README.md).
 
 ## 8. Actualizaciones y protección de datos
 
@@ -259,7 +259,7 @@ En Desktop abre **StruchVet → Comprobar actualizaciones**. El cliente consulta
 
 Las pruebas han comprobado una actualización local AppImage **0.3.0 → 0.3.1**, rechazo de descarga corrupta y conservación del perfil. La firma, la instalación/actualización Windows, la instalación nativa RPM/DEB y la recuperación completa del esquema requieren más validación antes de una versión estable.
 
-GitHub Actions verifica PHP/MariaDB y compila Linux y Windows. Un tag de versión coincidente prepara un **borrador de release**, no publica automáticamente una estable por cada commit. Actualmente no se ha publicado ninguna release estable. Consulta [el informe de pruebas](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/docs/VALIDACION-DESKTOP.md) y [el protocolo de lanzamiento](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/.agents/skills/desktop-release/SKILL.md).
+GitHub Actions verifica PHP/MariaDB y compila Linux y Windows. Un tag de versión coincidente prepara un **borrador de release**, no publica automáticamente una estable por cada commit. Actualmente no se ha publicado ninguna release estable. Consulta [el informe de pruebas](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/docs/VALIDACION-DESKTOP.md) y [el protocolo de lanzamiento](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/.agents/skills/desktop-release/SKILL.md).
 
 ## 9. Tecnologías, agentes y documentación
 
@@ -270,7 +270,7 @@ GitHub Actions verifica PHP/MariaDB y compila Linux y Windows. Un tag de versió
 | Desktop | Electron, electron-builder y electron-updater |
 | Automatización | GitHub Actions; cinco roles Codex y doce especialidades documentadas |
 
-Los agentes son instrucciones para desarrollar y revisar el repositorio; no son procesos de IA que se instalan en el programa. Consulta [AGENTS.md](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/AGENTS.md) y [la guía de agentes](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/docs/AGENTES.md).
+Los agentes son instrucciones para desarrollar y revisar el repositorio; no son procesos de IA que se instalan en el programa. Consulta [AGENTS.md](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/AGENTS.md) y [la guía de agentes](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/docs/AGENTES.md).
 
 ## 10. Reportar un problema
 

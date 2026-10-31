@@ -46,10 +46,10 @@ Los visitantes de una web ya publicada sólo necesitan su navegador.
 
 ### 1. Obtener el proyecto
 
-La etapa completa de Desktop y sus guías está en `feat/struchvet-desktop`:
+Gestión, Desktop, la web y sus guías están en la rama principal `main`:
 
 ```bash
-git clone --branch feat/struchvet-desktop --single-branch https://github.com/MijahelPersonal/inventario-web-Veterinaria.git struchvet
+git clone --branch main --single-branch https://github.com/MijahelPersonal/inventario-web-Veterinaria.git struchvet
 cd struchvet
 ```
 
@@ -161,4 +161,4 @@ La compilación valida tipos y produce el servidor. Las pruebas PHP y de integra
 - [Estado de reconstrucción comercial](RECONSTRUCCION.md).
 - [Arquitectura elegida](ARQUITECTURA.md).
 - [Catálogo de demostración local](docs/CATALOGO-DEMO100.md).
-- [Integración de Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/feat/struchvet-desktop/docs/DESKTOP.md).
+- [Integración de Desktop](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/docs/DESKTOP.md).
