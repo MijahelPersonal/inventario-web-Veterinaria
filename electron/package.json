@@ -16,7 +16,7 @@
     "prepare:resources": "node scripts/prepare-resources.cjs",
     "verify:resources": "node scripts/verify-resources.cjs",
     "icons": "python3 scripts/prepare-icons.py",
-    "build:linux": "electron-builder --linux AppImage rpm deb --publish never",
+    "build:linux": "electron-builder --linux rpm --publish never",
     "build:win": "electron-builder --win nsis --publish never",
     "build:mac": "electron-builder --mac dmg zip --publish never",
     "build:dir": "electron-builder --dir --publish never"

@@ -82,7 +82,7 @@ jobs:
           node -e 'const v=require("./electron/package.json").version; if(!/^\d+\.\d+\.\d+$/.test(v)||process.env.GITHUB_REF_NAME!=="v"+v)throw Error("Tag must equal electron/package.json stable semver");'
       - name: Install Linux packaging tools
         if: runner.os == 'Linux'
-        run: sudo apt-get update && sudo apt-get install -y rpm libfuse2t64 xvfb
+        run: sudo apt-get update && sudo apt-get install -y rpm
       - name: Install PHP dependencies
         run: composer install --working-dir=gestion --no-dev --prefer-dist --no-interaction --optimize-autoloader
       - name: Prepare management assets
@@ -103,7 +103,7 @@ jobs:
         run: npm --prefix electron run verify:resources
       - name: Check desktop code
         run: npm --prefix electron test
-      - name: Build Linux installers
+      - name: Build Fedora RPM installer
         if: runner.os == 'Linux'
         run: npm --prefix electron run build:linux
       - name: Build Windows NSIS installer
@@ -115,11 +115,9 @@ jobs:
       - name: Retain installers and update metadata
         uses: actions/upload-artifact@v4
         with:
-          name: struchvet-desktop-${{ runner.os }}
+          name: struchvet-desktop-${{ runner.os == 'Linux' && 'Fedora' || 'Windows' }}
           path: |
-            electron/dist/*.AppImage
             electron/dist/*.rpm
-            electron/dist/*.deb
             electron/dist/*.exe
             electron/dist/*.blockmap
             electron/dist/latest*.yml
@@ -142,14 +140,12 @@ jobs:
           merge-multiple: true
       - name: Generate checksums
         working-directory: release-artifacts
-        run: sha256sum *.AppImage *.rpm *.deb *.exe *.blockmap *.yml > SHA256SUMS
+        run: find . -maxdepth 1 -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum > SHA256SUMS
       - name: Attest installers
         uses: actions/attest-build-provenance@v2
         with:
           subject-path: |
-            release-artifacts/*.AppImage
             release-artifacts/*.rpm
-            release-artifacts/*.deb
             release-artifacts/*.exe
       - name: Create reviewable draft release
         env:

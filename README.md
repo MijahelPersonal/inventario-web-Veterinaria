@@ -12,18 +12,15 @@
 | Mi sistema | Descargar paquete | Archivo que debo abrir después de descomprimir el ZIP |
 | --- | --- | --- |
 | **Windows · x64** | **[Descargar para Windows](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276/artifacts/13014921620)** | `StruchVet-Desktop-0.3.0-win-x64.exe` |
-| **Fedora KDE / otras distribuciones RPM** | **[Descargar para Linux](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276/artifacts/13014567010)** | `StruchVet-Desktop-0.3.0-linux-x86_64.rpm` |
-| **Ubuntu / Debian** | **[Descargar para Linux](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276/artifacts/13014567010)** | `StruchVet-Desktop-0.3.0-linux-amd64.deb` |
-| **Linux portable** | **[Descargar para Linux](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276/artifacts/13014567010)** | `StruchVet-Desktop-0.3.0-linux-x86_64.AppImage` |
+| **Fedora KDE · x64** | **[Descargar para Fedora](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/workflows/desktop.yml)** | `StruchVet-Desktop-0.3.0-linux-x86_64.rpm` |
 
-**Cómo descargar:** abre el enlace de tu sistema, inicia sesión en GitHub si lo solicita, guarda el ZIP y descomprímelo. El ZIP de Linux contiene los tres formatos: utiliza el correspondiente a tu distribución. Para usar el programa no necesitas clonar el repositorio ni compilarlo.
+**Cómo descargar:** abre el enlace de tu sistema, inicia sesión en GitHub si lo solicita, guarda el ZIP y descomprímelo. El paquete Fedora contiene un único instalador `.rpm`; no incluye DEB ni AppImage. Para usar el programa no necesitas clonar el repositorio ni compilarlo.
 
-Estos enlaces corresponden a [una compilación aprobada de GitHub Actions](https://github.com/MijahelPersonal/inventario-web-Veterinaria/actions/runs/41134095276). Son artefactos temporales disponibles hasta el **13 de noviembre de 2026**. Aún no hay una versión estable publicada; las futuras descargas permanentes se encontrarán en [Releases](https://github.com/MijahelPersonal/inventario-web-Veterinaria/releases). Los paquetes incluyen metadatos de actualización y un manifiesto del runtime; no incluyen datos de clientes.
+Las compilaciones de prueba se descargan desde GitHub Actions y se conservan durante **14 días**. La descarga Fedora se publica por separado de Windows. Aún no hay una versión estable publicada; las futuras descargas permanentes se encontrarán en [Releases](https://github.com/MijahelPersonal/inventario-web-Veterinaria/releases). Los paquetes incluyen metadatos de actualización y un manifiesto del runtime; no incluyen datos de clientes.
 
 | Estado de esta versión | Verificación |
 | --- | --- |
-| AppImage Linux | Construido, abierto en Fedora KDE y probado con Gestión; actualización local 0.3.0 → 0.3.1 comprobada. |
-| RPM y DEB | Construidos localmente y en CI; falta instalar y actualizar mediante los gestores nativos en máquinas limpias. |
+| Fedora RPM | Único instalador distribuido para Linux. Falta instalar y actualizar mediante DNF en una máquina limpia. |
 | Windows EXE / NSIS | Compilado en Windows 2022 mediante CI; falta ejecutar su instalación gráfica y validar firma y actualización en Windows. El paquete de prueba no está firmado. |
 | macOS | Pendiente de runtime PHP, firma y pruebas; no se ofrece un instalador macOS. |
 
@@ -42,38 +39,13 @@ El instalador está configurado para crear accesos directos, permitir desinstala
 
 ### Fedora KDE
 
-Descarga y descomprime el paquete Linux. Desde la carpeta donde quedó el RPM:
+Descarga y descomprime el paquete **Fedora** (un solo instalador RPM). Desde la carpeta donde quedó el RPM:
 
 ```bash
 sudo dnf install ./StruchVet-Desktop-0.3.0-linux-x86_64.rpm
 ```
 
 Después abre **StruchVet Desktop** desde el menú de aplicaciones y completa la [conexión inicial](#conexion).
-
-### Ubuntu / Debian
-
-Desde la carpeta donde quedó el DEB:
-
-```bash
-sudo apt install ./StruchVet-Desktop-0.3.0-linux-amd64.deb
-```
-
-Abre **StruchVet Desktop** desde el menú de aplicaciones y completa la [conexión inicial](#conexion).
-
-### Linux portable con AppImage
-
-Puedes probarlo sin instalar un RPM o DEB:
-
-```bash
-chmod +x StruchVet-Desktop-0.3.0-linux-x86_64.AppImage
-./StruchVet-Desktop-0.3.0-linux-x86_64.AppImage
-```
-
-Para crear su acceso en el menú, dentro del programa selecciona **StruchVet → Instalar AppImage en este usuario**. Se copiará a `~/Applications/StruchVet/`; cierra la ventana y vuelve a abrirlo desde el menú. Si tu distribución solicita FUSE y no puede arrancarlo, la alternativa comprobada es:
-
-```bash
-APPIMAGE_EXTRACT_AND_RUN=1 ./StruchVet-Desktop-0.3.0-linux-x86_64.AppImage
-```
 
 <a id="conexion"></a>
 ## 3. Primera conexión: qué necesito para entrar
@@ -255,9 +227,9 @@ Las salidas se guardan en `electron/dist/`. El compilador necesita PHP y herrami
 
 ## 8. Actualizaciones y protección de datos
 
-En Desktop abre **StruchVet → Comprobar actualizaciones**. El cliente consulta versiones reales de GitHub Releases y presenta versión instalada/disponible, notas y progreso. Descargar e instalar requieren tu acción. Las configuraciones y archivos del perfil se conservan; en modo PHP incluido se detiene el servicio y se crea un respaldo antes de instalar. Los archivos de Gestión PHP se distribuyen junto con Desktop.
+En Fedora, las nuevas versiones se instalan descargando el nuevo RPM y ejecutando `sudo dnf upgrade ./StruchVet-Desktop-<version>-linux-x86_64.rpm`. La actualización integrada de RPM todavía requiere validación en Fedora. En Desktop abre **StruchVet → Comprobar actualizaciones**. El cliente consulta versiones reales de GitHub Releases y presenta versión instalada/disponible, notas y progreso. Descargar e instalar requieren tu acción. Las configuraciones y archivos del perfil se conservan; en modo PHP incluido se detiene el servicio y se crea un respaldo antes de instalar. Los archivos de Gestión PHP se distribuyen junto con Desktop.
 
-Las pruebas han comprobado una actualización local AppImage **0.3.0 → 0.3.1**, rechazo de descarga corrupta y conservación del perfil. La firma, la instalación/actualización Windows, la instalación nativa RPM/DEB y la recuperación completa del esquema requieren más validación antes de una versión estable.
+Las pruebas han comprobado una actualización local AppImage **0.3.0 → 0.3.1**, rechazo de descarga corrupta y conservación del perfil. La firma, la instalación/actualización Windows, la instalación nativa RPM y la recuperación completa del esquema requieren más validación antes de una versión estable.
 
 GitHub Actions verifica PHP/MariaDB y compila Linux y Windows. Un tag de versión coincidente prepara un **borrador de release**, no publica automáticamente una estable por cada commit. Actualmente no se ha publicado ninguna release estable. Consulta [el informe de pruebas](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/docs/VALIDACION-DESKTOP.md) y [el protocolo de lanzamiento](https://github.com/MijahelPersonal/inventario-web-Veterinaria/blob/main/.agents/skills/desktop-release/SKILL.md).
 
